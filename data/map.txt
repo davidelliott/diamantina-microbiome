@@ -1,0 +1,32 @@
+#SampleID	BarcodeSequence	LinkerPrimerSequence	sample_ID	DNA_ID	zone	zone_code	element	transect	lat	lon	filter_yield_g	DNA_ng_per_ul	N_pc	C_pc	pH	n_reads	Description
+dune1	notused	notused	1	333	dune	D	earth	1	-23.783576	141.011798	NA	16.2	0.0428	0.2948	6.3	726003	1: Sand dune 1
+dune2	notused	notused	2	334	dune	D	earth	2	-23.781323	141.00902	NA	34.9	0.0551	0.3816	6.26	1049687	2: Sand dune 2
+dune3	notused	notused	3	335	dune	D	earth	3	-23.772664	140.998775	NA	17	0.0436	0.3148	6.38	996395	3: Sand dune 3
+dune4	notused	notused	4	336	dune	D	earth	4	-23.769714	140.99675	NA	4.9	0.0282	0.1373	6.49	564479	4: Sand dune 4
+dune5	notused	notused	5	337	dune	D	earth	5	-23.766485	140.993853	NA	22	0.079	0.5054	6.38	577231	5: Sand dune 5
+duneflank1	notused	notused	6	338	dune flank	DF	earth	1	-23.783521	141.011949	NA	21.6	0.0587	0.4258	6.42	717511	6: Dune flank 1
+duneflank2	notused	notused	7	339	dune flank	DF	earth	2	-23.781219	141.009047	NA	21.6	0.0547	0.3468	6.49	1059270	7: Dune flank 2
+duneflank3	notused	notused	8	340	dune flank	DF	earth	3	-23.772738	140.998964	NA	20.4	0.0603	0.4273	6.37	726954	8: Dune flank 3
+duneflank4	notused	notused	9	341	dune flank	DF	earth	4	-23.769431	140.996883	NA	20.4	0.0807	0.6025	6.3	623920	9: Dune flank 4
+duneflank5	notused	notused	10	342	dune flank	DF	earth	5	-23.766433	140.994034	NA	4.2	0.0364	0.1466	6.54	502805	10: Dune flank 5
+nebka1	notused	notused	11	343	nebka	N	earth	1	-23.78129	141.013384	NA	2.4	0.035	0.1727	6.88	542576	11: Nebka 1
+nebka2	notused	notused	12	344	nebka	N	earth	2	-23.780006	141.010096	NA	22.4	0.0305	0.1646	7.22	556559	12: Nebka 2
+nebka3	notused	notused	13	345	nebka	N	earth	3	-23.771801	141.00366	NA	4.2	0.0211	0.0715	7.18	331496	13: Nebka 3
+nebka4	notused	notused	14	346	nebka	N	earth	4	-23.767901	140.998503	NA	5	0.0375	0.2659	7.08	312316	14: Nebka 4
+nebka5	notused	notused	15	347	nebka	N	earth	5	-23.765934	140.996256	NA	4.8	0.0334	0.1045	7.53	342318	15: Nebka 5
+pan1	notused	notused	16	348	pan	P	earth	1	-23.776794	141.018325	NA	12.1	0.0484	0.2459	6.87	467770	16: Pan 1
+pan2	notused	notused	17	349	pan	P	earth	2	-23.77355	141.015468	NA	12.2	0.0454	0.2295	6.95	471646	17: Pan 2
+pan3	notused	notused	18	350	pan	P	earth	3	-23.767705	141.007783	NA	10.7	0.0429	0.2211	6.91	666254	18: Pan 3
+pan4	notused	notused	19	351	pan	P	earth	4	-23.766236	141.002336	NA	16.3	0.0305	0.159	6.85	808116	19: Pan 4
+pan5	notused	notused	20	352	pan	P	earth	5	-23.76353	140.999983	NA	16.8	0.0472	0.2118	6.64	1149276	20: Pan 5
+filter1	notused	notused	21	353	dune flank	DF	air	1	-23.783521	141.011949	NA	1.6	NA	NA	NA	390781	21: Wind tunnel filter 1
+filter2	notused	notused	22	354	dune flank	DF	air	2	-23.781219	141.009047	NA	18.4	NA	NA	NA	517131	22: Wind tunnel filter 2
+filter3	notused	notused	23	355	dune flank	DF	air	3	-23.772738	140.998964	NA	3.6	NA	NA	NA	659057	23: Wind tunnel filter 3
+filter4	notused	notused	24	356	dune flank	DF	air	4	-23.769431	140.996883	NA	1	NA	NA	NA	440734	24: Wind tunnel filter 4
+filter5	notused	notused	25	357	dune flank	DF	air	5	-23.766433	140.994034	NA	1.6	NA	NA	NA	430432	25: Wind tunnel filter 5
+channel1	notused	notused	26	358	channel	C	water	NA	-23.710055	141.09624	NA	16.2	NA	NA	NA	555004	26: channel 1
+channel3	notused	notused	27	359	channel	C	water	NA	-23.706125	141.097105	NA	32.6	NA	NA	NA	549721	27: channel 3
+channel4	notused	notused	28	360	channel	C	water	NA	-23.701113	141.09491	NA	49.9	NA	NA	NA	922621	28: channel 4
+channel5	notused	notused	29	361	channel	C	water	NA	-23.859389	141.018148	NA	5.4	NA	NA	NA	312953	29: channel 5
+channel6	notused	notused	30	362	channel	C	water	NA	-23.793641	140.863829	NA	10.8	NA	NA	NA	490276	30: channel 6
+channel7	notused	notused	31	363	channel	C	water	NA	-23.674618	140.988005	NA	2.6	NA	NA	NA	646328	31: channel 7

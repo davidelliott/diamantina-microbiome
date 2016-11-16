@@ -1,0 +1,9 @@
+.Rproj.user/
+diamantina_cache/
+diamantina_files/
+*.xlsx
+*.pdf
+*.tex
+*.Rproj
+phylum_breakdown.csv
+data/2015-07-30_Diamantina_DNA.csv
