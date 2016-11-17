@@ -23,6 +23,8 @@ library(grid)
 library(reshape2)
 library(scales)   # needed for formatting y-axis labels to non-scientific type
 library(RColorBrewer)
+library("DESeq2")
+library(knitr)
 set.seed(42)
 
 theme_set(theme_bw())
@@ -383,8 +385,8 @@ Of the `r pan.ntaxa` OTUs found in the claypan, `r channel_pan.intersection.n` w
 
 Whilst many soil OTUs were not detected in the air or water samples, most of the OTUs found exclusively in soil were rare and only contributed `r soil_only_otus.sum ` % of reads in the soil samples. A breakdown of OTU co-occurrence in all samples summarised by phylum read frequency is shown in Figure \ref{fig:source}. It can be seen that co-occurrence of bacteria between soils and hypothesised inoculum sources is very common (assessed by number of reads not number of OTUs), and the relative number of organisms from different inoculum sources varies with respect to soil type and phylum. 
 
-```{r deseq}
-library("DESeq2")
+```{r deseq, echo=FALSE, message=FALSE, cache=TRUE}
+
 expt.deseq <- subset_samples(bac,zone=="dune flank")
   expt.deseq = prune_taxa(taxa_sums(expt.deseq) > 0, expt.deseq)
   
@@ -402,7 +404,7 @@ expt.deseq <- subset_samples(bac,zone=="dune flank")
 # to make sure the fitted line is not sharply curving up or down based on
 # the position of individual points.
 
-    plotDispEsts(typedds,main="model check")
+  #  plotDispEsts(typedds,main="model check")
 
   res = results(typedds, cooksCutoff = FALSE, alpha = 0.05)
   alpha = 0.05
@@ -468,25 +470,22 @@ expt.deseq <- subset_samples(bac,zone=="dune flank")
   declab <- paste("decreased in ",a.desc,sep="")
   t <- tbase
 
-  print(
-    ggplot(sigtab_type) + ggtitle(t) +
+deseq_plot1 <-     ggplot(sigtab_type) + ggtitle(t) +
     geom_point(aes(x=Class, y=log2FoldChange, group=otu,color=Phylum, label=otu),alpha=0.9) + 
     theme(axis.text.x = element_text(angle = -40, hjust = 0, vjust=1,size=10)) +
     geom_text(aes(x=Class, y=log2FoldChange, group=otu,label=sig),fontface="bold",size=12) +
     geom_text(aes(x=nlevels(Class)/3,y=max(log2FoldChange)),label=inclab,hjust=1) +
     geom_text(aes(x=nlevels(Class)/3,y=min(log2FoldChange)),label=declab,hjust=1)   
-)
+
 
   t <- paste(tbase," p <",alpha)
 
-  print(
-  ggplot(subset(sigtab_type,sigtab_type$padj<alpha)) + ggtitle(t) +
+deseq_plot2 <-   ggplot(subset(sigtab_type,sigtab_type$padj<alpha)) + ggtitle(t) +
     geom_point(aes(x=Class, y=log2FoldChange, group=otu,color=Phylum, label=otu2),alpha=0.9) + 
     geom_text(aes(x=Class, y=log2FoldChange, group=otu2,label=otu2),fontface="bold",angle=45 ,hjust = 0, vjust=0.5, size=3) + 
     theme(axis.text.x = element_text(angle = -40, hjust = 0, vjust=1,size=10))+ facet_wrap(~Kingdom,scales = "free_x") +
   geom_text(aes(x=3,y=max(log2FoldChange)),label=inclab,hjust=0) +
     geom_text(aes(x=3,y=min(log2FoldChange)),label=declab,hjust=0)   
-  )
 
 # manipulations to the sigtab_type table - for later output as graphics and tables
 
@@ -516,6 +515,12 @@ sane <- sign(sigtab_type.subset$log2FoldChange)==(sign(sigtab_type.subset$diff))
 sigtab_type.subset <- sigtab_type.subset[order(sigtab_type.subset$diff,decreasing = T),] 
 # save to file
 write.csv(sigtab_type.subset,"windtunnel_otus.csv")
+
+outcols <- c("Phylum",		"Family",	"Genus","padj","air",	"earth") #"Class",	"Order",
+outtab <- sigtab_type.subset[1:5,outcols]
+
+kable(outtab, digits=2)
+#outtab
 ```
 
 
