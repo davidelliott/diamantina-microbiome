@@ -22,6 +22,7 @@ library(vegan)
 library(grid)
 library(reshape2)
 library(scales)   # needed for formatting y-axis labels to non-scientific type
+library(RColorBrewer)
 set.seed(42)
 
 theme_set(theme_bw())
@@ -176,16 +177,16 @@ basemapZoom + geom_point(aes(x = lon, y = lat, colour=zone), data = subset(dd.lo
 \section{Introduction}
 
 Hypotheses:
-\begin{itemize}
+\begin{enumerate}
 \item River flooding deposits microbes on the claypan, some of which persist as viable biocrusts
 \item Dune erosion provides additional microbial inoculum to the claypan
 \item Wind differentially mobilises certain microbes from the dunes
-\begin{itemize}
-\item easily mobilised organisms are more likely to become established in the claypan, especially on nebka
+\begin{enumerate}
+\item Easily mobilised organisms are more likely to become established in the claypan, especially on nebka
 \item Easily mobilised organisms will be more abundant in river channels compared to less easily mobilised organisms 
-\item less easily mobilised organisms are better adapted to forming dune biocrusts (i.e. they will be rare elsewhere)
-\end{itemize}
-\end{itemize}
+\item Less easily mobilised organisms are better adapted to forming dune biocrusts (i.e. they will be rare elsewhere)
+\end{enumerate}
+\end{enumerate}
 
 \section{methods}
 \subsection{field site}
@@ -221,6 +222,7 @@ In addition to the natural crust samples a wind tunnel was run on the dune flank
 (Helene collected data to determine the exact run conditions)
 
 \section{results}
+\subsection{Descriptive and exploratory analyses}
 Blue-green platelet crusts were common but not the dominant surface cover on the claypan. They appear to have once been very widespread but have now been largely eroded away. Underneath them was a similar looking crust that seems to be physically formed, and is more brown. In many places there were nebka atop the blue-green platelet crusts and the platelets ran up the nebka slightly, however the crusts on nebka appeared distinct. Platelet crusts appeared to be more common near nebka. 
 
 In summary, three distinct surface layers were observed in the claypan:
@@ -274,4 +276,113 @@ print(NMDS.b)
 
 ```
 
+\subsection{Addressing the hypotheses}
+Check for channel bacteria on the pan (expected) and on the dune (should be less if hypothesis 1 is correct)
+```{r hyp1, echo=FALSE,fig.height=6,fig.cap='Shared taxa between channel and pan (left), and between channel and dune (right). \\label{fig:shared}', cache=FALSE}
 
+channel <- subset_samples(bac.rel,zone=="channel")
+dune <- subset_samples(bac.rel,zone=="dune")
+pan <- subset_samples(bac.rel,zone=="pan")
+
+channel <- prune_taxa(taxa_sums(channel)>0,channel)
+dune <- prune_taxa(taxa_sums(dune)>0,dune)
+pan <- prune_taxa(taxa_sums(pan)>0,pan)
+
+channel.ntaxa <- ntaxa(channel)
+dune.ntaxa <- ntaxa(dune)
+pan.ntaxa <- ntaxa(pan)
+
+channel_dune.intersection <- intersect(taxa_names(channel),taxa_names(dune))
+channel_dune.intersection.n <- length(channel_dune.intersection)  
+
+channel_pan.intersection <- intersect(taxa_names(channel),taxa_names(pan))
+channel_pan.intersection.n <- length(channel_pan.intersection)  
+
+dune_pan.intersection <- intersect(taxa_names(dune),taxa_names(pan))
+dune_pan.intersection.n <- length(dune_pan.intersection)  
+
+all.intersection <- intersect(channel_dune.intersection, channel_pan.intersection)
+all.intersection <- length(all.intersection)
+
+# Now we have the intersections
+# make objects for the pairs and subset to just the intersecting taxa
+channel_pan <- subset_samples(bac.rel,zone%in%c("channel","pan"))
+channel_pan <- prune_taxa(channel_pan.intersection, channel_pan)
+otu_table(channel_pan) <- otu_table(channel_pan)/5
+
+channel_dune <- subset_samples(bac.rel,zone%in%c("channel","dune"))
+channel_dune <- prune_taxa(channel_dune.intersection, channel_dune)
+otu_table(channel_dune) <- otu_table(channel_dune)/5
+
+# create a common colour palette for plotting
+allphyla <- unique(c(tax_table(channel_dune)[,"Phylum"],tax_table(channel_pan)[,"Phylum"]))
+allphyla.col <- as.vector(colorRampPalette(brewer.pal(12,"Set3"))(length(allphyla)))
+names(allphyla.col)  <- allphyla
+
+# plot
+channel_pan.shared <- plot_bar(channel_pan,x = "zone",fill = "Phylum") + geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack") + scale_y_continuous(name="relative abundance (%)") + scale_fill_manual("Phylum", values = allphyla.col) + scale_colour_manual("Phylum", values = allphyla.col)
+
+channel_dune.shared <- plot_bar(channel_dune,x = "zone",fill = "Phylum") + geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack") + scale_y_continuous(name="relative abundance (%)") + scale_fill_manual("Phylum", values = allphyla.col) + scale_colour_manual("Phylum", values = allphyla.col)
+
+
+grid.newpage()
+pushViewport(viewport(layout=gl))
+print(channel_pan.shared,vp=vp.1)
+print(channel_dune.shared,vp=vp.2)
+
+```
+
+Check for windswept microbes from the dune flank in all other samples.
+
+```{r hyp2, eval=FALSE}
+# This doesn't work all that well. DISABLED
+airborne <- subset_samples(bac.rel,element=="air")
+airborne <- prune_taxa(taxa_sums(airborne)>0,airborne)
+
+bac.airborne.subset <- subset_samples(bac.rel,element!="air")
+bac.airborne.subset <- prune_taxa(taxa_names(airborne), bac.airborne.subset)
+bac.airborne.subset <- prune_taxa(taxa_sums(bac.airborne.subset)>0,bac.airborne.subset)
+otu_table(bac.airborne.subset) <- otu_table(bac.airborne.subset)/5
+
+plot_bar(bac.airborne.subset,x = "zone",fill = "Phylum") + geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack") + scale_y_continuous(name="relative abundance (%)") 
+
++ scale_fill_manual("Phylum", values = allphyla.col) + scale_colour_manual("Phylum", values = allphyla.col)
+```
+
+.
+
+```{r hyp2v2, echo=FALSE,fig.height=6,fig.cap='OTU co-occurrence in soil samples, water samples, and airborne dust. \\label{fig:source}', cache=FALSE}
+# Add to tax table info on where OTU if found
+# working with merged objects to reduce processing time
+bac.rel.merged <- merge_samples(subset_samples(bac.rel,element!="air"),"zone")
+otu_table(bac.rel.merged) <- otu_table(bac.rel.merged)/5
+sample_data(bac.rel.merged)$zone <- as.factor(sample_names(bac.rel.merged))
+
+airborne <- subset_samples(bac.rel,element=="air")
+airborne <- prune_taxa(taxa_sums(airborne)>0,airborne)
+waterborne <- subset_samples(bac.rel.merged,zone=="channel")
+waterborne <- prune_taxa(taxa_sums(waterborne)>0,waterborne)
+
+airborne_otus <- taxa_names(airborne)[taxa_sums(airborne)>0]
+waterborne_otus <- taxa_names(waterborne)[taxa_sums(waterborne)>0]
+both_otus <- intersect(airborne_otus,waterborne_otus)
+
+# simplify data (for testing only)
+bac.rel2 <- prune_taxa(taxa_sums(bac.rel.merged) > 0.1, bac.rel.merged) 
+# bac.rel2 <- bac.rel.merged
+airborne_otus <- airborne_otus[airborne_otus%in%taxa_names(bac.rel2)]
+waterborne_otus <- waterborne_otus[waterborne_otus%in%taxa_names(bac.rel2)]
+both_otus <- both_otus[both_otus%in%taxa_names(bac.rel2)]
+
+colnames(tax_table(bac.rel2))[1] <- "source"
+
+tax_table(bac.rel2)[,"source"] <- "neither"
+tax_table(bac.rel2)[airborne_otus,"source"] <- "airborne"
+tax_table(bac.rel2)[waterborne_otus,"source"] <- "waterborne"
+tax_table(bac.rel2)[both_otus,"source"] <- "both"
+
+
+otu_source <- plot_bar(bac.rel2,x = "zone",fill = "source") + geom_bar(aes(color=source, fill=source), stat="identity", position="stack") + scale_y_continuous(name="relative abundance (%)") 
+otu_source
+otu_source + facet_wrap(~Phylum)
+```
