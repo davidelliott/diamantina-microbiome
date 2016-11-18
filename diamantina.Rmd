@@ -383,7 +383,7 @@ otu_source + facet_wrap(~Phylum, nrow=2)
 
 Of the `r pan.ntaxa` OTUs found in the claypan, `r channel_pan.intersection.n` were also found in water channels, `r dune_pan.intersection.n` were found in airborne dust from the dune flank, and `r all.intersection` were found in both of these hypothesised inoculum sources. The dune and channel samples had `r channel_dune.intersection.n` OTUs in common. 
 
-Whilst many soil OTUs were not detected in the air or water samples, most of the OTUs found exclusively in soil were rare and only contributed `r soil_only_otus.sum ` % of reads in the soil samples. A breakdown of OTU co-occurrence in all samples summarised by phylum read frequency is shown in Figure \ref{fig:source}. It can be seen that co-occurrence of bacteria between soils and hypothesised inoculum sources is very common (assessed by number of reads not number of OTUs), and the relative number of organisms from different inoculum sources varies with respect to soil type and phylum. 
+Whilst many soil OTUs were not detected in the air or water samples, most of the OTUs found exclusively in soil were rare, collectively accounting for only `r soil_only_otus.sum ` % of reads in the soil samples. A breakdown of OTU co-occurrence in all samples summarised by phylum read frequency is shown in Figure \ref{fig:source}. It can be seen that co-occurrence of bacteria between soils and hypothesised inoculum sources is very common (assessed by number of reads not number of OTUs), and the relative number of organisms from different inoculum sources varies with respect to soil type and phylum. 
 
 ```{r deseq, echo=FALSE, message=FALSE, cache=TRUE}
 
@@ -474,8 +474,8 @@ deseq_plot1 <-     ggplot(sigtab_type) + ggtitle(t) +
     geom_point(aes(x=Class, y=log2FoldChange, group=otu,color=Phylum, label=otu),alpha=0.9) + 
     theme(axis.text.x = element_text(angle = -40, hjust = 0, vjust=1,size=10)) +
     geom_text(aes(x=Class, y=log2FoldChange, group=otu,label=sig),fontface="bold",size=12) +
-    geom_text(aes(x=nlevels(Class)/3,y=max(log2FoldChange)),label=inclab,hjust=1) +
-    geom_text(aes(x=nlevels(Class)/3,y=min(log2FoldChange)),label=declab,hjust=1)   
+    geom_text(aes(x=nlevels(Class)/3,y=max(log2FoldChange)),hjust=1) +
+    geom_text(aes(x=nlevels(Class)/3,y=min(log2FoldChange)),hjust=1)   
 
 
   t <- paste(tbase," p <",alpha)
@@ -517,12 +517,57 @@ sigtab_type.subset <- sigtab_type.subset[order(sigtab_type.subset$diff,decreasin
 write.csv(sigtab_type.subset,"windtunnel_otus.csv")
 
 outcols <- c("Phylum",		"Family",	"Genus","padj","air",	"earth") #"Class",	"Order",
-outtab <- sigtab_type.subset[1:5,outcols]
+outtab <- sigtab_type.subset[1:10,outcols]
 
-kable(outtab, digits=2)
+outtab2 <- sigtab_type.subset[nrow(sigtab_type.subset):(nrow(sigtab_type.subset)-10),outcols]
+
+kable(outtab, digits=2,caption = "OTUs which are significantly more abundant in soil compared to dust blown from the soil\\label{tab:deseq1}")
+kable(outtab2, digits=2,caption = "OTUs which are significantly more abundant in dust blown from the soil compared to the whole soil.\\label{tab:deseq2}")
 #outtab
+
+otus_earth <- row.names(sigtab_type.subset[sigtab_type.subset$diff>0,])
+otus_air <- row.names(sigtab_type.subset[sigtab_type.subset$diff<0,])
+
+n_otu_earth <- length(otus_earth)
+n_otu_air <- length(otus_air)
+
+
+```
+
+```{r airborne_dest, echo=FALSE,fig.height=6,fig.cap='Representation of taxa easily mobilised from the dune flank by wind in all sample types. \\label{fig:airborne}', cache=TRUE}
+# TODO
+# make a plot showing where otus_earth and otus_air show up
+
+
+#bac.rel.ea <- subset_taxa(bac.rel,taxa_names(bac.rel)%in%row.names(sigtab_type.subset))
+bac.rel.ea <- bac.rel
+bac.rel.ea <- subset_samples(bac.rel.ea,element!="air")
+#bac.rel.air <- subset_taxa(bac.rel,taxa_names(bac.rel)%in%otus_air)
+#bac.rel.air <- subset_samples(bac.rel.air,element!="air")
+
+# bac.rel.ea <- merge_samples(bac.rel.ea,"zone")
+otu_table(bac.rel.ea) <- otu_table(bac.rel.ea)/5
+
+
+colnames(tax_table(bac.rel.ea))[1] <- "source"
+tax_table(bac.rel.ea)[,"source"] <- "intermediate"
+tax_table(bac.rel.ea)[row.names(tax_table(bac.rel.ea))%in%otus_air,"source"] <- "easily becomes airborne"
+tax_table(bac.rel.ea)[row.names(tax_table(bac.rel.ea))%in%otus_earth,"source"] <- "resists becoming airborne"
+
+# keep only abundant phyla to simplify plot
+keep_phyla_index <- tax_table(bac.rel.ea)[,"Phylum"]%in%keep_phyla
+bac.rel.ea <- subset_taxa(bac.rel.ea, keep_phyla_index)
+# simplify data (for testing only)
+bac.rel.ea <- prune_taxa(taxa_sums(bac.rel.ea) > 0.01, bac.rel.ea) 
+
+wind_otus_plot <- plot_bar(bac.rel.ea,x = "zone",fill = "source")
+wind_otus_plot <- wind_otus_plot + geom_bar(aes(color=source, fill=source), stat="identity", position="stack") 
+wind_otus_plot <- wind_otus_plot + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer() + scale_color_brewer()
+
+wind_otus_plot + facet_wrap(~Phylum, nrow=2)
+
 ```
 
 
 \section{discussion}
-Due to the dune being at higher elevation than all other locations, it might be expected to harbour fewer OTUs of aquatic origin, however this does not seem to be the case. In fact our data are not informative with respect to the direction of dispersal. This question could be tackled in future work monitoring microbial populations over time and relating this to weather conditions and occurrence of flood events. We expect that co-occurrence between dune and river channel may be driven principally by wind dispersal (direction dune>river), whereas co-occurrence between river channel and claypan may be driven principally by flood events (direction river>claypan). The higher proportion of DNA sequence reads shared between dune and river compared to river and pan, may be explained by the fact that flooding of the pan is a rare event (last occurring x years previously) but mobilisation of dust from sand dunes is occurring continuously.
+... see Table \ref{tab:deseq1} and Table \ref{tab:deseq2} . Due to the dune being at higher elevation than all other locations, it might be expected to harbour fewer OTUs of aquatic origin, however this does not seem to be the case. In fact our data are not informative with respect to the direction of dispersal. This question could be tackled in future work monitoring microbial populations over time and relating this to weather conditions and occurrence of flood events. We expect that co-occurrence between dune and river channel may be driven principally by wind dispersal (direction dune>river), whereas co-occurrence between river channel and claypan may be driven principally by flood events (direction river>claypan). The higher proportion of DNA sequence reads shared between dune and river compared to river and pan, may be explained by the fact that flooding of the pan is a rare event (last occurring x years previously) but mobilisation of dust from sand dunes is occurring continuously.
