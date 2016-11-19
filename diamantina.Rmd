@@ -40,15 +40,13 @@ vp.2 <- viewport(layout.pos.col=2, layout.pos.row=1)
 ```
 
 ```{r load,echo=FALSE,message=FALSE,results='hide', warning=FALSE, cache=TRUE}
-bac <- import_biom("data/otu_table_mc2_w_tax.biom", "data/rep_set.tre")
+bac <- import_biom("data/otu_table_mc2_w_tax.biom", "data/rep_set.tre",parseFunction = parse_taxonomy_greengenes)
 
 map <- import_qiime(mapfilename = "data/map.txt")
 bac <- merge_phyloseq(bac,map)
 
-  # Fix ranks. 
-  colnames(tax_table(bac)) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
-  # fix taxa names
-  tax_table(bac)[,colnames(tax_table(bac))] <- gsub(tax_table(bac)[,colnames(tax_table(bac))],pattern="[a-z]__",replacement="")
+  # remove chloroplast
+  bac <- subset_taxa(bac,Class!="Chloroplast")
 
 # keep combined kingdom objects
 expt.combined <- bac
@@ -57,15 +55,21 @@ expt.combined <- bac
 arc <- subset_taxa(bac,Kingdom=="Archaea")
 bac <- subset_taxa(bac,Kingdom=="Bacteria" )
 
+# standardise unknown taxon entries
+tax_table(bac)[is.na(tax_table(bac))] <- "Unknown"
+tax_table(bac)[tax_table(bac) %in% c("", "unclassified", "Unclassified")] <- "Unknown"
+
 # convert OTU observations into relative abundance per sample
 arc.rel <- transform_sample_counts(arc, function(x) 100*x/(sum(x)))
 bac.rel <- transform_sample_counts(bac, function(x) 100*x/(sum(x)))
 # cyano.rel <- transform_sample_counts(cyano, function(x) 100*x/(sum(x)))
 expt.combined.rel <- merge_phyloseq(otu_table(bac.rel),tax_table(bac.rel),otu_table(arc.rel),tax_table(arc.rel),sample_data(bac.rel))
 
-# make cyano object
+# simplify data (for testing only)
+bac.rel <- prune_taxa(taxa_sums(bac.rel) > 0.1, bac.rel) 
+
+# make cyano objects
 cyano.rel <- subset_taxa(bac.rel,Phylum=="Cyanobacteria")
-#cyano.g <- tax_glom(cyano,"Genus")
 cyano.rel.g <- tax_glom(cyano.rel,taxrank = "Genus")
 
 # make combined kingdom phylum plots
@@ -77,8 +81,11 @@ name <- "archaeal and bacterial phyla"
 phylumdf.all = psmelt(tax_glom(expt.combined.rel.phylum,taxrank = "Phylum"))
 write.csv(phylumdf.all,"phylum_breakdown.csv")
 
+# Identify top phyla and cyano genera - so they can be selectively plotted
+top.phyla = names(sort(tapply(taxa_sums(bac.rel), tax_table(bac.rel)[, "Phylum"], sum), TRUE)[1:10])
+top.cyano.genus = names(sort(tapply(taxa_sums(cyano.rel), tax_table(cyano.rel)[, "Genus"], sum), TRUE)[1:4])
 # To simplify plots
-# Remove taxa not seen at more than 1 % in at least 10% of the samples.
+# Remove phyla not seen at more than 1 % in at least 10% of the samples.
 expt.combined.rel.phylum.rr = filter_taxa(expt.combined.rel.phylum, function(x) sum(x > 1) > (0.1*length(x)), TRUE)
 
 cyano.rel.g.rr <- filter_taxa(cyano.rel.g, function(x) sum(x > 0.1) > (0.1*length(x)), TRUE)
@@ -176,6 +183,194 @@ basemapZoom + geom_point(aes(x = lon, y = lat, colour=zone), data = subset(dd.lo
 
 ```
 
+```{r hyp_analysis,echo=FALSE, cache=TRUE}
+# no output from this block but kept for now as it calculates some useful results/objects.
+# Might be suitable for output as small table or in text mention.
+
+channel <- subset_samples(bac.rel,zone=="channel")
+dune <- subset_samples(bac.rel,element=="air")
+pan <- subset_samples(bac.rel,zone=="pan")
+
+channel <- prune_taxa(taxa_sums(channel)>0,channel)
+dune <- prune_taxa(taxa_sums(dune)>0,dune)
+pan <- prune_taxa(taxa_sums(pan)>0,pan)
+
+channel.ntaxa <- ntaxa(channel)
+dune.ntaxa <- ntaxa(dune)
+pan.ntaxa <- ntaxa(pan)
+
+channel_dune.intersection <- intersect(taxa_names(channel),taxa_names(dune))
+channel_dune.intersection.n <- length(channel_dune.intersection)  
+
+channel_pan.intersection <- intersect(taxa_names(channel),taxa_names(pan))
+channel_pan.intersection.n <- length(channel_pan.intersection)  
+
+dune_pan.intersection <- intersect(taxa_names(dune),taxa_names(pan))
+dune_pan.intersection.n <- length(dune_pan.intersection)  
+
+all.intersection <- intersect(channel_dune.intersection, channel_pan.intersection)
+all.intersection <- length(all.intersection)
+
+# Now we have the intersections
+# make objects for the pairs and subset to just the intersecting taxa
+channel_pan <- subset_samples(bac.rel,zone%in%c("channel","pan"))
+channel_pan <- prune_taxa(channel_pan.intersection, channel_pan)
+otu_table(channel_pan) <- otu_table(channel_pan)/5
+
+channel_dune <- subset_samples(bac.rel,zone%in%c("channel","dune"))
+channel_dune <- prune_taxa(channel_dune.intersection, channel_dune)
+otu_table(channel_dune) <- otu_table(channel_dune)/5
+
+# create a common colour palette for plotting
+# not used now but might be useful later
+#allphyla <- unique(c(tax_table(channel_dune)[,"Phylum"],tax_table(channel_pan)[,"Phylum"]))
+#allphyla.col <- as.vector(colorRampPalette(brewer.pal(12,"Set3"))(length(allphyla)))
+#names(allphyla.col)  <- allphyla
+
+# plot
+#channel_pan.shared <- plot_bar(channel_pan,x = "zone",fill = "Phylum") + geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack") + scale_y_continuous(name="relative abundance (%)") + scale_fill_manual("Phylum", values = allphyla.col) + scale_colour_manual("Phylum", values = allphyla.col)
+
+# work out OTU abundance for those only in soil
+bac.rel.earth <- subset_samples(bac.rel,element=="earth")
+bac.rel.earth.merged <- merge_samples(bac.rel.earth,rep(T,nsamples(bac.rel.earth)))
+otu_table(bac.rel.earth.merged) <- otu_table(bac.rel.earth.merged)/nsamples(bac.rel.earth)
+inoc_source_otus <- unique(c(taxa_names(channel),taxa_names(dune)))
+
+soil_only_otus.sum <- round(sum(otu_table(bac.rel.earth.merged)) -  sum(otu_table(bac.rel.earth.merged)[,inoc_source_otus]),1)
+```
+
+```{r hyp_analysis2,echo=FALSE, cache=TRUE}
+# Add to tax table info on where OTU if found
+# working with merged objects to reduce processing time
+bac.rel.merged <- merge_samples(subset_samples(bac.rel,element!="air"),"zone")
+otu_table(bac.rel.merged) <- otu_table(bac.rel.merged)/5
+
+# Keep only phyla that are > 1% overall:
+# to simplify plot and protect against unequal sampling bias
+bac.rel.merged.phylum <- tax_glom(bac.rel.merged,"Phylum")
+keep_phyla <- (taxa_sums(bac.rel.merged.phylum)/5)>1
+keep_phyla <- as.character(tax_table(bac.rel.merged.phylum)[keep_phyla,"Phylum"])
+keep_phyla_index <- tax_table(bac.rel.merged)[,"Phylum"]%in%keep_phyla
+
+bac.rel.merged <- subset_taxa(bac.rel.merged, keep_phyla_index)
+sample_data(bac.rel.merged)$zone <- as.factor(sample_names(bac.rel.merged))
+
+airborne <- subset_samples(bac.rel,element=="air")
+airborne <- prune_taxa(taxa_sums(airborne)>0,airborne)
+waterborne <- subset_samples(bac.rel.merged,zone=="channel")
+waterborne <- prune_taxa(taxa_sums(waterborne)>0,waterborne)
+
+airborne_otus <- taxa_names(airborne)[taxa_sums(airborne)>0]
+waterborne_otus <- taxa_names(waterborne)[taxa_sums(waterborne)>0]
+both_otus <- intersect(airborne_otus,waterborne_otus)
+
+# simplify data (for testing only)
+bac.rel.ea <- prune_taxa(taxa_sums(bac.rel.merged) > 0.1, bac.rel.merged) 
+# can prob do find/replace bac.rel.ea replace with bac.rel.ea
+
+bac.rel.ea <- bac.rel
+bac.rel.ea <- subset_samples(bac.rel.ea,element!="air")
+otu_table(bac.rel.ea) <- otu_table(bac.rel.ea)/5
+
+# select only the more abundant phyla
+bac.rel.ea.p <- subset_taxa(bac.rel.ea, Phylum%in%top.phyla)
+
+# same again but looking at cyanobacterial genera
+bac.rel.ea.cyano <- subset_taxa(bac.rel.ea, Phylum == "Cyanobacteria")
+# select only the more abundant cyanobacterial genera
+bac.rel.ea.cyano <- subset_taxa(bac.rel.ea.cyano, Genus%in%top.cyano.genus)
+
+airborne_otus <- airborne_otus[airborne_otus%in%taxa_names(bac.rel.ea)]
+waterborne_otus <- waterborne_otus[waterborne_otus%in%taxa_names(bac.rel.ea)]
+both_otus <- both_otus[both_otus%in%taxa_names(bac.rel.ea)]
+
+```
+
+```{r deseq_analysis1, echo=FALSE, message=FALSE, cache=TRUE}
+
+expt.deseq <- subset_samples(bac,zone=="dune flank")
+  expt.deseq = prune_taxa(taxa_sums(expt.deseq) > 0, expt.deseq)
+  
+  # add 1 to the whole OTU table, to avoid infinity problems
+  # this will reduce the fold changes
+  otu_table(expt.deseq) <- otu_table(expt.deseq)+1
+  
+  typedds = phyloseq_to_deseq2(expt.deseq, ~ element)
+  typedds = DESeq(typedds, test="Wald",fitType="parametric")
+  # DESeq docs:
+  #On p-values:
+  # By default, independent filtering is performed to select a set of genes for multiple test correction which will optimize the number of adjusted p-values less than a given critical value alpha (by default 0.1). The adjusted p-values for the genes which do not pass the filter threshold are set to NA. 
+  
+# When using local regression fit, the user should examine plotDispEsts(dds)
+# to make sure the fitted line is not sharply curving up or down based on
+# the position of individual points.
+
+  #  plotDispEsts(typedds,main="model check")
+
+  res = results(typedds, cooksCutoff = FALSE, alpha = 0.05)
+  alpha = 0.05
+  sigtab_type = res
+
+  rel.abundance <- apply(otu_table(bac)[rownames(sigtab_type), ],FUN = max,MARGIN = 1)
+  sigtab_type = cbind(as(sigtab_type, "data.frame"), as(tax_table(expt.deseq)[rownames(sigtab_type), ], "matrix"))
+  sigtab_type$max <- rel.abundance
+  
+  # record the OTU name
+  sigtab_type$otu <- row.names(sigtab_type)
+  
+  ind <- sigtab_type$padj<0.05&!is.na(sigtab_type$padj)
+  sigtab_type$otu.orig <- sigtab_type$otu
+  sigtab_type[ind,"otu2"] <- gsub(pattern = "OTU_",replacement = "",x = sigtab_type[ind,"otu"])
+  sigtab_type[ind,"otu"] <- paste("*",sigtab_type[ind,"otu"],"*",sep="")
+
+  sigtab_type$sig <- ""
+  sigtab_type[ind,"sig"] <- "*"
+
+  sd <- as.data.frame(sample_data(expt.deseq))
+
+# manipulations to the sigtab_type table - for later output as graphics and tables
+
+wanted_cols <- c("Phylum",  "Class",  "Order",	"Family",	"Genus",	"Species","padj","log2FoldChange")
+wanted_rows <- (sigtab_type$padj<0.05) & (!is.na(sigtab_type$padj))
+wanted_otus <- sigtab_type[wanted_rows,"otu.orig"]
+
+expt.rel.df <- subset_samples(bac.rel, zone=="dune flank")
+
+otus.rel.df.by.type <- otu_table(merge_samples(expt.rel.df,group = "element"))/5
+orbt <- as.data.frame(t(otus.rel.df.by.type))
+sigtab_type.subset <- sigtab_type[wanted_rows,wanted_cols]
+sigtab_type.subset <- cbind(sigtab_type.subset[wanted_otus,],orbt[wanted_otus,])
+# add a difference column
+sigtab_type.subset$diff <- sigtab_type.subset$earth - sigtab_type.subset$air
+
+# Sanity check on the significant OTUs
+sane <- sign(sigtab_type.subset$log2FoldChange)==(sign(sigtab_type.subset$diff))
+
+# identify the removed OTUs (none)
+# sigtab_type.subset.removed <- sigtab_type.subset[!sane,]
+
+# remove the OTUs not passing sanity check (none)
+# sigtab_type.subset <- sigtab_type.subset[sane,]
+
+# order by diff
+sigtab_type.subset <- sigtab_type.subset[order(sigtab_type.subset$diff,decreasing = T),] 
+# save to file
+write.csv(sigtab_type.subset,"windtunnel_otus.csv")
+
+outcols <- c("Phylum",		"Family",	"Genus","padj","air",	"earth") #"Class",	"Order",
+outtab <- sigtab_type.subset[1:10,outcols]
+
+outtab2 <- sigtab_type.subset[nrow(sigtab_type.subset):(nrow(sigtab_type.subset)-10),outcols]
+
+otus_earth <- row.names(sigtab_type.subset[sigtab_type.subset$diff>0,])
+otus_air <- row.names(sigtab_type.subset[sigtab_type.subset$diff<0,])
+
+n_otu_earth <- length(otus_earth)
+n_otu_air <- length(otus_air)
+```
+
+
+
 \section{Introduction}
 
 Hypotheses:\label{hypotheses}
@@ -232,7 +427,7 @@ In summary, three distinct surface layers were observed in the claypan:
 2. platelet formation biological crust (sampled)
 3. nebka (sampled)
 
-```{r chem, echo=FALSE,fig.height=3,fig.cap='Soil properties\\label{fig:chem}', warning=FALSE, cache=TRUE}
+```{r chem_out, echo=FALSE,fig.height=3,fig.cap='Soil properties\\label{fig:chem}', warning=FALSE, cache=TRUE}
 # melt for plotting
 chemistry.melt <- melt(sample_data(bac.earthair),measure.vars=c("N_pc","C_pc","pH"))
 
@@ -245,19 +440,19 @@ DNA was successfully extracted and sequenced from `r nsamples(bac)` samples, yie
 
 A total of `r length(unique(tax_table(bac)[,"Phylum"]))` bacterial phyla and `r length(unique(tax_table(arc)[,"Phylum"]))` archael phyla were identified. Frequencies of the most abundant phyla are shown in Figure \ref{fig:phyla}. It can be seen that water channel sampels are dissimilar to the soil-based samples at the phylum level although all abundant phyla are represented in both soil and water. 
 
-```{r phyla, echo=FALSE, warning=FALSE, cache=TRUE,fig.cap='Relative abundance of bacterial and archael phyla in soil, water and airborne dust lifted by wind tunnel treatment. Bacterial and archael phyla abundances were calculated individually per kingdom.\\label{fig:phyla}'}
+```{r phyla_out, echo=FALSE, warning=FALSE, cache=TRUE,fig.cap='Relative abundance of bacterial and archael phyla in soil, water and airborne dust lifted by wind tunnel treatment. Bacterial and archael phyla abundances were calculated individually per kingdom.\\label{fig:phyla}'}
 print(phyla.combined)
 ```
 
 Cyanobacteria were abundant in all samples, and were more abundant in dune flank soil compared to airborne dust liberated by wind-tunnel treatment of the same soil. Relative abundance of most other phyla was not significantly different in soil and airborne dust (assumed: statistical tests not done yet). This result is explored further in Figure \ref{fig:cyano} which shows the frequency of the most abundant cyanobaterial genera in each sample. Of the three genera which were common in soil samples, Microcoleus and Phormidium species were more common in the soil compared to airborne dust, whereas Leptoglybna species were more common in the soil compared to dust (statistical tests not done yet). Phormidium was by far the most abundant cyanobacterial phylum, in common with findings from the Kalahari in southern Botswana.
 
-```{r cyano, echo=FALSE, fig.height=4,warning=FALSE, cache=TRUE,fig.cap='Relative abundance of cyanobacterial genera in soil, water and airborne dust lifted by wind tunnel treatment. Abundances are relative wo the whole bacterial community.\\label{fig:cyano}'}
+```{r cyano_out, echo=FALSE, fig.height=4,warning=FALSE, cache=TRUE,fig.cap='Relative abundance of cyanobacterial genera in soil, water and airborne dust lifted by wind tunnel treatment. Abundances are relative wo the whole bacterial community.\\label{fig:cyano}'}
 print(cyano.plot)
 ```
 
 The Chao1 species richness estimation (Figure \ref{fig:rich}) indicated in excess of 10,000 species present in each sample, without striking differences with respect to sample type. These estimates may reduce after additional quality control measures are taken into account.
 
-```{r rich, echo=FALSE,fig.width=4,fig.height=3,fig.cap='Chao1 richness estimate\\label{fig:rich}', cache=TRUE}
+```{r rich_out, echo=FALSE,fig.width=4,fig.height=3,fig.cap='Chao1 richness estimate\\label{fig:rich}', cache=TRUE}
 #fig.subcap=c('one plot', 'the other one'),
 #grid.newpage()
 #pushViewport(viewport(layout=gl))
@@ -268,7 +463,7 @@ print(rich.b)
 
 Microbial community structure was compared with respect to sample source using nonmetric multidimensional scaling (NMDS). Initial results showed that the water samples differed extremely compared to all other samples, and this dominated all other inter-sample differences. The water samples were therefore removed and the community stucutre relationships between the soil and airborne dust samples was revealed as shown in Figure \ref{fig:nmds}. This plot shows differences in community structure between all sample sites. The dune community differs from the dune flank community, and the airborne dust community derived from the dune flank differs from the dune flank community. Notably the dust community has a community structure intermediate between the dune / dune flank and nebka communities.
 
-```{r nmds, echo=FALSE,fig.height=6,fig.cap='NMDS visualisation of bacterial community structure\\label{fig:nmds}', cache=TRUE}
+```{r nmds_out, echo=FALSE,fig.height=6,fig.cap='NMDS visualisation of bacterial community structure\\label{fig:nmds}', cache=TRUE}
 
 #grid.newpage()
 #pushViewport(viewport(layout=gl))
@@ -280,294 +475,73 @@ print(NMDS.b)
 
 \subsection{Addressing the hypotheses}
 
-```{r hyp1, echo=FALSE,fig.height=6,fig.cap='Shared taxa between channel and pan (left), and between channel and dune (right). \\label{fig:shared}', cache=TRUE}
-# no output from this block but kept for now as it calculates some useful results/objects.
-# Might be suitable for output as small table or in text mention.
 
-channel <- subset_samples(bac.rel,zone=="channel")
-dune <- subset_samples(bac.rel,element=="air")
-pan <- subset_samples(bac.rel,zone=="pan")
+```{r OTU_source_out, echo=FALSE,fig.height=6,fig.cap='Phylum abundance and OTU source in soil samples and water samples. Source indicates whether individual OTUs (97 % similarity) contributing to the phylum abundance were found in airborne dust from the dune flank, or in water and sediment in water channels. Only phyla present at > 1% of all reads are shown for clarity. Source designation is not indicative of the ultimate origin of OTUs. \\label{fig:source}', cache=TRUE}
 
-channel <- prune_taxa(taxa_sums(channel)>0,channel)
-dune <- prune_taxa(taxa_sums(dune)>0,dune)
-pan <- prune_taxa(taxa_sums(pan)>0,pan)
+#otu_source <- plot_bar(bac.rel.ea,x = "zone",fill = "source") + geom_bar(aes(color=source, fill=source), stat="identity", position="stack") + scale_y_continuous(name="relative abundance (%)") 
+#otu_source + facet_wrap(~Phylum, nrow=2)
+colnames(tax_table(bac.rel.ea.p))[1] <- "source"
 
-channel.ntaxa <- ntaxa(channel)
-dune.ntaxa <- ntaxa(dune)
-pan.ntaxa <- ntaxa(pan)
+tax_table(bac.rel.ea.p)[,"source"] <- "not found in water channel"
+tax_table(bac.rel.ea.p)[waterborne_otus,"source"] <- "found in water channel"
 
-channel_dune.intersection <- intersect(taxa_names(channel),taxa_names(dune))
-channel_dune.intersection.n <- length(channel_dune.intersection)  
+water_otus_plot <- plot_bar(bac.rel.ea.p,x = "zone",fill = "source")
+water_otus_plot <- water_otus_plot + geom_bar(aes(color=source, fill=source), stat="identity", position="stack") 
+water_otus_plot <- water_otus_plot + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Set1") + scale_color_brewer(palette = "Set1")
+water_otus_plot <- water_otus_plot + facet_wrap(~Phylum, nrow=2) 
 
-channel_pan.intersection <- intersect(taxa_names(channel),taxa_names(pan))
-channel_pan.intersection.n <- length(channel_pan.intersection)  
-
-dune_pan.intersection <- intersect(taxa_names(dune),taxa_names(pan))
-dune_pan.intersection.n <- length(dune_pan.intersection)  
-
-all.intersection <- intersect(channel_dune.intersection, channel_pan.intersection)
-all.intersection <- length(all.intersection)
-
-# Now we have the intersections
-# make objects for the pairs and subset to just the intersecting taxa
-channel_pan <- subset_samples(bac.rel,zone%in%c("channel","pan"))
-channel_pan <- prune_taxa(channel_pan.intersection, channel_pan)
-otu_table(channel_pan) <- otu_table(channel_pan)/5
-
-channel_dune <- subset_samples(bac.rel,zone%in%c("channel","dune"))
-channel_dune <- prune_taxa(channel_dune.intersection, channel_dune)
-otu_table(channel_dune) <- otu_table(channel_dune)/5
-
-# create a common colour palette for plotting
-# not used now but might be useful later
-#allphyla <- unique(c(tax_table(channel_dune)[,"Phylum"],tax_table(channel_pan)[,"Phylum"]))
-#allphyla.col <- as.vector(colorRampPalette(brewer.pal(12,"Set3"))(length(allphyla)))
-#names(allphyla.col)  <- allphyla
-
-# plot
-#channel_pan.shared <- plot_bar(channel_pan,x = "zone",fill = "Phylum") + geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack") + scale_y_continuous(name="relative abundance (%)") + scale_fill_manual("Phylum", values = allphyla.col) + scale_colour_manual("Phylum", values = allphyla.col)
-
-# work out OTU abundance for those only in soil
-bac.rel.earth <- subset_samples(bac.rel,element=="earth")
-bac.rel.earth.merged <- merge_samples(bac.rel.earth,rep(T,nsamples(bac.rel.earth)))
-otu_table(bac.rel.earth.merged) <- otu_table(bac.rel.earth.merged)/nsamples(bac.rel.earth)
-inoc_source_otus <- unique(c(taxa_names(channel),taxa_names(dune)))
-
-soil_only_otus.sum <- round(sum(otu_table(bac.rel.earth.merged)) -  sum(otu_table(bac.rel.earth.merged)[,inoc_source_otus]),1)
-
-```
-
-```{r hyp2v2, echo=FALSE,fig.height=6,fig.cap='Phylum abundance and OTU source in soil samples and water samples. Source indicates whether individual OTUs (97 % similarity) contributing to the phylum abundance were found in airborne dust from the dune flank, or in water and sediment in water channels. Only phyla present at > 1% of all reads are shown for clarity. Source designation is not indicative of the ultimate origin of OTUs. \\label{fig:source}', cache=TRUE}
-# Add to tax table info on where OTU if found
-# working with merged objects to reduce processing time
-bac.rel.merged <- merge_samples(subset_samples(bac.rel,element!="air"),"zone")
-otu_table(bac.rel.merged) <- otu_table(bac.rel.merged)/5
-
-# Keep only phyla that are > 1% overall:
-# to simplify plot and protect against unequal sampling bias
-bac.rel.merged.phylum <- tax_glom(bac.rel.merged,"Phylum")
-keep_phyla <- (taxa_sums(bac.rel.merged.phylum)/5)>1
-keep_phyla <- as.character(tax_table(bac.rel.merged.phylum)[keep_phyla,"Phylum"])
-keep_phyla_index <- tax_table(bac.rel.merged)[,"Phylum"]%in%keep_phyla
-
-bac.rel.merged <- subset_taxa(bac.rel.merged, keep_phyla_index)
-sample_data(bac.rel.merged)$zone <- as.factor(sample_names(bac.rel.merged))
-
-airborne <- subset_samples(bac.rel,element=="air")
-airborne <- prune_taxa(taxa_sums(airborne)>0,airborne)
-waterborne <- subset_samples(bac.rel.merged,zone=="channel")
-waterborne <- prune_taxa(taxa_sums(waterborne)>0,waterborne)
-
-airborne_otus <- taxa_names(airborne)[taxa_sums(airborne)>0]
-waterborne_otus <- taxa_names(waterborne)[taxa_sums(waterborne)>0]
-both_otus <- intersect(airborne_otus,waterborne_otus)
-
-# simplify data (for testing only)
-bac.rel2 <- prune_taxa(taxa_sums(bac.rel.merged) > 0.1, bac.rel.merged) 
-# bac.rel2 <- bac.rel.merged
-airborne_otus <- airborne_otus[airborne_otus%in%taxa_names(bac.rel2)]
-waterborne_otus <- waterborne_otus[waterborne_otus%in%taxa_names(bac.rel2)]
-both_otus <- both_otus[both_otus%in%taxa_names(bac.rel2)]
-
-colnames(tax_table(bac.rel2))[1] <- "source"
-
-tax_table(bac.rel2)[,"source"] <- "neither"
-tax_table(bac.rel2)[airborne_otus,"source"] <- "airborne"
-tax_table(bac.rel2)[waterborne_otus,"source"] <- "waterborne"
-tax_table(bac.rel2)[both_otus,"source"] <- "both"
-
-otu_source <- plot_bar(bac.rel2,x = "zone",fill = "source") + geom_bar(aes(color=source, fill=source), stat="identity", position="stack") + scale_y_continuous(name="relative abundance (%)") 
-otu_source + facet_wrap(~Phylum, nrow=2)
-
+print(water_otus_plot + theme(legend.position="bottom"))
+      
 ```
 
 Of the `r pan.ntaxa` OTUs found in the claypan, `r channel_pan.intersection.n` were also found in water channels, `r dune_pan.intersection.n` were found in airborne dust from the dune flank, and `r all.intersection` were found in both of these hypothesised inoculum sources. The dune and channel samples had `r channel_dune.intersection.n` OTUs in common. 
 
 Whilst many soil OTUs were not detected in the air or water samples, most of the OTUs found exclusively in soil were rare, collectively accounting for only `r soil_only_otus.sum ` % of reads in the soil samples. A breakdown of OTU co-occurrence in all samples summarised by phylum read frequency is shown in Figure \ref{fig:source}. It can be seen that co-occurrence of bacteria between soils and hypothesised inoculum sources is very common (assessed by number of reads not number of OTUs), and the relative number of organisms from different inoculum sources varies with respect to soil type and phylum. 
 
-```{r deseq, echo=FALSE, message=FALSE, cache=TRUE}
-
-expt.deseq <- subset_samples(bac,zone=="dune flank")
-  expt.deseq = prune_taxa(taxa_sums(expt.deseq) > 0, expt.deseq)
-  
-  # add 1 to the whole OTU table, to avoid infinity problems
-  # this will reduce the fold changes
-  otu_table(expt.deseq) <- otu_table(expt.deseq)+1
-  
-  typedds = phyloseq_to_deseq2(expt.deseq, ~ element)
-  typedds = DESeq(typedds, test="Wald",fitType="parametric")
-  # DESeq docs:
-  #On p-values:
-  # By default, independent filtering is performed to select a set of genes for multiple test correction which will optimize the number of adjusted p-values less than a given critical value alpha (by default 0.1). The adjusted p-values for the genes which do not pass the filter threshold are set to NA. 
-  
-# When using local regression fit, the user should examine plotDispEsts(dds)
-# to make sure the fitted line is not sharply curving up or down based on
-# the position of individual points.
-
-  #  plotDispEsts(typedds,main="model check")
-
-  res = results(typedds, cooksCutoff = FALSE, alpha = 0.05)
-  alpha = 0.05
-  sigtab_type = res
-
-  rel.abundance <- apply(otu_table(bac)[rownames(sigtab_type), ],FUN = max,MARGIN = 1)
-  sigtab_type = cbind(as(sigtab_type, "data.frame"), as(tax_table(expt.deseq)[rownames(sigtab_type), ], "matrix"))
-  sigtab_type$max <- rel.abundance
-  
-  # record the OTU name
-  sigtab_type$otu <- row.names(sigtab_type)
-  
-  ind <- sigtab_type$padj<0.05&!is.na(sigtab_type$padj)
-  sigtab_type$otu.orig <- sigtab_type$otu
-  sigtab_type[ind,"otu2"] <- gsub(pattern = "OTU_",replacement = "",x = sigtab_type[ind,"otu"])
-  sigtab_type[ind,"otu"] <- paste("*",sigtab_type[ind,"otu"],"*",sep="")
-
-  sigtab_type$sig <- ""
-  sigtab_type[ind,"sig"] <- "*"
-
-
-  # Reverse the sign of the fold change so that it represents crust:subsoil not subsoil:crust
-  # sigtab_type$log2FoldChange <- sigtab_type$log2FoldChange * -1
-  # sigtab_type$fold <- sign(sigtab_type$log2FoldChange) * (2^abs(sigtab_type$log2FoldChange))
-  
-  scale_fill_discrete <- function(palname = "Set1", ...) {
-    scale_fill_brewer(palette = palname, ...)
-  }
-  # Phylum order
-  x = tapply(sigtab_type$log2FoldChange, sigtab_type$Phylum, function(x) max(x))
-  x = sort(x, TRUE)
-  sigtab_type$Phylum = factor(as.character(sigtab_type$Phylum), levels=names(x))
-  # Class order
-  x = tapply(sigtab_type$log2FoldChange, sigtab_type$Class, function(x) max(x))
-  x = sort(x, TRUE)
-  sigtab_type$Class = factor(as.character(sigtab_type$Class), levels=names(x))
-  # Genus order
-  x = tapply(sigtab_type$log2FoldChange, sigtab_type$Genus, function(x) max(x))
-  x = sort(x, TRUE)
-  sigtab_type$Genus = factor(as.character(sigtab_type$Genus), levels=names(x))
-  # Family order
-  x = tapply(sigtab_type$log2FoldChange, sigtab_type$Family, function(x) max(x))
-  x = sort(x, TRUE)
-  sigtab_type$Family = factor(as.character(sigtab_type$Family), levels=names(x))
-  # Order order
-  x = tapply(sigtab_type$log2FoldChange, sigtab_type$Order, function(x) max(x))
-  x = sort(x, TRUE)
-  sigtab_type$Order = factor(as.character(sigtab_type$Order), levels=names(x))
-  
-  sd <- as.data.frame(sample_data(expt.deseq))
-
-  a <- levels(sample_data(expt.deseq)$type)[2]
-  a.desc <- sd[sd$element=="air","element"][1]
-  a.desc <- as.character(unclass(a.desc)$element)
-
-  b <- levels(sample_data(expt.deseq)$element)[1]
-  b.desc <- sd[sd$element=="earth","element"][1]
-  b.desc <- as.character(unclass(b.desc)$element)
-
-  tbase <- paste(c(a.desc,b.desc),collapse=" compared to ")
-  
-  inclab <- paste("increased in ",a.desc,sep="")
-  declab <- paste("decreased in ",a.desc,sep="")
-  t <- tbase
-
-deseq_plot1 <-     ggplot(sigtab_type) + ggtitle(t) +
-    geom_point(aes(x=Class, y=log2FoldChange, group=otu,color=Phylum, label=otu),alpha=0.9) + 
-    theme(axis.text.x = element_text(angle = -40, hjust = 0, vjust=1,size=10)) +
-    geom_text(aes(x=Class, y=log2FoldChange, group=otu,label=sig),fontface="bold",size=12) +
-    geom_text(aes(x=nlevels(Class)/3,y=max(log2FoldChange)),hjust=1) +
-    geom_text(aes(x=nlevels(Class)/3,y=min(log2FoldChange)),hjust=1)   
-
-
-  t <- paste(tbase," p <",alpha)
-
-deseq_plot2 <-   ggplot(subset(sigtab_type,sigtab_type$padj<alpha)) + ggtitle(t) +
-    geom_point(aes(x=Class, y=log2FoldChange, group=otu,color=Phylum, label=otu2),alpha=0.9) + 
-    geom_text(aes(x=Class, y=log2FoldChange, group=otu2,label=otu2),fontface="bold",angle=45 ,hjust = 0, vjust=0.5, size=3) + 
-    theme(axis.text.x = element_text(angle = -40, hjust = 0, vjust=1,size=10))+ facet_wrap(~Kingdom,scales = "free_x") +
-  geom_text(aes(x=3,y=max(log2FoldChange)),label=inclab,hjust=0) +
-    geom_text(aes(x=3,y=min(log2FoldChange)),label=declab,hjust=0)   
-
-# manipulations to the sigtab_type table - for later output as graphics and tables
-
-wanted_cols <- c("Phylum",  "Class",  "Order",	"Family",	"Genus",	"Species","padj","log2FoldChange")
-wanted_rows <- (sigtab_type$padj<0.05) & (!is.na(sigtab_type$padj))
-wanted_otus <- sigtab_type[wanted_rows,"otu.orig"]
-
-expt.rel.df <- subset_samples(bac.rel, zone=="dune flank")
-
-otus.rel.df.by.type <- otu_table(merge_samples(expt.rel.df,group = "element"))/5
-orbt <- as.data.frame(t(otus.rel.df.by.type))
-sigtab_type.subset <- sigtab_type[wanted_rows,wanted_cols]
-sigtab_type.subset <- cbind(sigtab_type.subset[wanted_otus,],orbt[wanted_otus,])
-# add a difference column
-sigtab_type.subset$diff <- sigtab_type.subset$earth - sigtab_type.subset$air
-
-# Sanity check on the significant OTUs
-sane <- sign(sigtab_type.subset$log2FoldChange)==(sign(sigtab_type.subset$diff))
-
-# identify the removed OTUs (none)
-# sigtab_type.subset.removed <- sigtab_type.subset[!sane,]
-
-# remove the OTUs not passing sanity check (none)
-# sigtab_type.subset <- sigtab_type.subset[sane,]
-
-# order by diff
-sigtab_type.subset <- sigtab_type.subset[order(sigtab_type.subset$diff,decreasing = T),] 
-# save to file
-write.csv(sigtab_type.subset,"windtunnel_otus.csv")
-
-outcols <- c("Phylum",		"Family",	"Genus","padj","air",	"earth") #"Class",	"Order",
-outtab <- sigtab_type.subset[1:10,outcols]
-
-outtab2 <- sigtab_type.subset[nrow(sigtab_type.subset):(nrow(sigtab_type.subset)-10),outcols]
-
+```{r deseq_out1, echo=FALSE, cache=TRUE}
 kable(outtab, digits=2,caption = "OTUs which are significantly more abundant in soil compared to dust blown from the soil\\label{tab:deseq1}")
 kable(outtab2, digits=2,caption = "OTUs which are significantly more abundant in dust blown from the soil compared to the whole soil.\\label{tab:deseq2}")
 #outtab
+```
 
-otus_earth <- row.names(sigtab_type.subset[sigtab_type.subset$diff>0,])
-otus_air <- row.names(sigtab_type.subset[sigtab_type.subset$diff<0,])
+```{r deseq_analysis2, echo=FALSE, message=FALSE, cache=TRUE}
+# see whether OTU is easy or not to become airborne by wind tunnel treatment
+# this is used later to make the wind_otus_plot
+# using object bac.rel.ea.p - which has only the more abundant phyla
 
-n_otu_earth <- length(otus_earth)
-n_otu_air <- length(otus_air)
+colnames(tax_table(bac.rel.ea.p))[1] <- "source"
+tax_table(bac.rel.ea.p)[,"source"] <- "intermediate"
+tax_table(bac.rel.ea.p)[row.names(tax_table(bac.rel.ea.p))%in%otus_air,"source"] <- "easily becomes airborne"
+tax_table(bac.rel.ea.p)[row.names(tax_table(bac.rel.ea.p))%in%otus_earth,"source"] <- "resists becoming airborne"
 
+colnames(tax_table(bac.rel.ea.cyano))[1] <- "source"
+tax_table(bac.rel.ea.cyano)[,"source"] <- "intermediate"
+tax_table(bac.rel.ea.cyano)[row.names(tax_table(bac.rel.ea.cyano))%in%otus_air,"source"] <- "easily becomes airborne"
+tax_table(bac.rel.ea.cyano)[row.names(tax_table(bac.rel.ea.cyano))%in%otus_earth,"source"] <- "resists becoming airborne"
 
 ```
 
-```{r airborne_dest, echo=FALSE,fig.height=6,fig.cap='Representation of taxa easily mobilised from the dune flank by wind in all sample types. \\label{fig:airborne}', cache=TRUE}
-# TODO
-# make a plot showing where otus_earth and otus_air show up
+```{r deseq_out2, echo=FALSE,fig.height=6,fig.cap='Relative abundance of bacterial phyla. Source indicates whether individual OTUs (97 % similarity) contributing to the phylum abundance were significantly more or less abundant in the wind tunnel filter samples compared to the whole soil. Only the 10 most abundant phyla are shown for clarity. Source designation is not indicative of the ultimate origin of OTUs.\\label{fig:airbornep}', cache=TRUE}
 
-
-#bac.rel.ea <- subset_taxa(bac.rel,taxa_names(bac.rel)%in%row.names(sigtab_type.subset))
-bac.rel.ea <- bac.rel
-bac.rel.ea <- subset_samples(bac.rel.ea,element!="air")
-#bac.rel.air <- subset_taxa(bac.rel,taxa_names(bac.rel)%in%otus_air)
-#bac.rel.air <- subset_samples(bac.rel.air,element!="air")
-
-# bac.rel.ea <- merge_samples(bac.rel.ea,"zone")
-otu_table(bac.rel.ea) <- otu_table(bac.rel.ea)/5
-
-
-colnames(tax_table(bac.rel.ea))[1] <- "source"
-tax_table(bac.rel.ea)[,"source"] <- "intermediate"
-tax_table(bac.rel.ea)[row.names(tax_table(bac.rel.ea))%in%otus_air,"source"] <- "easily becomes airborne"
-tax_table(bac.rel.ea)[row.names(tax_table(bac.rel.ea))%in%otus_earth,"source"] <- "resists becoming airborne"
-
-# keep only abundant phyla to simplify plot
-keep_phyla_index <- tax_table(bac.rel.ea)[,"Phylum"]%in%keep_phyla
-bac.rel.ea <- subset_taxa(bac.rel.ea, keep_phyla_index)
-# simplify data (for testing only)
-bac.rel.ea <- prune_taxa(taxa_sums(bac.rel.ea) > 0.01, bac.rel.ea) 
-
-wind_otus_plot <- plot_bar(bac.rel.ea,x = "zone",fill = "source")
+wind_otus_plot <- plot_bar(bac.rel.ea.p,x = "zone",fill = "source")
 wind_otus_plot <- wind_otus_plot + geom_bar(aes(color=source, fill=source), stat="identity", position="stack") 
-wind_otus_plot <- wind_otus_plot + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer() + scale_color_brewer()
+wind_otus_plot <- wind_otus_plot + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Set1") + scale_color_brewer(palette = "Set1")
+wind_otus_plot <- wind_otus_plot + facet_wrap(~Phylum, nrow=2) 
 
-wind_otus_plot + facet_wrap(~Phylum, nrow=2)
+print(wind_otus_plot + theme(legend.position="bottom"))
+```
 
+
+```{r deseq_out3, echo=FALSE,fig.height=4,fig.cap='Relative abundance of cyanobacterial genera. Source indicates whether individual OTUs (97 % similarity) contributing to the genus abundance were significantly more or less abundant in the wind tunnel filter samples compared to the whole soil. Only the 4 most abundant cyanobacterial genera are shown for clarity. Source designation is not indicative of the ultimate origin of OTUs.\\label{fig:airbornec}', cache=TRUE}
+
+wind_otus_plot.c <- plot_bar(bac.rel.ea.cyano,x = "zone",fill = "source")
+wind_otus_plot.c <- wind_otus_plot.c + geom_bar(aes(color=source, fill=source), stat="identity", position="stack") 
+wind_otus_plot.c <- wind_otus_plot.c + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Set1") + scale_color_brewer(palette = "Set1")
+wind_otus_plot.c <- wind_otus_plot.c + facet_wrap(~Genus, nrow=1)
+
+print(wind_otus_plot.c + theme(legend.position="bottom"))
 ```
 
 
 \section{discussion}
-... see Table \ref{tab:deseq1} and Table \ref{tab:deseq2} . Due to the dune being at higher elevation than all other locations, it might be expected to harbour fewer OTUs of aquatic origin, however this does not seem to be the case. In fact our data are not informative with respect to the direction of dispersal. This question could be tackled in future work monitoring microbial populations over time and relating this to weather conditions and occurrence of flood events. We expect that co-occurrence between dune and river channel may be driven principally by wind dispersal (direction dune>river), whereas co-occurrence between river channel and claypan may be driven principally by flood events (direction river>claypan). The higher proportion of DNA sequence reads shared between dune and river compared to river and pan, may be explained by the fact that flooding of the pan is a rare event (last occurring x years previously) but mobilisation of dust from sand dunes is occurring continuously.
+... see Table \ref{tab:deseq1} and Table \ref{tab:deseq2} . Due to the dune being at higher elevation than all other locations, it might be expected to harbour fewer OTUs of aquatic origin, however this does not seem to be the case. In fact our data are not informative with respect to the direction of dispersal. This question could be tackled in future work monitoring microbial populations over time and relating this to weather conditions and occurrence of flood events. We expect that co-occurrence between dune and river channel may be driven principally by wind dispersal (direction dune>river), whereas co-occurrence between river channel and claypan may be driven principally by flood events (direction river>claypan). The higher proportion of DNA sequence reads shared between dune and river compared to river and pan, may be explained by the fact that flooding of the pan is a rare event (last occurring x years previously) but mobilisation of dust from sand dunes is occurring continuously..
