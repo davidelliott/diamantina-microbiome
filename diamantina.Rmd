@@ -83,7 +83,7 @@ write.csv(phylumdf.all,"phylum_breakdown.csv")
 
 # Identify top phyla and cyano genera - so they can be selectively plotted
 top.phyla = names(sort(tapply(taxa_sums(bac.rel), tax_table(bac.rel)[, "Phylum"], sum), TRUE)[1:10])
-top.cyano.genus = names(sort(tapply(taxa_sums(cyano.rel), tax_table(cyano.rel)[, "Genus"], sum), TRUE)[1:4])
+top.cyano.genus = names(sort(tapply(taxa_sums(cyano.rel), tax_table(cyano.rel)[, "Genus"], sum), TRUE)[1:5])
 # To simplify plots
 # Remove phyla not seen at more than 1 % in at least 10% of the samples.
 expt.combined.rel.phylum.rr = filter_taxa(expt.combined.rel.phylum, function(x) sum(x > 1) > (0.1*length(x)), TRUE)
@@ -264,15 +264,11 @@ airborne_otus <- taxa_names(airborne)[taxa_sums(airborne)>0]
 waterborne_otus <- taxa_names(waterborne)[taxa_sums(waterborne)>0]
 both_otus <- intersect(airborne_otus,waterborne_otus)
 
-# simplify data (for testing only)
-bac.rel.ea <- prune_taxa(taxa_sums(bac.rel.merged) > 0.1, bac.rel.merged) 
-# can prob do find/replace bac.rel.ea replace with bac.rel.ea
-
-bac.rel.ea <- bac.rel
-bac.rel.ea <- subset_samples(bac.rel.ea,element!="air")
+# make an object to be modified for plots
+bac.rel.ea <- subset_samples(bac.rel,element!="air")
 otu_table(bac.rel.ea) <- otu_table(bac.rel.ea)/5
 
-# select only the more abundant phyla
+# keep only the more abundant phyla (for clarity of plots)
 bac.rel.ea.p <- subset_taxa(bac.rel.ea, Phylum%in%top.phyla)
 
 # same again but looking at cyanobacterial genera
@@ -475,33 +471,28 @@ print(NMDS.b)
 
 \subsection{Addressing the hypotheses}
 
+```{r source_analysis1, echo=FALSE, message=FALSE, cache=TRUE}
 
-```{r OTU_source_out, echo=FALSE,fig.height=6,fig.cap='Phylum abundance and OTU source in soil samples and water samples. Source indicates whether individual OTUs (97 % similarity) contributing to the phylum abundance were found in airborne dust from the dune flank, or in water and sediment in water channels. Only phyla present at > 1% of all reads are shown for clarity. Source designation is not indicative of the ultimate origin of OTUs. \\label{fig:source}', cache=TRUE}
-
-#otu_source <- plot_bar(bac.rel.ea,x = "zone",fill = "source") + geom_bar(aes(color=source, fill=source), stat="identity", position="stack") + scale_y_continuous(name="relative abundance (%)") 
-#otu_source + facet_wrap(~Phylum, nrow=2)
 colnames(tax_table(bac.rel.ea.p))[1] <- "source"
-
 tax_table(bac.rel.ea.p)[,"source"] <- "not found in water channel"
-tax_table(bac.rel.ea.p)[waterborne_otus,"source"] <- "found in water channel"
+tax_table(bac.rel.ea.p)[taxa_names(bac.rel.ea.p)%in%waterborne_otus,"source"] <- "found in water channel"
 
 water_otus_plot <- plot_bar(bac.rel.ea.p,x = "zone",fill = "source")
 water_otus_plot <- water_otus_plot + geom_bar(aes(color=source, fill=source), stat="identity", position="stack") 
-water_otus_plot <- water_otus_plot + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Set1") + scale_color_brewer(palette = "Set1")
-water_otus_plot <- water_otus_plot + facet_wrap(~Phylum, nrow=2) 
+water_otus_plot <- water_otus_plot + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Set1",direction = -1) + scale_color_brewer(palette = "Set1",direction = -1)
+water_otus_plot <- water_otus_plot + facet_wrap(~Phylum, nrow=2) + theme(legend.position="bottom")
 
-print(water_otus_plot + theme(legend.position="bottom"))
-      
-```
+###
 
-Of the `r pan.ntaxa` OTUs found in the claypan, `r channel_pan.intersection.n` were also found in water channels, `r dune_pan.intersection.n` were found in airborne dust from the dune flank, and `r all.intersection` were found in both of these hypothesised inoculum sources. The dune and channel samples had `r channel_dune.intersection.n` OTUs in common. 
+colnames(tax_table(bac.rel.ea.cyano))[1] <- "source"
+tax_table(bac.rel.ea.cyano)[,"source"] <- "not found in water channel"
+tax_table(bac.rel.ea.cyano)[taxa_names(bac.rel.ea.cyano)%in%waterborne_otus,"source"] <- "found in water channel"
 
-Whilst many soil OTUs were not detected in the air or water samples, most of the OTUs found exclusively in soil were rare, collectively accounting for only `r soil_only_otus.sum ` % of reads in the soil samples. A breakdown of OTU co-occurrence in all samples summarised by phylum read frequency is shown in Figure \ref{fig:source}. It can be seen that co-occurrence of bacteria between soils and hypothesised inoculum sources is very common (assessed by number of reads not number of OTUs), and the relative number of organisms from different inoculum sources varies with respect to soil type and phylum. 
+water_otus_plot.c <- plot_bar(bac.rel.ea.cyano,x = "zone",fill = "source")
+water_otus_plot.c <- water_otus_plot.c + geom_bar(aes(color=source, fill=source), stat="identity", position="stack") 
+water_otus_plot.c <- water_otus_plot.c + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Set1",direction = -1) + scale_color_brewer(palette = "Set1",direction = -1)
+water_otus_plot.c <- water_otus_plot.c + facet_wrap(~Genus, nrow=1) + theme(legend.position="bottom")
 
-```{r deseq_out1, echo=FALSE, cache=TRUE}
-kable(outtab, digits=2,caption = "OTUs which are significantly more abundant in soil compared to dust blown from the soil\\label{tab:deseq1}")
-kable(outtab2, digits=2,caption = "OTUs which are significantly more abundant in dust blown from the soil compared to the whole soil.\\label{tab:deseq2}")
-#outtab
 ```
 
 ```{r deseq_analysis2, echo=FALSE, message=FALSE, cache=TRUE}
@@ -521,27 +512,57 @@ tax_table(bac.rel.ea.cyano)[row.names(tax_table(bac.rel.ea.cyano))%in%otus_earth
 
 ```
 
-```{r deseq_out2, echo=FALSE,fig.height=6,fig.cap='Relative abundance of bacterial phyla. Source indicates whether individual OTUs (97 % similarity) contributing to the phylum abundance were significantly more or less abundant in the wind tunnel filter samples compared to the whole soil. Only the 10 most abundant phyla are shown for clarity. Source designation is not indicative of the ultimate origin of OTUs.\\label{fig:airbornep}', cache=TRUE}
+```{r source_analysis2, echo=FALSE, message=FALSE, cache=TRUE}
+###
 
 wind_otus_plot <- plot_bar(bac.rel.ea.p,x = "zone",fill = "source")
 wind_otus_plot <- wind_otus_plot + geom_bar(aes(color=source, fill=source), stat="identity", position="stack") 
-wind_otus_plot <- wind_otus_plot + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Set1") + scale_color_brewer(palette = "Set1")
-wind_otus_plot <- wind_otus_plot + facet_wrap(~Phylum, nrow=2) 
+wind_otus_plot <- wind_otus_plot + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Accent") + scale_color_brewer(palette = "Accent")
+wind_otus_plot <- wind_otus_plot + facet_wrap(~Phylum, nrow=2) + theme(legend.position="bottom")
 
-print(wind_otus_plot + theme(legend.position="bottom"))
-```
-
-
-```{r deseq_out3, echo=FALSE,fig.height=4,fig.cap='Relative abundance of cyanobacterial genera. Source indicates whether individual OTUs (97 % similarity) contributing to the genus abundance were significantly more or less abundant in the wind tunnel filter samples compared to the whole soil. Only the 4 most abundant cyanobacterial genera are shown for clarity. Source designation is not indicative of the ultimate origin of OTUs.\\label{fig:airbornec}', cache=TRUE}
+###
 
 wind_otus_plot.c <- plot_bar(bac.rel.ea.cyano,x = "zone",fill = "source")
 wind_otus_plot.c <- wind_otus_plot.c + geom_bar(aes(color=source, fill=source), stat="identity", position="stack") 
-wind_otus_plot.c <- wind_otus_plot.c + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Set1") + scale_color_brewer(palette = "Set1")
-wind_otus_plot.c <- wind_otus_plot.c + facet_wrap(~Genus, nrow=1)
-
-print(wind_otus_plot.c + theme(legend.position="bottom"))
+wind_otus_plot.c <- wind_otus_plot.c + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Accent") + scale_color_brewer(palette = "Accent")
+wind_otus_plot.c <- wind_otus_plot.c + facet_wrap(~Genus, nrow=1) + theme(legend.position="bottom")
 ```
 
+.
+
+```{r OTU_source_out, echo=FALSE,fig.height=11,fig.cap='Relative abundance of bacterial phyla. Source indicates whether individual OTUs (97 % similarity) contributing to the phylum abundance were found in the water channels or wind tunnel air filters. Only the 10 most abundant phyla are shown for clarity. Source designation is not indicative of the ultimate origin of OTUs.\\label{fig:waterp}', cache=FALSE}
+
+grid.newpage()
+pushViewport(viewport(layout=g0))
+print(water_otus_plot,vp=vp.01)
+print(wind_otus_plot,vp=vp.02)
+
+#print(water_otus_plot)
+#print(wind_otus_plot )
+```
+
+.
+
+```{r OTU_source_out2, echo=FALSE,fig.height=8,fig.cap='Relative abundance of cyanobacterial genera. Source indicates whether individual OTUs (97 % similarity) contributing to the genus abundance were found in the water channels or wind tunnel air filters. Only the 5 most abundant cyanobacterial genera are shown for clarity. Source designation is not indicative of the ultimate origin of OTUs.\\label{fig:waterc}', cache=FALSE}
+
+grid.newpage()
+pushViewport(viewport(layout=g0))
+print(water_otus_plot.c,vp=vp.01)
+print(wind_otus_plot.c,vp=vp.02)
+
+#print(water_otus_plot.c  )
+#print(wind_otus_plot.c)
+```
+
+Of the `r pan.ntaxa` OTUs found in the claypan, `r channel_pan.intersection.n` were also found in water channels, `r dune_pan.intersection.n` were found in airborne dust from the dune flank, and `r all.intersection` were found in both of these hypothesised inoculum sources. The dune and channel samples had `r channel_dune.intersection.n` OTUs in common. 
+
+Whilst many soil OTUs were not detected in the air or water samples, most of the OTUs found exclusively in soil were rare, collectively accounting for only `r soil_only_otus.sum ` % of reads in the soil samples. A breakdown of OTU co-occurrence in all samples summarised by phylum read frequency is shown in Figure \ref{fig:waterp}, with detail on cyanobacterial genera given in Figure \ref{fig:waterc}. It can be seen that co-occurrence of bacteria between soils and hypothesised inoculum sources is very common (assessed by number of reads not number of OTUs), and the relative number of organisms from different inoculum sources varies with respect to soil type and phylum. 
+
+```{r deseq_out1, echo=FALSE, cache=TRUE}
+kable(outtab, digits=2,caption = "OTUs which are significantly more abundant in soil compared to dust blown from the soil\\label{tab:deseq1}")
+kable(outtab2, digits=2,caption = "OTUs which are significantly more abundant in dust blown from the soil compared to the whole soil.\\label{tab:deseq2}")
+#outtab
+```
 
 \section{discussion}
 ... see Table \ref{tab:deseq1} and Table \ref{tab:deseq2} . Due to the dune being at higher elevation than all other locations, it might be expected to harbour fewer OTUs of aquatic origin, however this does not seem to be the case. In fact our data are not informative with respect to the direction of dispersal. This question could be tackled in future work monitoring microbial populations over time and relating this to weather conditions and occurrence of flood events. We expect that co-occurrence between dune and river channel may be driven principally by wind dispersal (direction dune>river), whereas co-occurrence between river channel and claypan may be driven principally by flood events (direction river>claypan). The higher proportion of DNA sequence reads shared between dune and river compared to river and pan, may be explained by the fact that flooding of the pan is a rare event (last occurring x years previously) but mobilisation of dust from sand dunes is occurring continuously..
