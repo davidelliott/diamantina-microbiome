@@ -2,6 +2,7 @@
 title: "Diamantina biocrusts"
 author: "David Elliott"
 date: "`r format(Sys.time(), '%d %B, %Y')`" 
+bibliography: references.bib
 output:
   pdf_document:
     fig_caption: yes
@@ -9,9 +10,8 @@ output:
     fig_height: 8
     fig_width: 11
     keep_tex: yes
-header-includes: \usepackage{multicol}\usepackage{graphicx}\graphicspath{img/}\usepackage{subfig}   
-# \usepackage{subfig}
-# classoption: landscape
+
+header-includes: \usepackage{multicol}\usepackage{graphicx}\graphicspath{img/}\usepackage{subfig}\usepackage{pdflscape}\usepackage{natbib}
 ---
 
 ```{r setup,echo=FALSE,message=FALSE,results='hide', warning=FALSE, cache=FALSE}
@@ -248,6 +248,8 @@ otu_table(bac.rel.earth.merged) <- otu_table(bac.rel.earth.merged)/nsamples(bac.
 inoc_source_otus <- unique(c(taxa_names(channel),taxa_names(dune)))
 
 soil_only_otus.sum <- round(sum(otu_table(bac.rel.earth.merged)) -  sum(otu_table(bac.rel.earth.merged)[,inoc_source_otus]),1)
+
+
 ```
 
 ```{r hyp_analysis2,echo=FALSE, cache=TRUE}
@@ -255,6 +257,7 @@ soil_only_otus.sum <- round(sum(otu_table(bac.rel.earth.merged)) -  sum(otu_tabl
 # working with merged objects to reduce processing time
 bac.rel.merged <- merge_samples(subset_samples(bac.rel,element!="air"),"zone")
 otu_table(bac.rel.merged) <- otu_table(bac.rel.merged)/5
+otus.df <- as.data.frame(cbind(tax_table(bac.rel.merged),t(otu_table(bac.rel.merged))))
 
 # Keep only phyla that are > 1% overall:
 # to simplify plot and protect against unequal sampling bias
@@ -327,6 +330,10 @@ both_otus <- both_otus[both_otus%in%taxa_names(bac.rel.ea)]
 
   sigtab$sig <- ""
   sigtab[ind,"sig"] <- "*"
+  
+  otus.df$sig <- ""
+  otus.df[row.names(sigtab)[sigtab$sig=="*"],"sig"] <- "*"
+  # otus.df is being prepared for output to file... not finished yet.
 
   sd <- as.data.frame(sample_data(expt.deseq))
 
@@ -359,6 +366,7 @@ sane <- sign(sigtab.subset$log2FoldChange)==(sign(sigtab.subset$diff))
 sigtab.subset <- sigtab.subset[order(sigtab.subset$diff,decreasing = T),] 
 # save to file
 write.csv(sigtab.subset,"windtunnel_otus.csv")
+write.csv(sigtab,"all_otus.csv")
 
 outcols <- c("Phylum",		"Family",	"Genus","padj","air",	"earth") #"Class",	"Order",
 outtab <- sigtab.subset[1:10,outcols]
@@ -452,7 +460,7 @@ A total of `r length(unique(tax_table(bac)[,"Phylum"]))` bacterial phyla and `r 
 print(phyla.combined)
 ```
 
-Phormidium was by far the most abundant cyanobacterial genus Figure \ref{fig:cyano}, in common with findings from the Kalahari in southern Botswana. Phormidium and Microcoleus species appeared to be more common in soil compared to airborne dust, whereas Leptoglybna species appeared more common in the soil compared to dust. Nodularia species and Synechococcus species appeared to be more common in water channels compared to soils, whilst the other genera mentioned were more common in soils. 
+Phormidium was by far the most abundant cyanobacterial genus Figure \ref{fig:cyano}, in common with findings from the Kalahari in southern Botswana [@elliott2014niche]. Phormidium and Microcoleus species appeared to be more common in soil compared to airborne dust, whereas Leptoglybna species appeared more common in the soil compared to dust. Nodularia species and Synechococcus species appeared to be more common in water channels compared to soils, whilst the other genera mentioned were more common in soils. 
 
 ```{r cyano_out, echo=FALSE, fig.height=3,warning=FALSE, cache=TRUE,fig.cap='Relative abundance of cyanobacterial genera in soil, water and airborne dust lifted by wind tunnel treatment. Abundances are relative wo the whole bacterial community.\\label{fig:cyano}'}
 print(cyano.plot)
@@ -579,5 +587,14 @@ kable(outtab2, digits=2,caption = "OTUs which are significantly more abundant in
 #outtab
 ```
 
-\section{discussion}
+\section{Discussion}
+A few previous studies have been published on the microbial content of airborne sediments, and there was recently a review on the subject by @acosta2015microbiology. This review pointed out the fact that most previous work has focused on long-distance transport and the movement of pathogens, which are quite different subjects compared to the present work here. The only study in @acosta2015microbiology combining use of a wind tunnel with collection of airborne particles and their microbial charaterisation is @gardner2012pyrosequencing, which used a pyrosequencing approach. Prior to wind-tunnel treatments the soils in @gardner2012pyrosequencing were tilled, raked, and flattened using a lawn roller which may have considerably affected the results. The main focus of that paper was determining the association of particular microbes or diversity metrics with organic matter and particle size fractions.
+
+\subsection{Microbes in dunes, claypan, and nebkha}
+The microbial community structure of the soil surface varied markedly in relation to soil type (e.g. Figure \ref{fig:nmds}. 
+
+\subsection{Dispersal and ecology of biocrust microbes}
 Due to the dune being at higher elevation than all other locations, it might be expected to harbour fewer OTUs of aquatic origin, however this does not seem to be the case. In fact our data are not informative with respect to the direction of dispersal. This question could be tackled in future work monitoring microbial populations over time and relating this to weather conditions and occurrence of flood events. We expect that co-occurrence between dune and river channel may be driven principally by wind dispersal (direction dune>river), whereas co-occurrence between river channel and claypan may be driven principally by flood events (direction river>claypan). The higher proportion of DNA sequence reads shared between dune and river compared to river and pan, may be explained by the fact that flooding of the pan is a rare event (last occurring x years previously) but mobilisation of dust from sand dunes is occurring continuously..
+
+\section{References}
+\bibliography{references}
