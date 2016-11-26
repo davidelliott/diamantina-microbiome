@@ -11,7 +11,7 @@ output:
     fig_width: 11
     keep_tex: yes
 
-header-includes: \usepackage{multicol}\usepackage{graphicx}\graphicspath{img/}\usepackage{subfig}\usepackage{pdflscape}\usepackage{natbib}
+header-includes: \usepackage{multicol}\usepackage{graphicx}\graphicspath{img/}\usepackage{subfig}\usepackage{pdflscape}\usepackage{natbib}\usepackage{attachfile}
 ---
 
 ```{r setup,echo=FALSE,message=FALSE,results='hide', warning=FALSE, cache=FALSE}
@@ -94,9 +94,18 @@ bac.rel <- prune_taxa(taxa_sums(bac.rel) > 0.2, bac.rel)
 expt.combined.rel.phylum.rr = filter_taxa(expt.combined.rel.phylum, function(x) sum(x > 1) > (0.1*length(x)), TRUE)
 
 # Save a .csv of all the phylum abundances
-phylumdf.all = psmelt(tax_glom(expt.combined.rel.phylum,taxrank = "Phylum"))
-write.csv(phylumdf.all,"phylum_breakdown.csv")
+#phylumdf.all = psmelt(tax_glom(expt.combined.rel.phylum,taxrank = "Phylum"))
+#write.csv(phylumdf.all,"phylum_breakdown.csv")
 
+expt.combined.rel.phylum.merged <- merge_samples(subset_samples(expt.combined.rel.phylum,element!="air"),"zone")
+otu_table(expt.combined.rel.phylum.merged) <- otu_table(expt.combined.rel.phylum.merged)/5
+
+tp <- t(otu_table(expt.combined.rel.phylum.merged))
+tp <- as.data.frame(tp)
+phyla.df <- as.data.frame(cbind(tax_table(expt.combined.rel.phylum.merged),tp))
+phyla.order <- taxa_names(expt.combined.rel.phylum.merged)[order(taxa_sums(expt.combined.rel.phylum.merged),decreasing = T)]
+phyla.df <- phyla.df[phyla.order,]
+write.csv(phyla.df[ ,c(rank_names(bac)[1:2],sample_names(expt.combined.rel.phylum.merged))],"phyla.csv")
 
 cyano.rel.g.rr <- subset_taxa(cyano.rel.g, Genus%in%top.cyano.genus)
 # melt phyloseq object for plotting
@@ -256,15 +265,19 @@ soil_only_otus.sum <- round(sum(otu_table(bac.rel.earth.merged)) -  sum(otu_tabl
 # working with merged objects to reduce processing time
 bac.rel.merged <- merge_samples(subset_samples(bac.rel,element!="air"),"zone")
 otu_table(bac.rel.merged) <- otu_table(bac.rel.merged)/5
-# otus.df <- as.data.frame(cbind(tax_table(bac.rel.merged),t(otu_table(bac.rel.merged))))
+bac.rel.merged.phylum <- tax_glom(bac.rel.merged,"Phylum")
 
+# make dataframes for output later
 t <- t(otu_table(bac.rel.merged))
 t <- as.data.frame(t)
 otus.df <- as.data.frame(cbind(tax_table(bac.rel.merged),t))
+otus.order <- taxa_names(bac.rel.merged)[order(taxa_sums(bac.rel.merged),decreasing = T)]
+otus.df <- otus.df[otus.order,]
+# more info will be added to this DF after DESEQ analysis, then it will be output
 
 # Keep only phyla that are > 1% overall:
 # to simplify plot and protect against unequal sampling bias
-bac.rel.merged.phylum <- tax_glom(bac.rel.merged,"Phylum")
+
 keep_phyla <- (taxa_sums(bac.rel.merged.phylum)/5)>1
 keep_phyla <- as.character(tax_table(bac.rel.merged.phylum)[keep_phyla,"Phylum"])
 keep_phyla_index <- tax_table(bac.rel.merged)[,"Phylum"]%in%keep_phyla
@@ -334,15 +347,6 @@ both_otus <- both_otus[both_otus%in%taxa_names(bac.rel.ea)]
   sigtab$sig <- ""
   sigtab[ind,"sig"] <- "*"
   
-  #otus.df$sig <- ""
-  #otus.df[row.names(sigtab)[sigtab$sig=="*"],"sig"] <- "*"
-  #rownames(sigtab.subset[sigtab.subset$diff>0,])
-  #wanted_cols
-  #sample_names()
-  # otus.df <- otus.df[order(taxa_sums(bac.rel.merged),decreasing = T),]
-  otus.order <- taxa_names(bac.rel.merged)[order(taxa_sums(bac.rel.merged),decreasing = T)]
-  
-  otus.df <- otus.df[otus.order,]
   sd <- as.data.frame(sample_data(expt.deseq))
 
 # manipulations to the sigtab table - for later output as graphics and tables
@@ -453,7 +457,7 @@ In summary, three distinct surface layers were observed in the claypan:
 \item nebka (sampled: N)
 \end{enumerate}
 
-```{r chem_out, echo=FALSE,fig.height=3,fig.cap='Soil properties\\label{fig:chem}', warning=FALSE, cache=TRUE}
+```{r chem_out, echo=FALSE,fig.height=3,fig.cap='Soil properties. Source data and additional information about each sample is \\textattachfile[description=Mapping file relating samples and collected data,color=0 0 1]{data/map.txt}{available here (click or double-click to access)}\\label{fig:chem}', warning=FALSE, cache=TRUE}
 # melt for plotting
 chemistry.melt <- melt(sample_data(bac.earthair),measure.vars=c("N_pc","C_pc","pH"))
 
@@ -469,11 +473,11 @@ There were `r ntaxa(bac)` bacterial OTUs and `r ntaxa(arc)` archael OTUs detecte
 A total of `r length(unique(tax_table(bac)[,"Phylum"]))` bacterial phyla and `r length(unique(tax_table(arc)[,"Phylum"]))` archael phyla were identified. Frequencies of the most abundant phyla are shown in Figure \ref{fig:phyla}. It can be seen that water channel sampels are dissimilar to the soil-based samples at the phylum level although all abundant phyla are represented in both soil and water. Some phyla differed in abundance between the dune flank soil and airborne dust liberated from the same soil by wind tunnel treatment, for example cyanobacteria (more abundant in soil) and firmicutes (more abundant in dust). This result is explored further in Figure \ref{fig:cyano} which shows the frequency of the most abundant cyanobaterial genera in each sample. 
 
 
-```{r phyla_out, echo=FALSE, warning=FALSE, cache=TRUE,fig.cap='Relative abundance of bacterial and archael phyla in soil, water and airborne dust lifted by wind tunnel treatment. Bacterial and archael phyla abundances were calculated individually per kingdom.\\label{fig:phyla}'}
+```{r phyla_out, echo=FALSE, warning=FALSE, cache=TRUE,fig.cap='Relative abundance of bacterial and archael phyla in soil, water and airborne dust lifted by wind tunnel treatment. Bacterial and archael phyla abundances were calculated individually per kingdom. A summary table of phylum abundance by sample type is \\textattachfile[description=Bacterial phylum abundance in biocrusts and water channels in Diamantina National Park Australia,color=0 0 1]{phyla.csv}{available here (click or double-click to access)} \\label{fig:phyla}'}
 print(phyla.combined)
 ```
 
-Phormidium was by far the most abundant cyanobacterial genus Figure \ref{fig:cyano}, in common with findings from the Kalahari in southern Botswana [@elliott2014niche]. Phormidium and Microcoleus species appeared to be more common in soil compared to airborne dust, whereas Leptoglybna species appeared more common in the soil compared to dust. Nodularia species and Synechococcus species appeared to be more common in water channels compared to soils, whilst the other genera mentioned were more common in soils. 
+Phormidium was by far the most abundant cyanobacterial genus (Figure \ref{fig:cyano}), in common with our previous findings from the Kalahari in southern Botswana [@elliott2014niche]. Phormidium and Microcoleus species appeared to be more common in soil compared to airborne dust, whereas Leptoglybna species appeared more common in the soil compared to dust. Nodularia species and Synechococcus species appeared to be more common in water channels compared to soils, whilst the other genera mentioned were more common in soils. 
 
 ```{r cyano_out, echo=FALSE, fig.height=3,warning=FALSE, cache=TRUE,fig.cap='Relative abundance of cyanobacterial genera in soil, water and airborne dust lifted by wind tunnel treatment. Abundances are relative wo the whole bacterial community.\\label{fig:cyano}'}
 print(cyano.plot)
@@ -482,11 +486,7 @@ print(cyano.plot)
 The Chao1 species richness estimation (Figure \ref{fig:rich}) indicated in excess of 10,000 species present in each sample, without striking differences with respect to sample type. These estimates may reduce after additional quality control measures are taken into account.
 
 ```{r rich_out, echo=FALSE,fig.width=4,fig.height=3,fig.cap='Chao1 richness estimate (all prokaryotes). \\label{fig:rich}', cache=TRUE}
-#fig.subcap=c('one plot', 'the other one'),
-#grid.newpage()
-#pushViewport(viewport(layout=gl))
-#print(rich.a,vp=vp.1)
-#print(rich.b,vp=vp.2)
+
 print(rich.ab)
 ```
 
@@ -494,10 +494,6 @@ Microbial community structure was compared with respect to sample source using n
 
 ```{r nmds_out, echo=FALSE,fig.height=6,fig.cap='NMDS visualisation of prokaryotic community structure in soil (sand dunes, claypan, and nebkha) and airborne dust (from sand dunes). \\label{fig:nmds}', cache=TRUE}
 
-#grid.newpage()
-#pushViewport(viewport(layout=gl))
-#print(NMDS.a,vp=vp.1)
-#print(NMDS.b,vp=vp.2)
 print(NMDS.ab)
 
 ```
@@ -595,15 +591,15 @@ Whilst many soil OTUs were not detected in the air or water samples, most of the
 A model based approach was used to check if any OTUs had significantly different abundance between the dune flank soil and the collected dust derived from the same soil obtained by wind tunnel treatment. This technique avoids problems associated with uneven sampling effort and includes correction for multiple testing. The results (p<0.05) indicated that `r deseq_n_diff_air` OTUs (`r round(deseq_sum_diff_air*-1)` % of reads) were  more abundant in air samples and `r deseq_n_diff_earth` OTUs (`r round(deseq_sum_diff_earth)` % of reads) were more abundant in soil samples. Details for a subset of these OTUs are shown in Tables \ref{tab:deseq1} and \ref{tab:deseq2}.
 
 ```{r deseq_out1, echo=FALSE, cache=FALSE}
-kable(outtab, digits=2,caption = "OTUs which are significantly more abundant in soil compared to dust blown from the soil\\label{tab:deseq1}")
+kable(outtab, digits=2,caption = "OTUs which are significantly more abundant in soil compared to dust blown from the soil. This is a subset of the DESEQ2 analysis output, sorted by magnitude of difference in abundance. Full details of significant results from this analysis are \\textattachfile[description=DESEQ 2 analysis of differential abundance,color=0 0 1]{windtunnel_otus.csv}{available here (click or double-click to access)} \\label{tab:deseq1}")
 
-kable(outtab2, digits=2,caption = "OTUs which are significantly more abundant in dust blown from the soil compared to the whole soil.\\label{tab:deseq2}")
+kable(outtab2, digits=2,caption = "OTUs which are significantly more abundant in dust blown from the soil compared to the whole soil. This is a subset of the DESEQ2 analysis output, sorted by magnitude of difference in abundance. Full details of significant results from this analysis are available via the file linked in the legend to Table \\ref{tab:deseq1} (these two tables show the top and bottom 10 lines from the same file) \\label{tab:deseq2}")
 
 otus.df.out <- otus.df[1:10,c(rank_names(bac)[c(2,5,6)],sample_names(bac.rel.merged),"sig")]
 colnames(otus.df.out)[colnames(otus.df.out)=="dune flank"] <- "d.flank"
 # class(otus.df$dune)
 # otus.df.out <- as.numeric(otus.df.out)
-kable(otus.df.out,row.names = F, digits=2,caption = "Most abundant OTUs. sig column indicates if the OTU was significantly more abundant in soil or wind tunnel filter after running the wind tunnel on dune flanks.\\label{tab:deseq3}")
+kable(otus.df.out,row.names = F, digits=2,caption = "OTU abundance in each sampling zone, in order of overall abundance. Sig column indicates if the OTU was significantly more abundant in soil or wind tunnel filter after running the wind tunnel on dune flanks. The 10 most abundant OTUs overall are shown, full table with all OTUs is \\textattachfile[description=DESEQ 2 analysis of differential abundance,color=0 0 1]{all_otus.csv}{available here (click or double-click to access)} \\label{tab:deseq3}")
 
 write.csv(otus.df[ ,c(rank_names(bac)[1:7],sample_names(bac.rel.merged))],"all_otus.csv")
 ```
