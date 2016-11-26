@@ -408,7 +408,7 @@ Hypotheses:\label{Hypotheses}
 \item River flooding is an occasional source of microbes to the claypan, some of which persist as viable biocrusts
 \item Microbes mobilised from sand dunes by wind erosion are a constant source of inoculum to the claypan
 \item Wind differentially mobilises certain microbes from the dunes
-\item Easily mobilised organisms are more likely to become established in the claypan, especially on nebka
+\item Easily mobilised organisms are more likely to become established in the claypan, especially on nebkha
 \end{enumerate}
 
 \section{Methods}
@@ -428,7 +428,7 @@ The following locations were targeted for soil sampling:
 
 - Dune (D). Dune biocrust
 - Dune flank (DF). Dune flank biocrust
-- Nebka (N). Biocrust situated on nebka in the claypan to the East of the dune
+- Nebkha (N). Biocrust situated on nebkha in the claypan to the East of the dune
 - Pan (P). Biocrust platelets in vegetation interspaces further onto the claypan
 - Channel (C). Sediment and water from the banks of water channels surrounding the dune/claypan complex
 
@@ -448,16 +448,16 @@ In addition to the natural crust samples a wind tunnel was run on the dune flank
 DNA sequencing was performed by the Centre for Genomic Research (CGR) NERC Facility at the University of Liverpool. Raw data, summary statistics, and methods description are available via the CGR LIMS at <http://cgr.liv.ac.uk/illum/LIMS10796_978f1f02f3c84a18/>
 
 \subsection{Descriptive and exploratory analyses}
-Blue-green platelet crusts were common but not the dominant surface cover on the claypan. They appear to have once been very widespread but have now been largely eroded away. Underneath them was a similar looking crust that seems to be physically formed, and is more brown. In many places there were nebka atop the blue-green platelet crusts and the platelets ran up the nebka slightly, however the crusts on nebka appeared distinct. Platelet crusts appeared to be more common near nebka. 
+Blue-green platelet crusts were common but not the dominant surface cover on the claypan. They appear to have once been very widespread but have now been largely eroded away. Underneath them was a similar looking crust that seems to be physically formed, and is more brown. In many places there were nebkha atop the blue-green platelet crusts and the platelets ran up the nebkha slightly, however the crusts on nebkha appeared distinct. Platelet crusts appeared to be more common near nebkha. 
 
 In summary, three distinct surface layers were observed in the claypan:
 \begin{enumerate}
 \item basal physical crust (not sampled)
 \item platelet formation biological crust (sampled: P)
-\item nebka (sampled: N)
+\item nebkha (sampled: N)
 \end{enumerate}
 
-```{r chem_out, echo=FALSE,fig.height=3,fig.cap='Soil properties. Source data and additional information about each sample is \\textattachfile[description=Mapping file relating samples and collected data,color=0 0 1]{data/map.txt}{available here (click or double-click to access)}\\label{fig:chem}', warning=FALSE, cache=TRUE}
+```{r chem_out, echo=FALSE,fig.height=3,fig.cap='Soil properties. Source data and additional information about each sample are \\textattachfile[description=Mapping file relating samples and collected data,color=0 0 1]{data/map.txt}{available here (click or double-click to access)}\\label{fig:chem}', warning=FALSE, cache=TRUE}
 # melt for plotting
 chemistry.melt <- melt(sample_data(bac.earthair),measure.vars=c("N_pc","C_pc","pH"))
 
@@ -490,7 +490,7 @@ The Chao1 species richness estimation (Figure \ref{fig:rich}) indicated in exces
 print(rich.ab)
 ```
 
-Microbial community structure was compared with respect to sample source using nonmetric multidimensional scaling (NMDS). Initial results showed that the water samples differed extremely compared to all other samples (see also Figure \ref{fig:phyla}), and this dominated all other inter-sample differences. The water samples were therefore removed and the community stucutre relationships between the soil and airborne dust samples were revealed as shown in Figure \ref{fig:nmds}. The dune community differs from the dune flank community, and the airborne dust community derived from the dune flank differs from the dune flank community. Notably the dust community has a community structure intermediate between the dune / dune flank and nebka communities.
+Microbial community structure was compared with respect to sample source using nonmetric multidimensional scaling (NMDS). Initial results showed that the water samples differed extremely compared to all other samples (see also Figure \ref{fig:phyla}), and this dominated all other inter-sample differences. The water samples were therefore removed and the community stucutre relationships between the soil and airborne dust samples were revealed as shown in Figure \ref{fig:nmds}. The dune community differs from the dune flank community, and the airborne dust community derived from the dune flank differs from the dune flank community. Notably the dust community has a community structure intermediate between the dune / dune flank and nebkha communities.
 
 ```{r nmds_out, echo=FALSE,fig.height=6,fig.cap='NMDS visualisation of prokaryotic community structure in soil (sand dunes, claypan, and nebkha) and airborne dust (from sand dunes). \\label{fig:nmds}', cache=TRUE}
 

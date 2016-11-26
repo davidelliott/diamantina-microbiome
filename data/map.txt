@@ -9,11 +9,11 @@ duneflank2	notused	notused	7	339	dune flank	DF	earth	2	-23.781219	141.009047	NA	
 duneflank3	notused	notused	8	340	dune flank	DF	earth	3	-23.772738	140.998964	NA	20.4	0.0603	0.4273	6.37	726954	8: Dune flank 3
 duneflank4	notused	notused	9	341	dune flank	DF	earth	4	-23.769431	140.996883	NA	20.4	0.0807	0.6025	6.3	623920	9: Dune flank 4
 duneflank5	notused	notused	10	342	dune flank	DF	earth	5	-23.766433	140.994034	NA	4.2	0.0364	0.1466	6.54	502805	10: Dune flank 5
-nebka1	notused	notused	11	343	nebka	N	earth	1	-23.78129	141.013384	NA	2.4	0.035	0.1727	6.88	542576	11: Nebka 1
-nebka2	notused	notused	12	344	nebka	N	earth	2	-23.780006	141.010096	NA	22.4	0.0305	0.1646	7.22	556559	12: Nebka 2
-nebka3	notused	notused	13	345	nebka	N	earth	3	-23.771801	141.00366	NA	4.2	0.0211	0.0715	7.18	331496	13: Nebka 3
-nebka4	notused	notused	14	346	nebka	N	earth	4	-23.767901	140.998503	NA	5	0.0375	0.2659	7.08	312316	14: Nebka 4
-nebka5	notused	notused	15	347	nebka	N	earth	5	-23.765934	140.996256	NA	4.8	0.0334	0.1045	7.53	342318	15: Nebka 5
+nebka1	notused	notused	11	343	nebkha	N	earth	1	-23.78129	141.013384	NA	2.4	0.035	0.1727	6.88	542576	11: nebkha 1
+nebka2	notused	notused	12	344	nebkha	N	earth	2	-23.780006	141.010096	NA	22.4	0.0305	0.1646	7.22	556559	12: nebkha 2
+nebka3	notused	notused	13	345	nebkha	N	earth	3	-23.771801	141.00366	NA	4.2	0.0211	0.0715	7.18	331496	13: nebkha 3
+nebka4	notused	notused	14	346	nebkha	N	earth	4	-23.767901	140.998503	NA	5	0.0375	0.2659	7.08	312316	14: nebkha 4
+nebka5	notused	notused	15	347	nebkha	N	earth	5	-23.765934	140.996256	NA	4.8	0.0334	0.1045	7.53	342318	15: nebkha 5
 pan1	notused	notused	16	348	pan	P	earth	1	-23.776794	141.018325	NA	12.1	0.0484	0.2459	6.87	467770	16: Pan 1
 pan2	notused	notused	17	349	pan	P	earth	2	-23.77355	141.015468	NA	12.2	0.0454	0.2295	6.95	471646	17: Pan 2
 pan3	notused	notused	18	350	pan	P	earth	3	-23.767705	141.007783	NA	10.7	0.0429	0.2211	6.91	666254	18: Pan 3
