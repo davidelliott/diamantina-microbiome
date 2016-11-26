@@ -253,11 +253,14 @@ soil_only_otus.sum <- round(sum(otu_table(bac.rel.earth.merged)) -  sum(otu_tabl
 ```
 
 ```{r hyp_analysis2,echo=FALSE, cache=TRUE}
-# Add to tax table info on where OTU if found
 # working with merged objects to reduce processing time
 bac.rel.merged <- merge_samples(subset_samples(bac.rel,element!="air"),"zone")
 otu_table(bac.rel.merged) <- otu_table(bac.rel.merged)/5
-otus.df <- as.data.frame(cbind(tax_table(bac.rel.merged),t(otu_table(bac.rel.merged))))
+# otus.df <- as.data.frame(cbind(tax_table(bac.rel.merged),t(otu_table(bac.rel.merged))))
+
+t <- t(otu_table(bac.rel.merged))
+t <- as.data.frame(t)
+otus.df <- as.data.frame(cbind(tax_table(bac.rel.merged),t))
 
 # Keep only phyla that are > 1% overall:
 # to simplify plot and protect against unequal sampling bias
@@ -331,10 +334,15 @@ both_otus <- both_otus[both_otus%in%taxa_names(bac.rel.ea)]
   sigtab$sig <- ""
   sigtab[ind,"sig"] <- "*"
   
-  otus.df$sig <- ""
-  otus.df[row.names(sigtab)[sigtab$sig=="*"],"sig"] <- "*"
-  # otus.df is being prepared for output to file... not finished yet.
-
+  #otus.df$sig <- ""
+  #otus.df[row.names(sigtab)[sigtab$sig=="*"],"sig"] <- "*"
+  #rownames(sigtab.subset[sigtab.subset$diff>0,])
+  #wanted_cols
+  #sample_names()
+  # otus.df <- otus.df[order(taxa_sums(bac.rel.merged),decreasing = T),]
+  otus.order <- taxa_names(bac.rel.merged)[order(taxa_sums(bac.rel.merged),decreasing = T)]
+  
+  otus.df <- otus.df[otus.order,]
   sd <- as.data.frame(sample_data(expt.deseq))
 
 # manipulations to the sigtab table - for later output as graphics and tables
@@ -366,7 +374,6 @@ sane <- sign(sigtab.subset$log2FoldChange)==(sign(sigtab.subset$diff))
 sigtab.subset <- sigtab.subset[order(sigtab.subset$diff,decreasing = T),] 
 # save to file
 write.csv(sigtab.subset,"windtunnel_otus.csv")
-write.csv(sigtab,"all_otus.csv")
 
 outcols <- c("Phylum",		"Family",	"Genus","padj","air",	"earth") #"Class",	"Order",
 outtab <- sigtab.subset[1:10,outcols]
@@ -383,6 +390,11 @@ otus_air <- row.names(sigtab.subset[sigtab.subset$diff<0,])
 
 n_otu_earth <- length(otus_earth)
 n_otu_air <- length(otus_air)
+
+# record significant OTUs in otus.df for output file / table
+otus.df$sig <- NA
+otus.df[otus_earth,"sig"] <- "soil"
+otus.df[otus_air,"sig"] <- "air"
 ```
 
 \section{Introduction}
@@ -455,6 +467,7 @@ DNA was successfully extracted and sequenced from `r nsamples(bac)` samples, yie
 There were `r ntaxa(bac)` bacterial OTUs and `r ntaxa(arc)` archael OTUs detected (OTUs defined by 97 % similarity which is approximately species-level difference between OTUs). This analysis was planned to target bacteria, and as archaea make up only `r round(100*m_reads_arc_qc / m_reads_bac_qc,1)` \% of sequences, bacteria are the main focus of this analysis.
 
 A total of `r length(unique(tax_table(bac)[,"Phylum"]))` bacterial phyla and `r length(unique(tax_table(arc)[,"Phylum"]))` archael phyla were identified. Frequencies of the most abundant phyla are shown in Figure \ref{fig:phyla}. It can be seen that water channel sampels are dissimilar to the soil-based samples at the phylum level although all abundant phyla are represented in both soil and water. Some phyla differed in abundance between the dune flank soil and airborne dust liberated from the same soil by wind tunnel treatment, for example cyanobacteria (more abundant in soil) and firmicutes (more abundant in dust). This result is explored further in Figure \ref{fig:cyano} which shows the frequency of the most abundant cyanobaterial genera in each sample. 
+
 
 ```{r phyla_out, echo=FALSE, warning=FALSE, cache=TRUE,fig.cap='Relative abundance of bacterial and archael phyla in soil, water and airborne dust lifted by wind tunnel treatment. Bacterial and archael phyla abundances were calculated individually per kingdom.\\label{fig:phyla}'}
 print(phyla.combined)
@@ -581,11 +594,24 @@ Whilst many soil OTUs were not detected in the air or water samples, most of the
 
 A model based approach was used to check if any OTUs had significantly different abundance between the dune flank soil and the collected dust derived from the same soil obtained by wind tunnel treatment. This technique avoids problems associated with uneven sampling effort and includes correction for multiple testing. The results (p<0.05) indicated that `r deseq_n_diff_air` OTUs (`r round(deseq_sum_diff_air*-1)` % of reads) were  more abundant in air samples and `r deseq_n_diff_earth` OTUs (`r round(deseq_sum_diff_earth)` % of reads) were more abundant in soil samples. Details for a subset of these OTUs are shown in Tables \ref{tab:deseq1} and \ref{tab:deseq2}.
 
-```{r deseq_out1, echo=FALSE, cache=TRUE}
+```{r deseq_out1, echo=FALSE, cache=FALSE}
 kable(outtab, digits=2,caption = "OTUs which are significantly more abundant in soil compared to dust blown from the soil\\label{tab:deseq1}")
+
 kable(outtab2, digits=2,caption = "OTUs which are significantly more abundant in dust blown from the soil compared to the whole soil.\\label{tab:deseq2}")
-#outtab
+
+otus.df.out <- otus.df[1:10,c(rank_names(bac)[c(2,5,6)],sample_names(bac.rel.merged),"sig")]
+colnames(otus.df.out)[colnames(otus.df.out)=="dune flank"] <- "d.flank"
+# class(otus.df$dune)
+# otus.df.out <- as.numeric(otus.df.out)
+kable(otus.df.out,row.names = F, digits=2,caption = "Most abundant OTUs. sig column indicates if the OTU was significantly more abundant in soil or wind tunnel filter after running the wind tunnel on dune flanks.\\label{tab:deseq3}")
+
+write.csv(otus.df[ ,c(rank_names(bac)[1:7],sample_names(bac.rel.merged))],"all_otus.csv")
 ```
+
+
+```{r otus_out}
+```
+
 
 \section{Discussion}
 A few previous studies have been published on the microbial content of airborne sediments, and there was recently a review on the subject by @acosta2015microbiology. This review pointed out the fact that most previous work has focused on long-distance transport and the movement of pathogens, which are quite different subjects compared to the present work here. The only study in @acosta2015microbiology combining use of a wind tunnel with collection of airborne particles and their microbial charaterisation is @gardner2012pyrosequencing, which used a pyrosequencing approach. Prior to wind-tunnel treatments the soils in @gardner2012pyrosequencing were tilled, raked, and flattened using a lawn roller which may have considerably affected the results. The main focus of that paper was determining the association of particular microbes or diversity metrics with organic matter and particle size fractions.
