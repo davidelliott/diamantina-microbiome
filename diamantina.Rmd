@@ -82,8 +82,7 @@ top.cyano.genus <- top.cyano.genus[top.cyano.genus!="Unknown"]
 bac.rel.all <- bac.rel
 bac.rel <- subset_taxa(bac.rel, Phylum%in%top.phyla)
 
-# keep only the more abundant cyanobacterial genera
-cyano.rel <- subset_taxa(cyano.rel, Genus%in%top.cyano.genus)
+# agglomerate cyanos by genus, used later on
 cyano.rel.g <- tax_glom(cyano.rel,taxrank = "Genus")
 
 # simplify data (for testing only)
@@ -107,10 +106,21 @@ phyla.order <- taxa_names(expt.combined.rel.phylum.merged)[order(taxa_sums(expt.
 phyla.df <- phyla.df[phyla.order,]
 write.csv(phyla.df[ ,c(rank_names(bac)[1:2],sample_names(expt.combined.rel.phylum.merged))],"phyla.csv")
 
+# keep only the more abundant cyanobacterial genera
 cyano.rel.g.rr <- subset_taxa(cyano.rel.g, Genus%in%top.cyano.genus)
 # melt phyloseq object for plotting
 phylumdf.rr = psmelt(expt.combined.rel.phylum.rr)
 cyanodf = psmelt(cyano.rel.g.rr)
+
+
+cyano.rel.g.merged <- merge_samples(subset_samples(cyano.rel.g,element!="air"),"zone")
+otu_table(cyano.rel.g.merged) <- otu_table(cyano.rel.g.merged)/5
+tc <- t(otu_table(cyano.rel.g.merged))
+tc <- as.data.frame(tc)
+cyano.df <- as.data.frame(cbind(tax_table(cyano.rel.g.merged),tc))
+cyano.order <- taxa_names(cyano.rel.g.merged)[order(taxa_sums(cyano.rel.g.merged),decreasing = T)]
+cyano.df <- cyano.df[cyano.order,]
+write.csv(cyano.df[ ,c(rank_names(bac)[1:6],sample_names(cyano.rel.g.merged))],"cyano.csv")
 
 bac.earthair <- subset_samples(bac,element!="water")
 arc.earthair <- subset_samples(arc,element!="water")
@@ -424,7 +434,7 @@ The dune runs approximately North-South and the claypan is on the East side (Fig
 \label{fig:map}%
 \end{figure}
 
-The following locations were targeted for soil sampling:
+The following locations were targeted for soil sampling (See Figure \ref{fig:photo-sampling} for photographs showing the soil sites):
 
 - Dune (D). Dune biocrust
 - Dune flank (DF). Dune flank biocrust
@@ -435,7 +445,21 @@ The following locations were targeted for soil sampling:
 Transects were planned to be approximtely 500 m apart to achieve even spacing along the dune, however some zones to the south were quite heavily impacted by cattle and possibly rabbits. These impacted zones were excluded because the dune flanks did not have suitable areas to run the wind tunnel. The transects are numbered 1-5 starting at the South end. The different sampling areas are expected to have different grain size characteristics.
 
 \subsection{Sampling}
-Sampled areas were 10x10 cm and were selected to represent the diversity of biocrust in the area. In areas where differing crust types were noticeable the sampled areas were selected to have both types where applicable (e.g. biological/physical, light/dark). In badly disturbed areas remnants of pre-disturbance crust were selected (2x dune sites).
+Sampled areas were 10x10 cm and were selected to represent the diversity of biocrust in the area (\ref{fig:photo-sampling}). In areas where differing crust types were noticeable the sampled areas were selected to have both types where applicable (e.g. biological/physical, light/dark). In badly disturbed areas remnants of pre-disturbance crust were selected (2x dune sites).
+
+\begin{figure}
+  \centering
+      \includegraphics[trim = 17mm 10mm 17mm 10mm, clip,width=1\textwidth]{photos/photos Page 1}
+  \caption{Photographs of the sampling area include detail of nebkha and crust formations on the claypan.}
+  \label{fig:photo-area}
+\end{figure}
+
+\begin{figure}
+  \centering
+      \includegraphics[trim = 17mm 10mm 17mm 10mm, clip,width=1\textwidth]{photos/photos Page 2}
+  \caption{Photographs taken during soil sampling, showing cuts made to 10 cm x 10 cm square areas of crust prior to lifting aseptically.}
+  \label{fig:photo-sampling}
+\end{figure}
 
 Water channels were sampled by dragging a 5 ml sterile bijoux along the bank where it meets the water. Approximately 2.5 ml bank sediment and 2.5 ml standing water were collected in each bottle from the same location. 
 
@@ -448,7 +472,7 @@ In addition to the natural crust samples a wind tunnel was run on the dune flank
 DNA sequencing was performed by the Centre for Genomic Research (CGR) NERC Facility at the University of Liverpool. Raw data, summary statistics, and methods description are available via the CGR LIMS at <http://cgr.liv.ac.uk/illum/LIMS10796_978f1f02f3c84a18/>
 
 \subsection{Descriptive and exploratory analyses}
-Blue-green platelet crusts were common but not the dominant surface cover on the claypan. They appear to have once been very widespread but have now been largely eroded away. Underneath them was a similar looking crust that seems to be physically formed, and is more brown. In many places there were nebkha atop the blue-green platelet crusts and the platelets ran up the nebkha slightly, however the crusts on nebkha appeared distinct. Platelet crusts appeared to be more common near nebkha. 
+Blue-green platelet crusts were common but not the dominant surface cover on the claypan. They appear to have once been very widespread but have now been largely eroded away. Underneath them was a similar looking crust that seems to be physically formed, and is more brown (Figure \ref{fig:photo-sampling}). In many places there were nebkha atop the blue-green platelet crusts and the platelets ran up the nebkha slightly, however the crusts on nebkha appeared distinct. Platelet crusts appeared to be more common near nebkha. 
 
 In summary, three distinct surface layers were observed in the claypan:
 \begin{enumerate}
@@ -479,7 +503,7 @@ print(phyla.combined)
 
 Phormidium was by far the most abundant cyanobacterial genus (Figure \ref{fig:cyano}), in common with our previous findings from the Kalahari in southern Botswana [@elliott2014niche]. Phormidium and Microcoleus species appeared to be more common in soil compared to airborne dust, whereas Leptoglybna species appeared more common in the soil compared to dust. Nodularia species and Synechococcus species appeared to be more common in water channels compared to soils, whilst the other genera mentioned were more common in soils. 
 
-```{r cyano_out, echo=FALSE, fig.height=3,warning=FALSE, cache=TRUE,fig.cap='Relative abundance of cyanobacterial genera in soil, water and airborne dust lifted by wind tunnel treatment. Abundances are relative wo the whole bacterial community.\\label{fig:cyano}'}
+```{r cyano_out, echo=FALSE, fig.height=3,warning=FALSE, cache=TRUE,fig.cap='Relative abundance of cyanobacterial genera in soil, water and airborne dust lifted by wind tunnel treatment. Abundances are relative wo the whole bacterial community. A summary table of cyanobacterial genus abundance by sample type is \\textattachfile[description=Cyanobacterial genus abundance in biocrusts and water channels in Diamantina National Park Australia,color=0 0 1]{cyano.csv}{available here (click or double-click to access)}\\label{fig:cyano}'}
 print(cyano.plot)
 ```
 
@@ -497,6 +521,9 @@ Microbial community structure was compared with respect to sample source using n
 print(NMDS.ab)
 
 ```
+
+\subsection{Comparison of sites that were used for rainfall simulator and associated experiments}
+Microbial composition of the dune flank, pan, and nebkha sites varied considerably as can be seen from Figure \ref{fig:nmds}. High abundance OTUs are likely to be important contributors to the overall community differences visualised in that plot, and details of these can be found in Table \ref{tab:deseq3}. In fact many of the abundant OTUs were related to each other, meaning that community differences may be evident and easier to understand at higher taxonomic ranks as can be seen in Figures \ref{fig:phyla} and \ref{fig:cyano}. In summary of these results it is clear that Cyanobacteria numerically dominate at the experimental sites (about 28 % of bacterial sequences), the overall cyanobacterial abundance at these three sites is similar, and the dominant cyanobacterial genus is Phormidium. The degree of dominance by Phormidium varies, and differences in less abundant cyanobacteria (e.g. Leptolyngbya and Microcoleus) are evident between sites. For example Microcoleus is the second most abundant identified cyanobacterial genus, being quite abundant in dune flank (2.1 \%) and claypan (3.1 \%) but rare in nebkha (0.2 \%).
 
 ```{r source_analysis1, echo=FALSE, message=FALSE, cache=TRUE}
 
@@ -573,6 +600,7 @@ print(wind_otus_plot,vp=vp.02)
 #print(wind_otus_plot )
 ```
 
+\subsection{Dispersal of microbes by fluvial and aeolian processes}
 Of the `r pan.ntaxa` OTUs found in the claypan, `r channel_pan.intersection.n` were also found in water channels, `r dune_pan.intersection.n` were found in airborne dust from the dune flank, and `r all.intersection` were found in both of these hypothesised inoculum sources. The dune and channel samples had `r channel_dune.intersection.n` OTUs in common.
 
 ```{r OTU_source_out2, echo=FALSE,fig.height=8,fig.cap='Relative abundance of cyanobacterial genera. Source indicates whether individual OTUs (97 % similarity) contributing to the genus abundance were found in the water channels (top), and whether they were significantly more abundant in soil or wind tunnel collectors at the dune flank sites (bottom). Unidentified OTUs were excluded. Only the 5 most abundant identified cyanobacterial genera are shown for clarity. Source designation is not indicative of the ultimate origin of OTUs.\\label{fig:waterc}', cache=FALSE}
@@ -588,7 +616,7 @@ print(wind_otus_plot.c,vp=vp.02)
 
 Whilst many soil OTUs were not detected in the air or water samples, most of the OTUs found exclusively in soil were rare, collectively accounting for only `r soil_only_otus.sum ` % of reads in the soil samples. A breakdown of OTU co-occurrence in all samples summarised by phylum read frequency is shown in Figure \ref{fig:waterp}, with detail on cyanobacterial genera given in Figure \ref{fig:waterc}. It can be seen that co-occurrence of bacteria between soils and hypothesised inoculum sources is very common (assessed by number of reads\footnote{The number of reads is assumed to be indicative of the abundance of the organism to which the DNA sequence belongs.} not number of OTUs), and the relative abundance of organisms from different inoculum sources varies with respect to soil type and phylum. 
 
-A model based approach was used to check if any OTUs had significantly different abundance between the dune flank soil and the collected dust derived from the same soil obtained by wind tunnel treatment. This technique avoids problems associated with uneven sampling effort and includes correction for multiple testing. The results (p<0.05) indicated that `r deseq_n_diff_air` OTUs (`r round(deseq_sum_diff_air*-1)` % of reads) were  more abundant in air samples and `r deseq_n_diff_earth` OTUs (`r round(deseq_sum_diff_earth)` % of reads) were more abundant in soil samples. Details for a subset of these OTUs are shown in Tables \ref{tab:deseq1} and \ref{tab:deseq2}.
+A model based approach [@love2014moderated] was used to check if any OTUs had significantly different abundance between the dune flank soil and the collected dust derived from the same soil obtained by wind tunnel treatment. This technique avoids problems associated with uneven sampling effort and includes correction for multiple testing. The results (adjusted p<0.05) indicated that `r deseq_n_diff_air` OTUs (`r round(deseq_sum_diff_air*-1)` % of reads) were  more abundant in air samples and `r deseq_n_diff_earth` OTUs (`r round(deseq_sum_diff_earth)` % of reads) were more abundant in soil samples. Details for a subset of these OTUs are shown in Tables \ref{tab:deseq1} and \ref{tab:deseq2}.
 
 ```{r deseq_out1, echo=FALSE, cache=FALSE}
 kable(outtab, digits=2,caption = "OTUs which are significantly more abundant in soil compared to dust blown from the soil. This is a subset of the DESEQ2 analysis output, sorted by magnitude of difference in abundance. Full details of significant results from this analysis are \\textattachfile[description=DESEQ 2 analysis of differential abundance,color=0 0 1]{windtunnel_otus.csv}{available here (click or double-click to access)} \\label{tab:deseq1}")
@@ -599,7 +627,7 @@ otus.df.out <- otus.df[1:10,c(rank_names(bac)[c(2,5,6)],sample_names(bac.rel.mer
 colnames(otus.df.out)[colnames(otus.df.out)=="dune flank"] <- "d.flank"
 # class(otus.df$dune)
 # otus.df.out <- as.numeric(otus.df.out)
-kable(otus.df.out,row.names = F, digits=2,caption = "OTU abundance in each sampling zone, in order of overall abundance. Sig column indicates if the OTU was significantly more abundant in soil or wind tunnel filter after running the wind tunnel on dune flanks. The 10 most abundant OTUs overall are shown, full table with all OTUs is \\textattachfile[description=DESEQ 2 analysis of differential abundance,color=0 0 1]{all_otus.csv}{available here (click or double-click to access)} \\label{tab:deseq3}")
+kable(otus.df.out,row.names = F, digits=2,caption = "OTU abundance in each sampling zone (%), in order of overall abundance. Sig column indicates if the OTU was significantly more abundant in soil or wind tunnel filter after running the wind tunnel on dune flanks. The 10 most abundant OTUs overall are shown, full table with all OTUs is \\textattachfile[description=DESEQ 2 analysis of differential abundance,color=0 0 1]{all_otus.csv}{available here (click or double-click to access)} \\label{tab:deseq3}")
 
 write.csv(otus.df[ ,c(rank_names(bac)[1:7],sample_names(bac.rel.merged))],"all_otus.csv")
 ```
