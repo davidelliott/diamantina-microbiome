@@ -1,6 +1,6 @@
 ---
-title: "Microbiome of Diamantina Biocrusts"
-author: "David Elliott"
+title: "Differential Mobilistation of Soil Bacteria by Aeolian Processes in Drylands, and Relevance of Microbial Dispersal Strategies to Landscape Stability"
+author: "David Elliott 1*, Andrew Thomas 2, Craig Strong 3, Joanna Bullard 4."
 date: "`r format(Sys.time(), '%d %B, %Y')`" 
 bibliography: references.bib
 output:
@@ -10,9 +10,28 @@ output:
     fig_height: 8
     fig_width: 11
     keep_tex: yes
-
 header-includes: \usepackage{multicol}\usepackage{graphicx}\graphicspath{img/}\usepackage{subfig}\usepackage{pdflscape}\usepackage{natbib}\usepackage{attachfile}
 ---
+
+\textbf{Running title: Microbial Transport and Soil Integrity in Drylands}
+
+\begin{enumerate}
+\item Environmental Sustainability Research Centre, University of Derby, Derby, UK
+\item Department of Geography and Earth Sciences, Aberystwyth University, Aberystwyth, UK
+\item The Fenner School of Environment \& Society, ANU College of Medicine, Biology \& Environment, The Australian National University, Canberra   ACT 2601,  Australia
+\item Department of Geography, School of Social, Political and Geographical Sciences, Loughborough University, Leicestershire, UK
+\end{enumerate}
+
+\section{Abstract}
+Dryland soils are particularly vulnerable to erosion because of low plant cover and low organic matter which is linked with water availability and biological constraints. It is increasingly recognised that dryland soils can be managed to minimise erosion, which has benefits such as increasing soil fertility, carbon storage, and prevention of dust storms. Management may include monitoring, reduction of trampling, and planting. Interventions can help maintain the integrity of biological soil crusts (biocrusts), which are ubiquitous microbial communities living in the top few millimetres of dryland soils. Biocrusts perform numerous functions, including adhesion of particles which protects the soil from erosion and is widely regarded as beneficial. Biocrusts also fix carbon and nitrogen from the air, enriching the soil and resulting in production of biomass. This living biomass is subject to natural selection pressures, and the soil-surface microbial community is expected to be adapted for life in this complex environment rather than being transient or opportunistic. In fact, biocrusts probably colonised the land long before plants, so we suggest that their survival and dispersal strategies are exquisitely adapted, and that they have had an ever-present influence on geomorphological processes for billions of years. 
+
+Whilst it is recognised that biocrusts stabilise soils and that certain cyanobacteria contribute significantly to this, there has been little work to practically verify identities and ecological strategies of stabilising organisms. Biological adaptations for dispersal by wind, water, or vegetative growth are expected, and such adaptations are considered likely to differently influence geomorphic processes and ecosystem function. Adhesive adaptations may contribute to landscape stability, whilst adaptations for wind dispersal may provide a mechanism for nutrient transportation and biogenic dust production.
+
+To investigate biological dispersal and related geomorphic processes associated with biocrust organisms, we used DNA sequencing to characterise microbial communities of various biocrusts and sediments in Diamantina National Park of western Queensland, Australia (23°36’44.8”S; 143°17’46.9”E). Climate in the region is semi-arid characterised by a summer-dominant rainfall pattern with a mean annual precipitation of 270 mm a-1 and high inter-annual variation. Central to the study site is 25 Km2 of erosion active claypan, bordered by sand dunes and a river. Aeolian activity constantly moves sediment from the dunes and claypan, whilst periodic flooding (interval approx. 3 years) brings fresh river sediment and biological inoculum to the claypan.
+
+\textbf{Keywords: soil, Aeolian, dryland, biocrust, bacteria, microbe, wind, fluvial}
+
+
 
 ```{r setup,echo=FALSE,message=FALSE,results='hide', warning=FALSE, cache=FALSE}
 options(width = 120)
@@ -419,7 +438,10 @@ otus.df[otus_earth,"sig"] <- "soil"
 otus.df[otus_air,"sig"] <- "air"
 ```
 
+
 \section{Introduction}
+Succinct, with no subheadings.
+
 
 Hypotheses:\label{Hypotheses}
 \begin{enumerate}
@@ -430,14 +452,18 @@ Hypotheses:\label{Hypotheses}
 \item Easily mobilised organisms are more likely to become established in the claypan, especially on nebkha
 \end{enumerate}
 
-\section{Methods}
+\section{Material and Methods}
+This section may be divided by subheadings. This section should contain sufficient detail so that when read in conjunction with cited references, all procedures can be repeated. For experiments reporting results on animal or human subject research, an ethics approval statement should be included in this section.
+
 \subsection{Field site}
 The dune runs approximately north-south and the claypan is on the east side (Figure \ref{fig:map}). Soil was sampled from five transects perpendicular to the dune, and water/sediment was sampled from water channels in the surrounding area.
 
-```{r map_out, echo=FALSE,fig.height=6,fig.cap='Sampling locations. a. General area of claypan including surrounding water channels; b. Closer view of dune and pan area. \\label{fig:map}', warning=FALSE, cache=TRUE}
+```{r map_out, echo=FALSE,fig.height=4, warning=FALSE, cache=TRUE,fig.cap='Sampling locations. a. General area of claypan including surrounding water channels; b. Closer view of dune and pan area.\\label{fig:map}'}
 
-print(map1)
-print(map2)
+grid.newpage()
+pushViewport(viewport(layout=gl))
+print(map1,vp=vp.1)
+print(map2,vp=vp.2)
 ```
 
 The following locations were targeted for soil sampling (See Figures \ref{fig:photo-area} and \ref{fig:photo-sampling} for photographs):
@@ -470,16 +496,13 @@ Sampled areas were 10x10 cm and were selected to represent the diversity of bioc
 Water channels were sampled by dragging a 5 ml sterile bijoux along the bank where it meets the water. Approximately 2.5 ml bank sediment and 2.5 ml standing water were collected in each bottle from the same location. 
 
 \subsection{Wind tunnel}
-In addition to the natural crust samples a wind tunnel was run on the dune flank zones within 3 m of where the natural sampling was done. The wind tunnel was run on the dune flanks because they are naturally eroded by saltation impact from the dune sand above when it is windy, therefore the potential as an inoculum source to surrounding areas is greater than the higher dune areas. A saltation source was not added to these experiments for the sake of simplicity, as there will be saltation occurring naturally within the wind tunnel anyway. At each site the wind tunnel was run three times on adjacent areas for 5 minutes at 10 m/s for 5 minutes. This is a moderate treatment intended to be realistic and to collect only the easily mobilised particles / organisms. 
-
-(Helene collected data to determine the exact run conditions)
+In addition to the natural crust samples a wind tunnel was run on the dune flank zones within 3 m of where the natural sampling was done. The wind tunnel was run on the dune flanks because they are naturally eroded by saltation impact from the dune sand above when it is windy, therefore the potential as an inoculum source to surrounding areas is greater than the higher dune areas. A saltation source was not added to these experiments for the sake of simplicity, as there will be saltation occurring naturally within the wind tunnel anyway. At each site the wind tunnel was run three times on adjacent areas for 5 minutes at 10 m/s for 5 minutes\footnote{Helene collected data to determine the exact run conditions}. This is a moderate treatment intended to be realistic and to collect only the easily mobilised particles / organisms. 
 
 \subsection{DNA sequencing}
 DNA was extracted in the field within 24 hours of sample collection using a Mobio Powersoil DNA extraction kit. DNA sequencing targeted the prokaryotic 16S rRNA gene and was performed by the Centre for Genomic Research (CGR) NERC Facility at the University of Liverpool, using an Illumina MiSeq in a Paired end approach. Resultant FastQ files were processed using QIIME [@caporaso2010qiime] for clustering, OTU table generation, and taxonomy assignment. These results were analysed using R and the phyloseq package [@mcmurdie2013phyloseq] for R.
 
-\textbf{Please note that this is a preliminary analysis only and results might change slightly after additional QC and bioinformatics adjustments.}
-
 \section{Results}
+This section may be divided by subheadings. Footnotes should not be used and have to be transferred into the main text.
 DNA sequencing raw data, summary statistics, and methods description are available via the CGR LIMS at <http://cgr.liv.ac.uk/illum/LIMS10796_978f1f02f3c84a18/>
 
 \subsection{Descriptive and exploratory analyses}
@@ -644,7 +667,9 @@ kable(otus.df.out,row.names = F, digits=2,caption = "OTU abundance in each sampl
 write.csv(otus.df[ ,c(rank_names(bac)[1:7],sample_names(bac.rel.merged))],"all_otus.csv")
 ```
 
-\section{Discussion - exploring ideas for writing up and future work}
+\section{Discussion}
+This section may be divided by subheadings. Discussions should cover the key findings of the study: discuss any prior art related to the subject so to place the novelty of the discovery in the appropriate context; discuss the potential short-comings and limitations on their interpretations; discuss their integration into the current understanding of the problem and how this advances the current views; speculate on the future direction of the research and freely postulate theories that could be tested in the future.
+
 A few previous studies have been published on the microbial content of airborne sediments, and there was recently a review on the subject by @acosta2015microbiology. This review pointed out the fact that most previous work has focused on long-distance transport and the movement of pathogens, which are quite different subjects compared to the present work here. The only study in @acosta2015microbiology combining use of a wind tunnel with collection of airborne particles and their microbial charaterisation is @gardner2012pyrosequencing, which used a pyrosequencing approach. Prior to wind-tunnel treatments the soils in @gardner2012pyrosequencing were tilled, raked, and flattened using a lawn roller which may have considerably affected the results. The main focus of that paper was determining the association of particular microbes or diversity metrics with organic matter and particle size fractions.
 
 \subsection{Microbes in dunes, claypan, and nebkha}
