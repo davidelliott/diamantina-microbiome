@@ -1,39 +1,91 @@
----
-title: "Differential Mobilistation of Soil Bacteria by Aeolian Processes in Drylands, and Relevance of Microbial Dispersal Strategies to Landscape Stability\\footnote{Original Research Articles are peer-reviewed, have a maximum word count of 12,000 and may include up to 15 Figures/Tables.}"
-author: '\[David Elliott^{1*}, Andrew Thomas^2, Craig Strong^3, Joanna Bullard^4.\]'
-date: "`r format(Sys.time(), '%d %B, %Y')`" 
-bibliography: references.bib
-output:
-  pdf_document:
-    fig_caption: yes
-    fig_crop: no
-    fig_height: 8
-    fig_width: 11
-    keep_tex: yes
-header-includes: \usepackage{multicol}\usepackage{graphicx}\graphicspath{img/}\usepackage{subfig}\usepackage{pdflscape}\usepackage{natbib}\usepackage{attachfile}
----
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This is just an example/guide for you to refer to when submitting manuscripts to Frontiers, it is not mandatory to use Frontiers .cls files nor frontiers.tex  %
+% This will only generate the Manuscript, the final article will be typeset by Frontiers after acceptance.   
+%                                              %
+%                                                                                                                                                         %
+% When submitting your files, remember to upload this *tex file, the pdf generated with it, the *bib file (if bibliography is not within the *tex) and all the figures.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\textbf{Running title: Microbes and landscape stability\footnote {5 words}}
+%%% Version 3.3 Generated 2016/11/10 %%%
+%%% You will need to have the following packages installed: datetime, fmtcount, etoolbox, fcprefix, which are normally inlcuded in WinEdt. %%%
+%%% In http://www.ctan.org/ you can find the packages and how to install them, if necessary. %%%
+%%%  NB logo1.jpg is required in the path in order to correctly compile front page header %%%
 
-\begin{enumerate}
-\item Environmental Sustainability Research Centre, University of Derby, Derby, UK
-\item Department of Geography and Earth Sciences, Aberystwyth University, Aberystwyth, UK
-\item The Fenner School of Environment \& Society, ANU College of Medicine, Biology \& Environment, The Australian National University, Canberra   ACT 2601,  Australia
-\item Department of Geography, School of Social, Political and Geographical Sciences, Loughborough University, Leicestershire, UK
-\end{enumerate}
+\documentclass[utf8]{frontiersSCNS} % for Science, Engineering and Humanities and Social Sciences articles
+%\documentclass[utf8]{frontiersHLTH} % for Health articles
+%\documentclass[utf8]{frontiersFPHY} % for Physics and Applied Mathematics and Statistics articles
 
-\section{Abstract\footnote{max 350 words}}
+%\setcitestyle{square} % for Physics and Applied Mathematics and Statistics articles
+\usepackage{url,hyperref,lineno,microtype,subcaption}
+\usepackage[onehalfspacing]{setspace}
+
+\linenumbers
+
+
+% Leave a blank line between paragraphs instead of using \\
+
+
+\def\keyFont{\fontsize{8}{11}\helveticabold }
+\def\firstAuthorLast{Elliott {et~al.}} %use et al only if is more than 1 author
+\def\Authors{David R. Elliott\,$^{1,*}$, Andrew D. Thomas\,$^{2}$, Craig Strong\,$^{3}$ and Johanna Bullard\,$^{4}$}
+% Affiliations should be keyed to the author's name with superscript numbers and be listed as follows: Laboratory, Institute, Department, Organization, City, State abbreviation (USA, Canada, Australia), and Country (without detailed address information such as city zip codes or street names).
+% If one of the authors has a change of address, list the new address below the correspondence details using a superscript symbol and use the same symbol to indicate the author in the author list.
+\def\Address{$^{1}$Environmental Sustainability Research Centre, University of Derby, Derby, UK \\
+$^{2}$Department of Geography and Earth Sciences, Aberystwyth University, Aberystwyth, UK \\
+$^{3}$The Fenner School of Environment \& Society, ANU College of Medicine, Biology \& Environment, The Australian National University, Canberra   ACT 2601,  Australia \\
+$^{4}$Department of Geography, School of Social, Political and Geographical Sciences, Loughborough University, Leicestershire, UK
+}
+% The Corresponding Author should be marked with an asterisk
+% Provide the exact contact address (this time including street name and city zip code) and email of the corresponding author
+\def\corrAuthor{David R. Elliott}
+
+\def\corrEmail{d.r.elliott@derby.ac.uk}
+
+
+\begin{document}
+
+<<include=FALSE>>=
+library(knitr)
+opts_chunk$set(
+concordance=TRUE
+)
+@
+
+
+\onecolumn
+\firstpage{1}
+
+\title[Microbes and landscape stability]{Differential Mobilistation of Soil Bacteria by wind in Drylands, and Relevance of Microbial Dispersal Strategies to Landscape Stability} 
+
+\author[\firstAuthorLast ]{\Authors} %This field will be automatically populated
+\address{} %This field will be automatically populated
+\correspondance{} %This field will be automatically populated
+
+\extraAuth{}% If there are more than 1 corresponding author, comment this line and uncomment the next one.
+%\extraAuth{corresponding Author2 \\ Laboratory X2, Institute X2, Department X2, Organization X2, Street X2, City X2 , State XX2 (only USA, Canada and Australia), Zip Code2, X2 Country X2, email2@uni2.edu}
+
+
+\maketitle
+
+
+\begin{abstract}
+
+%%% Leave the Abstract empty if your article does not require one, please see the Summary Table for full details.
+\section{}
 Dryland soils are particularly vulnerable to erosion because of low plant cover and low organic matter which is linked with water availability and biological constraints. It is increasingly recognised that dryland soils can be managed to minimise erosion, which has benefits such as increasing soil fertility, carbon storage, and prevention of dust storms. Management may include monitoring, reduction of trampling, and planting. Interventions can help maintain the integrity of biological soil crusts (biocrusts), which are ubiquitous microbial communities living in the top few millimetres of dryland soils. Biocrusts perform numerous functions, including adhesion of particles which protects the soil from erosion and is widely regarded as beneficial. Biocrusts also fix carbon and nitrogen from the air, enriching the soil and resulting in production of biomass. This living biomass is subject to natural selection pressures, and the soil-surface microbial community is expected to be adapted for life in this complex environment rather than being transient or opportunistic. In fact, biocrusts probably colonised the land long before plants, so we suggest that their survival and dispersal strategies are exquisitely adapted, and that they have had an ever-present influence on geomorphological processes for billions of years. 
 
 Whilst it is recognised that biocrusts stabilise soils and that certain cyanobacteria contribute significantly to this, there has been little work to practically verify identities and ecological strategies of stabilising organisms. Biological adaptations for dispersal by wind, water, or vegetative growth are expected, and such adaptations are considered likely to differently influence geomorphic processes and ecosystem function. Adhesive adaptations may contribute to landscape stability, whilst adaptations for wind dispersal may provide a mechanism for nutrient transportation and biogenic dust production.
 
 To investigate biological dispersal and related geomorphic processes associated with biocrust organisms, we used DNA sequencing to characterise microbial communities of various biocrusts and sediments in Diamantina National Park of western Queensland, Australia (23°36’44.8”S; 143°17’46.9”E). Climate in the region is semi-arid characterised by a summer-dominant rainfall pattern with a mean annual precipitation of 270 mm a-1 and high inter-annual variation. Central to the study site is 25 Km2 of erosion active claypan, bordered by sand dunes and a river. Aeolian activity constantly moves sediment from the dunes and claypan, whilst periodic flooding (interval approx. 3 years) brings fresh river sediment and biological inoculum to the claypan.
 
-\textbf{Keywords: soil, Aeolian, dryland, biocrust, bacteria, microbe, wind, fluvial}
 
+\tiny
+ \keyFont{ \section{Keywords:} soil, Aeolian, dryland, biocrust, bacteria, microbe, wind, fluvial} %All article types: you may provide up to 8 keywords; at least 5 are mandatory.
+\end{abstract}
 
+\section{Introduction}
 
-```{r setup,echo=FALSE,message=FALSE,results='hide', warning=FALSE, cache=FALSE}
+<<setup, include=FALSE, cache=FALSE>>=
 options(width = 120)
 library(phyloseq)
 library("ggplot2")
@@ -44,6 +96,9 @@ library(scales)   # needed for formatting y-axis labels to non-scientific type
 library(RColorBrewer)
 library("DESeq2")
 library(knitr)
+# set global chunk options
+opts_chunk$set(fig.path='figure/minimal-', fig.align='center', fig.show='hold', message=FALSE)
+options(formatR.arrow=TRUE,width=90)
 set.seed(42)
 
 theme_set(theme_bw())
@@ -56,9 +111,9 @@ vp.02 <- viewport(layout.pos.col=1, layout.pos.row=2)
 gl <- grid.layout(nrow=1, ncol=2)
 vp.1 <- viewport(layout.pos.col=1, layout.pos.row=1) 
 vp.2 <- viewport(layout.pos.col=2, layout.pos.row=1)
-```
+@
 
-```{r load,echo=FALSE,message=FALSE,results='hide', warning=FALSE, cache=TRUE}
+<<load,echo=FALSE,message=FALSE, warning=FALSE, cache=TRUE>>=
 bac <- import_biom("data/otu_table_mc2_w_tax.biom", "data/rep_set.tre",parseFunction = parse_taxonomy_greengenes)
 
 map <- import_qiime(mapfilename = "data/map.txt")
@@ -148,9 +203,9 @@ write.csv(cyano.df[ ,c(rank_names(bac)[1:6],sample_names(cyano.rel.g.merged))],"
 bac.earthair <- subset_samples(bac,element!="water")
 arc.earthair <- subset_samples(arc,element!="water")
 ab.earthair <- subset_samples(expt.combined,element!="water")
-```
+@
 
-```{r analyse1,echo=FALSE,message=FALSE,results='hide', warning=FALSE, cache=TRUE}
+<<analyse1,echo=FALSE,message=FALSE, results='hide', warning=FALSE, cache=TRUE>>=
 # plot phyla (combined archea, bacteria, and fungi)
 phylumdf.rr$Phylum <- paste(substr(phylumdf.rr$Kingdom,1,1),phylumdf.rr$Phylum,sep=";")
 
@@ -175,9 +230,9 @@ m_reads_total <- sum(get_variable(bac,'n_reads'))/1000000
 m_reads_bac_qc <- sum(otu_table(bac))/1000000
 m_reads_arc_qc <- sum(otu_table(arc))/1000000
 
-```
+@
 
-```{r locations, echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE, cache=TRUE}
+<<locations, echo=FALSE, message=FALSE, results='hide', warning=FALSE, eval=TRUE, cache=TRUE>>=
 library(ggmap)
 library(sp)
 library(rgdal) # needed by sp
@@ -204,9 +259,9 @@ UTM.df$easting <- UTM.df$lon
 UTM.df$northing <- UTM.df$lat
 
 sample_data(bac) <- cbind(sample_data(bac),UTM.df[,c("easting","northing")])
-```
+@
 
-```{r map2,echo=FALSE, message=FALSE, warning=FALSE,eval=TRUE, cache=TRUE}
+<<map2,echo=FALSE, message=FALSE, results='hide', warning=FALSE,eval=TRUE, cache=TRUE>>=
 
 #Create a custom color scale
 myColors <- brewer.pal(7,"Set1")[c(2,1,7,5,3)]
@@ -237,10 +292,9 @@ map2 <- basemapZoom + geom_point(aes(x = lon, y = lat, colour=zone,shape=element
 # higher zoom map for Lyell meeting
 map3 <- basemapZoom2 + geom_point(aes(x = lon, y = lat, colour=zone,shape=element),alpha=0.5, data = bac.zoommap, size = 8) + geom_text(aes(label=transect),size=4, data = bac.zoommap) + colScale
 
+@
 
-```
-
-```{r hyp_analysis,echo=FALSE, cache=TRUE}
+<<hyp_analysis,echo=FALSE, results='hide', cache=TRUE>>=
 # no output from this block but kept for now as it calculates some useful results/objects.
 # Might be suitable for output as small table or in text mention.
 
@@ -295,10 +349,9 @@ inoc_source_otus <- unique(c(taxa_names(channel),taxa_names(dune)))
 
 soil_only_otus.sum <- round(sum(otu_table(bac.rel.earth.merged)) -  sum(otu_table(bac.rel.earth.merged)[,inoc_source_otus]),1)
 
+@
 
-```
-
-```{r hyp_analysis2,echo=FALSE, cache=TRUE}
+<<hyp_analysis2,echo=FALSE, results='hide', cache=TRUE>>=
 # working with merged objects to reduce processing time
 bac.rel.merged <- merge_samples(subset_samples(bac.rel,element!="air"),"zone")
 otu_table(bac.rel.merged) <- otu_table(bac.rel.merged)/5
@@ -349,9 +402,9 @@ airborne_otus <- airborne_otus[airborne_otus%in%taxa_names(bac.rel.ea)]
 waterborne_otus <- waterborne_otus[waterborne_otus%in%taxa_names(bac.rel.ea)]
 both_otus <- both_otus[both_otus%in%taxa_names(bac.rel.ea)]
 
-```
+@
 
-```{r deseq_analysis1, echo=FALSE, message=FALSE, cache=TRUE}
+<<deseq_analysis1, echo=FALSE, message=FALSE, results='hide', cache=TRUE>>=
 
   typedds = phyloseq_to_deseq2(expt.deseq, ~ element)
   typedds = DESeq(typedds, test="Wald",fitType="parametric")
@@ -436,16 +489,14 @@ n_otu_air <- length(otus_air)
 otus.df$sig <- NA
 otus.df[otus_earth,"sig"] <- "soil"
 otus.df[otus_air,"sig"] <- "air"
-```
+@
 
-
-\section{Introduction\footnote{Succinct, with no subheadings.}}
 
 The role of microbes in landscape scale processes is rarely acknowledged, yet there is mounting evidence that microscopic players have profound geomorphic influence. Pressures of climate change and land use change coupled with growing human populations require informed landscape management strategies to protect resources and minimise adverse impacts. Currently such strategies include actions such as controlling grazing and vegetation, but rarely are microbial players actively managed. We suggest that this is simply because the actions of microbes are less easily regognised, and that recent advances in molecular microbial ecology provide an opportunity to address this.
 
-In drylands where vegetation is sparse, soil microbes compensate by providing some ecosystem functions that are normally dominated by plants in temperate systems. Microbes in the soil surface of drylands form biological soil crusts (biocrusts) which contribute to stabilisation of the soil, fixing of carbon and nitrogen, and modulation of hydrology (REF). These biotic processes are of course inter-linked, and they are the direct result of microbial community physiology, ecology, and evolution over billions of years. Biocrusts are likely among the first organisms to colonise the land, and as such it is to be expected that they are well adapted to both exploit soil surface conditions, and modify their environment for their own advantage. This process of ecosystem engineering is widely recognised in larger organisms such as beavers, and although microbial players are less visible they certainly do modify the environment at landscape scale (e.g. @elliott2009dynamic). By understanding biocrust ecology, we can gain insight into the biotic forces that influence geomorphic processes.
+In drylands where vegetation is sparse, soil microbes compensate by providing some ecosystem functions that are normally dominated by plants in temperate systems. Microbes in the soil surface of drylands form biological soil crusts (biocrusts) which contribute to stabilisation of the soil, fixing of carbon and nitrogen, and modulation of hydrology (REF). These biotic processes are of course inter-linked, and they are the direct result of microbial community physiology, ecology, and evolution over billions of years. Biocrusts are likely among the first organisms to colonise the land, and as such it is to be expected that they are well adapted to both exploit soil surface conditions, and modify their environment for their own advantage. This process of ecosystem engineering is widely recognised in larger organisms such as beavers, and although microbial players are less visible they certainly do modify the environment at landscape scale (e.g. \citet{@elliott2009dynamic}. By understanding biocrust ecology, we can gain insight into the biotic forces that influence geomorphic processes.
 
-Due to the relative lack of plants in drylands the role of microbes is particularly important, and this is of global significance due to the fact that over 30 % of the Earth land area is covered in drylands (REF), and that climate change scenarios predict further desertification occurring (REF). In this paper we investigate the microbial ecology of a dynamic dryland ecosystem in central Australia comprising a claypan, sand dunes, and ephemeral rivers. We characterised the microbial community in different parts of this system in order to gain insight into the interplay of microbial communities and large scale geomorphic processes, with a focus on sediment stability and dust production. 
+Due to the relative lack of plants in drylands the role of microbes is particularly important, and this is of global significance due to the fact that over 30 \% of the Earth land area is covered in drylands (REF), and that climate change scenarios predict further desertification occurring (REF). In this paper we investigate the microbial ecology of a dynamic dryland ecosystem in central Australia comprising a claypan, sand dunes, and ephemeral rivers. We characterised the microbial community in different parts of this system in order to gain insight into the interplay of microbial communities and large scale geomorphic processes, with a focus on sediment stability and dust production. 
 
 Sediment stability and dust production are of the utmost importance to communities in drylands and neighbouring areas who face hazards such as dust storms and mobile sand dunes in addition to suffering erosion which degrades the utility of land. Specifically in central Australia ...\footnote{Craig/Grant please could you add something here to explain the hazards of dust etc. of relevance to the field site, including an introduction to crusts and how they are managed (if at all)}. Further afield from dust sources there are continental scale impacts including the movement of sediment which is of geomorphic significance, and the movement of nutrients which can have effects on the biota of water bodies in particular (REF).
 
@@ -472,23 +523,25 @@ The hypotheses are all conceptually linked around understanding the survival and
   \label{fig:dispersal-hazards}
 \end{figure}
 
-A small number of previous studies have been published on the microbial content of airborne sediments, and there was recently a review on the subject by @acosta2015microbiology. This review pointed out the fact that most previous work has focused on long-distance transport and the movement of pathogens, which are quite different subjects compared to the present work. The only previous study to our knowledge combining use of a wind tunnel with collection of airborne particles and their microbial charaterisation is @gardner2012pyrosequencing, which used a pyrosequencing approach to determine the association of particular microbes or diversity metrics with organic matter and particle size fractions. Prior to wind-tunnel treatments the soils in @gardner2012pyrosequencing were tilled, raked, and flattened using a lawn roller, in contrast to the present study which tested soils in their natural condition. 
+A small number of previous studies have been published on the microbial content of airborne sediments, and there was recently a review on the subject by \citet{acosta2015microbiology}. This review pointed out the fact that most previous work has focused on long-distance transport and the movement of pathogens, which are quite different subjects compared to the present work. The only previous study to our knowledge combining use of a wind tunnel with collection of airborne particles and their microbial charaterisation is \citet{gardner2012pyrosequencing}, which used a pyrosequencing approach to determine the association of particular microbes or diversity metrics with organic matter and particle size fractions. Prior to wind-tunnel treatments the soils in \citet{gardner2012pyrosequencing} were tilled, raked, and flattened using a lawn roller, in contrast to the present study which tested soils in their natural condition. 
 
 Therefore by linking the dust source explicitly to soils of known microbial composition, we are able to show for the first time definitive evidence identifying taxa that are mobilised by moderate wind from dryland soils, and interpret these findings in the wider geomorphic context.
 
 
-\section{Material and Methods\footnote{This section may be divided by subheadings. This section should contain sufficient detail so that when read in conjunction with cited references, all procedures can be repeated. For experiments reporting results on animal or human subject research, an ethics approval statement should be included in this section.}}
+\section{Material and Methods}
 
 \subsection{Field site}
 The dune runs approximately north-south and the claypan is on the east side (Figure \ref{fig:map}). Soil was sampled from five transects perpendicular to the dune, and water/sediment was sampled from water channels in the surrounding area.
 
-```{r map_out, echo=FALSE,fig.height=4, warning=FALSE, cache=TRUE,fig.cap='Sampling locations. a. General area of claypan including surrounding water channels; b. Closer view of dune and pan area.\\label{fig:map}'}
+
+<<map_out, echo=FALSE,fig.height=4, warning=FALSE, cache=TRUE,fig.cap='Sampling locations. a. General area of claypan including surrounding water channels; b. Closer view of dune and pan area.\\label{fig:map}'>>=
 
 grid.newpage()
 pushViewport(viewport(layout=gl))
 print(map1,vp=vp.1)
 print(map2,vp=vp.2)
-```
+@
+
 
 The following locations were targeted for soil sampling (See Figures \ref{fig:photo-area} and \ref{fig:photo-sampling} for photographs):
 
@@ -502,24 +555,28 @@ The following locations were targeted for soil sampling (See Figures \ref{fig:ph
 
 Transects were planned to be approximtely 500 m apart to achieve even spacing along the dune, however some zones to the south were quite heavily impacted by cattle. These impacted zones were excluded because the dune flanks did not have suitable areas to run the wind tunnel. The transects are numbered 1-5 starting at the south end. 
 
+
+
 \subsection{Sampling}
 Sampled areas were 10x10 cm and were selected to represent the diversity of biocrust in the area (Figure \ref{fig:photo-sampling}). The sampled depth was dictated by coherence of the biocrust. The area was cut out with a sterile scalpel and the crust was lifted off the looser soil beneath. In areas where differing crust types were noticeable the sampled areas were selected to have both types where applicable (e.g. biological/physical, light/dark). In visibly disturbed areas e.g. from animals, un-disturbed crusts were selected (2x dune sites).
 
 \begin{figure}
   \centering
-      \includegraphics[trim = 17mm 10mm 17mm 10mm, clip,width=1\textwidth]{photos/photos Page 1}
+      \includegraphics[trim = 17mm 10mm 17mm 10mm, clip,width=1\textwidth]{photos/photos1}
   \caption{Photographs of sampling areas including detail of nebkha and crust formations on the claypan.}
   \label{fig:photo-area}
 \end{figure}
 
 \begin{figure}
   \centering
-      \includegraphics[trim = 17mm 10mm 17mm 10mm, clip,width=1\textwidth]{photos/photos Page 2}
+      \includegraphics[trim = 17mm 10mm 17mm 10mm, clip,width=1\textwidth]{photos/photos2}
   \caption{Photographs taken during soil sampling, showing cuts made to 10 cm x 10 cm square areas of crust prior to lifting aseptically.}
   \label{fig:photo-sampling}
 \end{figure}
 
 Water channels were sampled by dragging a 5 ml sterile bijoux along the bank where it meets the water. Approximately 2.5 ml bank sediment and 2.5 ml standing water were collected in each bottle from the same location. 
+
+
 
 \subsection{Wind tunnel}
 In addition to the soil crust samples a wind tunnel was run on the dune flank zones within 3 m of where the soil crust sampling was done. The wind tunnel was run on the dune flanks because they are naturally eroded by saltation impact from the dune sand above when it is windy, therefore the potential as an inoculum source to surrounding areas is greater than the higher dune areas. A saltation source was not added to these experiments for the sake of simplicity, as there will be saltation occurring naturally within the wind tunnel anyway. At each site the wind tunnel was run three times on adjacent areas for 5 minutes at 10 m/s for 5 minutes\footnote{Helene collected data to determine the exact run conditions}. This is a moderate treatment intended to be realistic and to collect only the easily mobilised particles / organisms. 
@@ -528,9 +585,10 @@ In addition to the soil crust samples a wind tunnel was run on the dune flank zo
 ...
 
 \subsection{DNA sequencing}
-DNA was extracted in the field within 24 hours of sample collection using a Mobio Powersoil DNA extraction kit according to the manufacturers instructions except for increasing the soil amount slightly to 0.4 g per sample as described previously [@elliott2014niche]. DNA sequencing targeted the prokaryotic 16S rRNA gene and was performed by the Centre for Genomic Research (CGR) NERC Facility at the University of Liverpool, using an Illumina MiSeq in a Paired end approach. Resultant FastQ files were processed using QIIME [@caporaso2010qiime] for clustering, OTU table generation, and taxonomy assignment. These results were analysed using R and the phyloseq package [@mcmurdie2013phyloseq] for R.
+DNA was extracted in the field within 24 hours of sample collection using a Mobio Powersoil DNA extraction kit according to the manufacturers instructions except for increasing the soil amount slightly to 0.4 g per sample as described previously \citet{elliott2014niche}. DNA sequencing targeted the prokaryotic 16S rRNA gene and was performed by the Centre for Genomic Research (CGR) NERC Facility at the University of Liverpool, using an Illumina MiSeq in a Paired end approach. Resultant FastQ files were processed using QIIME \citep{caporaso2010qiime} for clustering, OTU table generation, and taxonomy assignment. These results were analysed using R and the phyloseq package \citep{mcmurdie2013phyloseq} for R.
 
-\section{Results\footnote{This section may be divided by subheadings. Footnotes should not be used and have to be transferred into the main text. }}
+
+\section{Results}
 
 \subsection{Field observations}
 Biological crusts on the claypan have previously been described morphologically, and typically have a blue-green appearance due to the presence of photosynthetic organisms, and they have a platelet formation caused by physical weathering (Strong et al ... presumably - please advise). Blue-green biological crusts were common but not the dominant surface cover on the claypan as a whole. They appear to have once been very widespread but have now been largely eroded away. Underneath them was a similar looking crust which is more brown (Figure \ref{fig:photo-sampling}), and this was not sampled in the present study. In many places on the claypan there were nebkha on top of the blue-green platelet crusts and the platelets ran up the nebkha slightly, however the crusts on nebkha appeared distinct. Platelet crusts appeared to be more common near nebkha. 
@@ -544,53 +602,64 @@ In summary, three distinct surface layers were observed in the claypan:
 
 In dune areas the crust morphology was simpler as the platelet formation surface crusts and deeper crusts of different type were not present. In these areas (both dune and dune flank) there was widespread continuous biological soil crust which held together the sand surface, with some variation in pigmentation. Sometimes there were deeper (probably buried) crust layers, but only surface exposed crusts were sampled in this work.
 
+
+
 \subsection{Soil properties}
 ... (Figure \ref{fig:chem}).
 
-```{r chem_out, echo=FALSE,fig.height=3,fig.cap='Soil properties. Source data and additional information about each sample are \\textattachfile[description=Mapping file relating samples and collected data,color=0 0 1]{data/map.txt}{available here (click or double-click to access)}\\label{fig:chem}', warning=FALSE, cache=TRUE}
+<<chem_out, echo=FALSE,fig.height=3,fig.cap='Soil properties. \\label{fig:chem}', warning=FALSE, cache=TRUE>>=
 # melt for plotting
 chemistry.melt <- melt(sample_data(bac.earthair),measure.vars=c("N_pc","C_pc","pH"))
 
 # make the plot 
 print(ggplot(chemistry.melt, aes(x=zone, y=value, shape=element, colour=zone)) + stat_summary(fun.data = "mean_se", size=1) + facet_wrap(~variable,scales = "free_y",nrow=1) + labs(x = "zone") + theme(aspect.ratio=1,legend.position="none") + colScale )
-
-```
+@
 
 \subsection{DNA sequencing and general microbial community composition}
-DNA was successfully extracted and sequenced from `r nsamples(bac)` samples, yielding `r round(m_reads_total,1)` million reads. After pairing reads and quality control `r round(m_reads_bac_qc,1)` million bacterial reads and `r round(m_reads_arc_qc,1)` million archaeal reads remained. 
+DNA was successfully extracted and sequenced from \Sexpr{nsamples(bac)} samples, yielding \Sexpr{round(m_reads_total,1)} million reads. After pairing reads and quality control \Sexpr{round(m_reads_bac_qc,1)} million bacterial reads and \Sexpr{round(m_reads_arc_qc,1)} million archaeal reads remained. 
 
-There were `r ntaxa(bac)` bacterial OTUs and `r ntaxa(arc)` archael OTUs detected (OTUs defined by 97 % similarity which is approximately species-level difference between OTUs). This analysis was planned to target bacteria, and as archaea make up only `r round(100*m_reads_arc_qc / m_reads_bac_qc,1)` \% of sequences, bacteria are the main focus of this paper.
+There were \Sexpr{ntaxa(bac)} bacterial OTUs and \Sexpr{ntaxa(arc)} archael OTUs detected (OTUs defined by 97 \% similarity which is approximately species-level difference between OTUs). This analysis was planned to target bacteria, and as archaea make up only \Sexpr{round(100*m_reads_arc_qc / m_reads_bac_qc,1)} \% of sequences, bacteria are the main focus of this paper.
 
-A total of `r length(unique(tax_table(bac)[,"Phylum"]))` bacterial phyla and `r length(unique(tax_table(arc)[,"Phylum"]))` archael phyla were identified. Frequencies of the most abundant phyla are shown in Figure \ref{fig:phyla}. It can be seen that water channel sampels are dissimilar to the soil-based samples at the phylum level although all abundant phyla are represented in both soil and water. Some phyla differed in abundance between the dune flank soil and airborne dust liberated from the same soil by wind tunnel treatment, for example \textit{Cyanobacteria} (more abundant in soil) and \textit{Firmicutes} (more abundant in dust).
 
-```{r phyla_out, echo=FALSE, warning=FALSE, cache=TRUE,fig.cap='Relative abundance of bacterial and archael phyla in soil, water and airborne dust lifted by wind tunnel treatment. Bacterial and archael phyla abundances were calculated individually per kingdom. A summary table of phylum abundance by sample type is \\textattachfile[description=Bacterial phylum abundance in biocrusts and water channels in Diamantina National Park Australia,color=0 0 1]{phyla.csv}{available here (click or double-click to access)} \\label{fig:phyla}'}
+
+A total of \Sexpr{length(unique(tax_table(bac)[,"Phylum"]))} bacterial phyla and \Sexpr{length(unique(tax_table(arc)[,"Phylum"]))} archael phyla were identified. Frequencies of the most abundant phyla are shown in Figure \ref{fig:phyla}. It can be seen that water channel sampels are dissimilar to the soil-based samples at the phylum level although all abundant phyla are represented in both soil and water. Some phyla differed in abundance between the dune flank soil and airborne dust liberated from the same soil by wind tunnel treatment, for example \textit{Cyanobacteria} (more abundant in soil) and \textit{Firmicutes} (more abundant in dust).
+
+<<phyla_out, echo=FALSE, warning=FALSE, cache=TRUE,fig.cap='Relative abundance of bacterial and archael phyla in soil, water and airborne dust lifted by wind tunnel treatment. Bacterial and archael phyla abundances were calculated individually per kingdom. \\label{fig:phyla}'>>=
 print(phyla.combined)
-```
+@
 
-\textit{Phormidium} was by far the most abundant cyanobacterial genus (Figure \ref{fig:cyano}), in common with our previous findings from the Kalahari in southern Botswana [@elliott2014niche]. \textit{Phormidium} and \textit{Microcoleus} species appeared to be more common in soil compared to airborne dust, whereas \textit{Leptolyngbya} species appeared more common in the soil compared to dust. \textit{Nodularia} species and \textit{Synechococcus} species appeared to be more common in water channels compared to soils, whilst the other genera mentioned were more common in soils. 
+\textit{Phormidium} was by far the most abundant cyanobacterial genus (Figure \ref{fig:cyano}), in common with our previous findings from the Kalahari in southern Botswana \citep{elliott2014niche}. \textit{Phormidium} and \textit{Microcoleus} species appeared to be more common in soil compared to airborne dust, whereas \textit{Leptolyngbya} species appeared more common in the soil compared to dust. \textit{Nodularia} species and \textit{Synechococcus} species appeared to be more common in water channels compared to soils, whilst the other genera mentioned were more common in soils. 
 
-```{r cyano_out, echo=FALSE, fig.height=3,warning=FALSE, cache=TRUE,fig.cap='Relative abundance of cyanobacterial genera in soil, water and airborne dust lifted by wind tunnel treatment. Abundances are relative wo the whole bacterial community. A summary table of cyanobacterial genus abundance by sample type is \\textattachfile[description=Cyanobacterial genus abundance in biocrusts and water channels in Diamantina National Park Australia,color=0 0 1]{cyano.csv}{available here (click or double-click to access)}\\label{fig:cyano}'}
+
+<<cyano_out, echo=FALSE, fig.height=3,warning=FALSE, cache=TRUE,fig.cap='Relative abundance of cyanobacterial genera in soil, water and airborne dust lifted by wind tunnel treatment. Abundances are relative wo the whole bacterial community. \\label{fig:cyano}'>>=
 print(cyano.plot)
-```
+@
+
 
 The Chao1 species richness estimation (Figure \ref{fig:rich}) indicated in excess of 10,000 species present in each sample, without striking differences with respect to sample type. 
 
-```{r rich_out, echo=FALSE,fig.width=5,fig.height=4,fig.cap='Chao1 richness estimate (all prokaryotes). \\label{fig:rich}', cache=TRUE}
+<<rich_out, echo=FALSE,fig.width=5,fig.height=4,fig.cap='Chao1 richness estimate (all prokaryotes). \\label{fig:rich}', cache=TRUE>>=
 
 print(rich.ab + colScale)
-```
+@
+
+
 
 Microbial community structure was compared with respect to sample source using nonmetric multidimensional scaling (NMDS). Initial results showed that the water samples differed extremely compared to all other samples (see also Figure \ref{fig:phyla}), and this dominated all other inter-sample differences. The water samples were therefore excluded from the NMDS to reveal the community stucutre relationships between the soil and airborne dust samples as shown in Figure \ref{fig:nmds}. The dune community differs from the dune flank community, and the airborne dust community derived from the dune flank differs from the dune flank community. Notably the dust community has a community structure approximately intermediate between the dune and nebkha communities.
 
-```{r nmds_out, echo=FALSE,fig.height=6,fig.cap='NMDS visualisation of prokaryotic community structure in soil (sand dunes, claypan, and nebkha) and airborne dust (from sand dunes). \\label{fig:nmds}', cache=TRUE}
+<<nmds_out, echo=FALSE, fig.height=6, fig.cap='NMDS visualisation of prokaryotic community structure in soil (sand dunes, claypan, and nebkha) and airborne dust (from sand dunes). \\label{fig:nmds}', cache=TRUE>>=
 
 print(NMDS.ab + colScale)
+@
 
-```
 
-Microbial composition of the dune flank, pan, and nebkha sites varied considerably as can be seen from Figure \ref{fig:nmds}. High abundance OTUs are likely to be important contributors to the overall community differences visualised in Figure \ref{fig:nmds}, and details of these can be found in Table \ref{tab:deseq3}. In fact many of the abundant OTUs were related to each other, meaning that community differences may be evident and easier to understand at higher taxonomic ranks as can be seen in Figures \ref{fig:phyla} and \ref{fig:cyano}. In summary of these results it is clear that \textit{Cyanobacteria} numerically dominate at the experimental sites (about 28 % of bacterial sequences), the overall cyanobacterial abundance at these three sites is similar, and the dominant cyanobacterial genus is \textit{Phormidium}. The degree of dominance by \textit{Phormidium} varies, and differences in less abundant cyanobacterial genera (e.g. \textit{Leptolyngbya} and \textit{Microcoleus}) are evident between sites. For example \textit{Microcoleus} is the second most abundant identified cyanobacterial genus, being quite abundant in dune flank (2.1 \%) and claypan (3.1 \%) but rare in nebkha (0.2 \%).
 
-```{r source_analysis1, echo=FALSE, message=FALSE, cache=TRUE}
+
+Microbial composition of the dune flank, pan, and nebkha sites varied considerably as can be seen from Figure \ref{fig:nmds}. High abundance OTUs are likely to be important contributors to the overall community differences visualised in Figure \ref{fig:nmds}, and details of these can be found in Table \ref{tab:deseq3}. In fact many of the abundant OTUs were related to each other, meaning that community differences may be evident and easier to understand at higher taxonomic ranks as can be seen in Figures \ref{fig:phyla} and \ref{fig:cyano}. In summary of these results it is clear that \textit{Cyanobacteria} numerically dominate at the experimental sites (about 28 \% of bacterial sequences), the overall cyanobacterial abundance at these three sites is similar, and the dominant cyanobacterial genus is \textit{Phormidium}. The degree of dominance by \textit{Phormidium} varies, and differences in less abundant cyanobacterial genera (e.g. \textit{Leptolyngbya} and \textit{Microcoleus}) are evident between sites. For example \textit{Microcoleus} is the second most abundant identified cyanobacterial genus, being quite abundant in dune flank (2.1 \%) and claypan (3.1 \%) but rare in nebkha (0.2 \%).
+
+
+
+<<source_analysis1, echo=FALSE, message=FALSE, cache=TRUE>>=
 
 colnames(tax_table(bac.rel.ea.p))[1] <- "source"
 tax_table(bac.rel.ea.p)[,"source"] <- "not found in river"
@@ -612,9 +681,9 @@ water_otus_plot.c <- water_otus_plot.c + geom_bar(aes(color=source, fill=source)
 water_otus_plot.c <- water_otus_plot.c + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Set1",direction = -1) + scale_color_brewer(palette = "Set1",direction = -1)
 water_otus_plot.c <- water_otus_plot.c + facet_wrap(~Genus, nrow=1, scales = "free") + theme(legend.position="bottom")
 
-```
+@
 
-```{r deseq_analysis2, echo=FALSE, message=FALSE, cache=TRUE}
+<<deseq_analysis2, echo=FALSE, message=FALSE, cache=TRUE>>=
 # see whether OTU is easy or not to become airborne by wind tunnel treatment
 # this is used later to make the wind_otus_plot
 # using object bac.rel.ea.p - which has only the more abundant phyla
@@ -636,9 +705,9 @@ deseq_sum_diff_earth <- sum(sigtab.subset[sigtab.subset$diff>0,"diff"] )
 deseq_n_diff_air <- length(sigtab.subset[sigtab.subset$diff<0,"diff"] )
 deseq_n_diff_earth <- length(sigtab.subset[sigtab.subset$diff>0,"diff"] )
 
-```
+@
 
-```{r source_analysis2, echo=FALSE, message=FALSE, cache=TRUE}
+<<source_analysis2, echo=FALSE, message=FALSE, cache=TRUE>>=
 ###
 
 wind_otus_plot <- plot_bar(bac.rel.ea.p,x = "zone",fill = "behaviour")
@@ -652,9 +721,9 @@ wind_otus_plot.c <- plot_bar(bac.rel.ea.cyano,x = "zone",fill = "behaviour")
 wind_otus_plot.c <- wind_otus_plot.c + geom_bar(aes(color=behaviour, fill=behaviour), stat="identity", position="stack") 
 wind_otus_plot.c <- wind_otus_plot.c + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Accent") + scale_color_brewer(palette = "Accent")
 wind_otus_plot.c <- wind_otus_plot.c + facet_wrap(~Genus, nrow=1, scales = "free") + theme(legend.position="bottom")
-```
+@
 
-```{r OTU_source_out, echo=FALSE,fig.height=11,fig.cap='Relative abundance of bacterial phyla. Source indicates whether individual OTUs (97 % similarity) contributing to the phylum abundance were found in the water channels (top), and whether they were significantly more abundant in soil or wind tunnel collectors at the dune flank sites (bottom). Only the 10 most abundant phyla are shown for clarity. Source designation is not indicative of the ultimate origin of OTUs.\\label{fig:waterp}', cache=FALSE}
+<<OTU_source_out, echo=FALSE,fig.height=11,fig.cap='Relative abundance of bacterial phyla. Source indicates whether individual OTUs (97 pc similarity) contributing to the phylum abundance were found in the water channels (top), and whether they were significantly more abundant in soil or wind tunnel collectors at the dune flank sites (bottom). Only the 10 most abundant phyla are shown for clarity. Source designation is not indicative of the ultimate origin of OTUs.\\label{fig:waterp}', cache=FALSE>>=
 
 grid.newpage()
 pushViewport(viewport(layout=g0))
@@ -663,12 +732,12 @@ print(wind_otus_plot,vp=vp.02)
 
 #print(water_otus_plot)
 #print(wind_otus_plot )
-```
+@
 
 \subsection{Dispersal of microbes by fluvial and aeolian processes}
-Of the `r pan.ntaxa` OTUs found in the claypan, `r channel_pan.intersection.n` were also found in water channels, `r dune_pan.intersection.n` were found in airborne dust from the dune flank, and `r all.intersection` were found in both of these hypothesised inoculum sources. The dune and channel samples had `r channel_dune.intersection.n` OTUs in common.
+Of the \Sexpr{pan.ntaxa} OTUs found in the claypan, \Sexpr{channel_pan.intersection.n} were also found in water channels, \Sexpr{dune_pan.intersection.n} were found in airborne dust from the dune flank, and \Sexpr{all.intersection} were found in both of these hypothesised inoculum sources. The dune and channel samples had \Sexpr{channel_dune.intersection.n} OTUs in common.
 
-```{r OTU_source_out2, echo=FALSE,fig.height=8,fig.cap='Relative abundance of cyanobacterial genera. Source indicates whether individual OTUs (97 % similarity) contributing to the genus abundance were found in the water channels (top), and whether they were significantly more abundant in soil or wind tunnel collectors at the dune flank sites (bottom). Unidentified OTUs were excluded. Only the 5 most abundant identified cyanobacterial genera are shown for clarity. Source designation is not indicative of the ultimate origin of OTUs.\\label{fig:waterc}', cache=FALSE}
+<<OTU_source_out2, echo=FALSE,fig.height=8,fig.cap='Relative abundance of cyanobacterial genera. Source indicates whether individual OTUs (97 pc similarity) contributing to the genus abundance were found in the water channels (top), and whether they were significantly more abundant in soil or wind tunnel collectors at the dune flank sites (bottom). Unidentified OTUs were excluded. Only the 5 most abundant identified cyanobacterial genera are shown for clarity. Source designation is not indicative of the ultimate origin of OTUs.\\label{fig:waterc}', cache=FALSE>>=
 
 grid.newpage()
 pushViewport(viewport(layout=g0))
@@ -677,34 +746,86 @@ print(wind_otus_plot.c,vp=vp.02)
 
 #print(water_otus_plot.c  )
 #print(wind_otus_plot.c)
-```
+@
 
-Whilst many soil OTUs were not detected in the air or water samples, most of the OTUs found exclusively in soil were rare, collectively accounting for only `r soil_only_otus.sum ` % of reads in the soil samples. A breakdown of OTU co-occurrence in all samples summarised by phylum read frequency is shown in Figure \ref{fig:waterp}, with detail on cyanobacterial genera given in Figure \ref{fig:waterc}. It can be seen that co-occurrence of bacteria between soils and hypothesised inoculum sources is very common (assessed by number of reads not number of OTUs), and the relative abundance of organisms from different inoculum sources varies with respect to soil type and phylum. 
 
-The DESeq2 model based approach [@love2014moderated] was used to check if any OTUs had significantly different abundance between the dune flank soil and the collected dust derived from the same soil obtained by wind tunnel treatment. This technique avoids problems associated with uneven sampling effort and includes correction for multiple testing. The results (adjusted p<0.05) indicated that `r deseq_n_diff_air` OTUs (`r round(deseq_sum_diff_air*-1)` % of reads) were  more abundant in air samples and `r deseq_n_diff_earth` OTUs (`r round(deseq_sum_diff_earth)` % of reads) were more abundant in soil samples. Details for a subset of these OTUs are shown in Tables \ref{tab:deseq1} and \ref{tab:deseq2}.
 
-```{r deseq_out1, echo=FALSE, cache=FALSE}
-kable(outtab, digits=2, caption = "OTUs which are significantly more abundant in soil compared to dust blown from the soil. This is a subset of the DESeq2 analysis output, sorted by magnitude of difference in abundance. Full details of significant results from this analysis are \\textattachfile[description=DESeq 2 analysis of differential abundance,color=0 0 1]{windtunnel_otus.csv}{available here (click or double-click to access)} \\label{tab:deseq1}")
+Whilst many soil OTUs were not detected in the air or water samples, most of the OTUs found exclusively in soil were rare, collectively accounting for only \Sexpr{soil_only_otus.sum} \% of reads in the soil samples. A breakdown of OTU co-occurrence in all samples summarised by phylum read frequency is shown in Figure \ref{fig:waterp}, with detail on cyanobacterial genera given in Figure \ref{fig:waterc}. It can be seen that co-occurrence of bacteria between soils and hypothesised inoculum sources is very common (assessed by number of reads not number of OTUs), and the relative abundance of organisms from different inoculum sources varies with respect to soil type and phylum. 
 
-kable(outtab2, digits=2,caption = "OTUs which are significantly more abundant in dust blown from the soil compared to the whole soil. This is a subset of the DESeq2 analysis output, sorted by magnitude of difference in abundance. Full details of significant results from this analysis are available via the file linked in the legend to Table \\ref{tab:deseq1} (these two tables show the top and bottom 10 lines from the same file) \\label{tab:deseq2}")
+The DESeq2 model based approach \citep{love2014moderated} was used to check if any OTUs had significantly different abundance between the dune flank soil and the collected dust derived from the same soil obtained by wind tunnel treatment. This technique avoids problems associated with uneven sampling effort and includes correction for multiple testing. The results (adjusted p<0.05) indicated that \Sexpr{deseq_n_diff_air} OTUs (\Sexpr{round(deseq_sum_diff_air*-1)} \% of reads) were  more abundant in air samples and \Sexpr{deseq_n_diff_earth} OTUs (\Sexpr{round(deseq_sum_diff_earth)} \% of reads) were more abundant in soil samples. Details for a subset of these OTUs are shown in Tables \ref{tab:deseq1} and \ref{tab:deseq2}.
+
+<<deseq_out1, echo=FALSE, cache=FALSE>>=
+kable(outtab, digits=2, caption = "OTUs which are significantly more abundant in soil compared to dust blown from the soil. This is a subset of the DESeq2 analysis output, sorted by magnitude of difference in abundance. \\label{tab:deseq1}")
+
+kable(outtab2, digits=2,caption = "OTUs which are significantly more abundant in dust blown from the soil compared to the whole soil. This is a subset of the DESeq2 analysis output, sorted by magnitude of difference in abundance. \\label{tab:deseq2}")
 
 otus.df.out <- otus.df[1:10,c(rank_names(bac)[c(2,5,6)],sample_names(bac.rel.merged),"sig")]
 colnames(otus.df.out)[colnames(otus.df.out)=="dune flank"] <- "d.flank"
 # class(otus.df$dune)
 # otus.df.out <- as.numeric(otus.df.out)
-kable(otus.df.out,row.names = F, digits=2,caption = "OTU abundance in each sampling zone (%), in order of overall abundance. Sig column indicates if the OTU was significantly more abundant in soil or wind tunnel filter after running the wind tunnel on dune flanks. The 10 most abundant OTUs overall are shown, full table with all OTUs is \\textattachfile[description=DESeq 2 analysis of differential abundance,color=0 0 1]{all_otus.csv}{available here (click or double-click to access)} \\label{tab:deseq3}")
+kable(otus.df.out,row.names = F, digits=2,caption = "OTU abundance in each sampling zone (pc), in order of overall abundance. Sig column indicates if the OTU was significantly more abundant in soil or wind tunnel filter after running the wind tunnel on dune flanks. The 10 most abundant OTUs overall are shown, full table with all OTUs is available in supplementary... \\label{tab:deseq3}")
 
 write.csv(otus.df[ ,c(rank_names(bac)[1:7],sample_names(bac.rel.merged))],"all_otus.csv")
-```
+@
 
-\section{Discussion\footnote{This section may be divided by subheadings. Discussions should cover the key findings of the study: discuss any prior art related to the subject so to place the novelty of the discovery in the appropriate context; discuss the potential short-comings and limitations on their interpretations; discuss their integration into the current understanding of the problem and how this advances the current views; speculate on the future direction of the research and freely postulate theories that could be tested in the future.}}
+
+
+
+
+\section{Discussion}\footnote{This section may be divided by subheadings. Discussions should cover the key findings of the study: discuss any prior art related to the subject so to place the novelty of the discovery in the appropriate context; discuss the potential short-comings and limitations on their interpretations; discuss their integration into the current understanding of the problem and how this advances the current views; speculate on the future direction of the research and freely postulate theories that could be tested in the future.}
 
 We have performed the first detailed characterisation of the prokaryotic community in a lanscape-scale dryland system comprising terrestrial, fluvial, and aeolian components. This is also one of only a few studies to identify the microbes present in the central Australian drylands which cover over xx KM2. Whilst determining the microbial composition of soils was not our primary objective, results in addition to those presented are available in sequence databases and supplementary materials. This is an important contribution as such data on drylands are lacking in the global literature (REF). Our novel approach used landscape sampling combined with high-sensitivity differential abundance analysis, enabling us to test hypotheses about the ecology of biocrust organisms in drylands, particularly focusing on the possible implications for landscape stability and dust production. 
 
 \subsection{Dispersal and ecology of biocrust microbes}
 The higher proportion of DNA sequence reads shared between dune and river compared to river and pan, may be explained by the fact that flooding of the pan is a rare event (last occurring x years previously) but mobilisation of dust from sand dunes is occurring continuously. Due to the dune being at higher elevation than all other locations, it might be expected to harbour fewer OTUs of aquatic origin, however this does not seem to be the case. In fact our data are not informative with respect to the direction of dispersal. This question could be tackled in future work by monitoring microbial populations over time and relating this to weather conditions and occurrence of flood events. We expect that co-occurrence between dune and river channel may be driven principally by wind dispersal (direction dune>river), whereas co-occurrence between river channel and claypan may be driven principally by flood events (direction river>claypan). Whilst we are satisfied in the present work to uncover clues about microbial dispersal in dryland systems, the next challenge is explicitly linking this to function at landscape scale.
 
-We have found strong evidence that microbes are differentially liberated from the dryland soil surface by moderate wind, and this provides numderous opportunities to investigate whether microbes are specifically adapted in this regard or not. Our original hypotheses motivating this work are predicated on the assumption that microbes tend to be adapted for their environment, thus whether they stick or fly is most likely a consequence of natural selection and perhaps also ecosystem engineering. One example of possible adaptation for mobilisation is a \textit{Deinococcus} species which was found to be significantly more likely to become airborne than to stay in the soil during wind treatment. This genus is well known for its remarkable ability to withstand dessication and all kinds of radiation [@makarova2001genome]. It has been found in desert soils before [e.g. @rainey2005extensive] but according to the latest version of Bergey's manual [@whitman2015bergey] the natural habitat of this organism remains unknown. We suggest then that the habitat of this ancient lineage is in fact the biocrust top surface, and it is adapted for wind dispersal - a hypothesis supported by the present results. With such ecology \textit{Deinococcus} species may serve a protective function to the biocrust, and can also ensure that they quickly colonise any newly emerging biocrust which will immediately benefit from such protection early in their development. In contrast to \textit{Deinococcus} species many OTUs were found to resist becoming airborne, and the relevance of this in terms of wind erosion, land management, and geo-engineering can all be explored. Such organisms (including most \textit{Cyanobacteria}) are less likely to be dispersed by the wind, and therefore in severely degraded areas biocrust may not re-form easily because the inoculum must come from a local source (e.g. vegetative growth or transport by an animal). Possible difficulties for biocrusts to regenerate after extreme sustained disturbance is something we suggested as a risk in @elliott2014niche, and seems to be supported by the present results.
+We have found strong evidence that microbes are differentially liberated from the dryland soil surface by moderate wind, and this provides numderous opportunities to investigate whether microbes are specifically adapted in this regard or not. Our original hypotheses motivating this work are predicated on the assumption that microbes tend to be adapted for their environment, thus whether they stick or fly is most likely a consequence of natural selection and perhaps also ecosystem engineering. One example of possible adaptation for mobilisation is a \textit{Deinococcus} species which was found to be significantly more likely to become airborne than to stay in the soil during wind treatment. This genus is well known for its remarkable ability to withstand dessication and all kinds of radiation \citep{makarova2001genome}. It has been found in desert soils before (e.g. \citet{rainey2005extensive}) but according to the latest version of Bergey's manual \citep{whitman2015bergey} the natural habitat of this organism remains unknown. We suggest then that the habitat of this ancient lineage is in fact the biocrust top surface, and it is adapted for wind dispersal - a hypothesis supported by the present results. With such ecology \textit{Deinococcus} species may serve a protective function to the biocrust, and can also ensure that they quickly colonise any newly emerging biocrust which will immediately benefit from such protection early in their development. In contrast to \textit{Deinococcus} species many OTUs were found to resist becoming airborne, and the relevance of this in terms of wind erosion, land management, and geo-engineering can all be explored. Such organisms (including most \textit{Cyanobacteria}) are less likely to be dispersed by the wind, and therefore in severely degraded areas biocrust may not re-form easily because the inoculum must come from a local source (e.g. vegetative growth or transport by an animal). Possible difficulties for biocrusts to regenerate after extreme sustained disturbance is something we suggested as a risk in @elliott2014niche, and seems to be supported by the present results.
 
-\section{References}
+\section*{Author Contributions}
+
+The Author Contributions section is mandatory for all articles, including articles by sole authors. If an appropriate statement is not provided on submission, a standard one will be inserted during the production process. The Author Contributions statement must describe the contributions of individual authors referred to by their initials and, in doing so, all authors agree to be accountable for the content of the work. Please see  \href{http://home.frontiersin.org/about/author-guidelines#AuthorandContributors}{here} for full authorship criteria.
+
+\section*{Funding}
+Details of all funding sources should be provided, including grant numbers if applicable. Please ensure to add all necessary funding information, as after publication this is no longer possible.
+
+\section*{Acknowledgments}
+This is a short text to acknowledge the contributions of specific colleagues, institutions, or agencies that aided the efforts of the authors.
+
+
+\bibliographystyle{frontiersinSCNS_ENG_HUMS} % for Science, Engineering and Humanities and Social Sciences articles, for Humanities and Social Sciences articles please include page numbers in the in-text citations
+%\bibliographystyle{frontiersinHLTH&FPHY} % for Health, Physics and Mathematics articles
 \bibliography{references}
+
+\section*{Figure captions}
+
+%%% Please be aware that for original research articles we only permit a combined number of 15 figures and tables, one figure with multiple subfigures will count as only one figure.
+%%% Use this if adding the figures directly in the mansucript, if so, please remember to also upload the files when submitting your article
+%%% There is no need for adding the file termination, as long as you indicate where the file is saved. In the examples below the files (logo1.jpg and logos.jpg) are in the Frontiers LaTeX folder
+%%% If using *.tif files convert them to .jpg or .png
+%%%  NB logo1.jpg is required in the path in order to correctly compile front page header %%%
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=10cm]{logo1}% This is a *.jpg file
+\end{center}
+\caption{ Enter the caption for your figure here.  Repeat as  necessary for each of your figures}\label{fig:1}
+\end{figure}
+
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=15cm]{logos}
+\end{center}
+\caption{This is a figure with sub figures, (A) is one logo, (B) is a different logo.}\label{fig:2}
+\end{figure}
+
+%%% If you are submitting a figure with subfigures please combine these into one image file with part labels integrated.
+%%% If you don't add the figures in the LaTeX files, please upload them when submitting the article.
+%%% Frontiers will add the figures at the end of the provisional pdf automatically
+%%% The use of LaTeX coding to draw Diagrams/Figures/Structures should be avoided. They should be external callouts including graphics.
+
+
+\end{document}
+
+
+
