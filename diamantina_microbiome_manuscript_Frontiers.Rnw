@@ -91,6 +91,7 @@ To investigate biological dispersal and related geomorphic processes associated 
 options(width = 120)
 library(phyloseq)
 library("ggplot2")
+library(plyr)
 library(vegan)
 library(grid)
 library(reshape2)
@@ -554,7 +555,7 @@ Landscape stability and dust production are of the utmost importance to communit
 
 % section moved from here to methods 
 
-The extent to which “microscopic ecosystems engineers” contribute to the geomorphic process and importantly if they rely on the geomorphology to drive their existence is explored further in this paper.  Landscape processes in many drylands is driven by the interplay between fluvial and Aeolian processes (Mctainsh, 1987; Bullard and McTainsh XXXX; etc etc). McTainsh (1987) proposed a model of sediment recycling that provided an integrated interpretation of these processes in the landscape. Rivers feeding the internal draining river basin such as the Lake Chad and Lake Eyre transport vast amounts of fine sediments feeding the large dust source regions out of Africa, China and Australia. By linking river systems and wind erosion, McTainsh proposed looking at arid geomorphology as a system of sediment recycling operating on a massive scale. \footnote{Craig please could you provide the citations}
+The extent to which “microscopic ecosystems engineers” contribute to the geomorphic process and importantly if they rely on the geomorphology to drive their existence is explored further in this paper.  Landscape processes in many drylands is driven by the interplay between fluvial and Aeolian processes \citep{mctainsh1987desert,bullard2003aeolian,field2009toward,langford1989fluvial}. citet{mctainsh1987desert} proposed a model of sediment recycling that provided an integrated interpretation of these processes in the landscape. Rivers feeding the internal draining river basin such as the Lake Chad and Lake Eyre transport vast amounts of fine sediments feeding the large dust source regions out of Africa, China and Australia. By linking river systems and wind erosion, McTainsh proposed looking at arid geomorphology as a system of sediment recycling operating on a massive scale. 
 
 Sediment recycling results in a constantly changing soil surface. A conceptual model (Figure \ref{fig:dispersal-hazards}) highlights the interaction between the fluvial and aeolian systems. Floods supply fresh sediment to the claypan surface, having the effect of ‘re-zeroing’ the claypan surface, burying the effects of previous wind erosion activity. Once dry, however, time and climatic variation impact the sediment creating a mosaic of surface types. Source boarding sand dunes provide new sediments, larger, heavier particles that have the capacity to break down fine crusts as they bounce across the claypan. The ‘living soils’—the cyanobacteria crusts whilst known to be very responsive to changes in climatic stimulus, and therefore change the soil surface layer through time, have not generally been considered as a component of this fluvial - aeolian interaction. \footnote{need to develop model further}
 
@@ -643,11 +644,10 @@ Water channels were sampled by dragging a 5 ml sterile bijoux along the bank whe
 In addition to the soil crust samples a wind tunnel was run on the dune flank zones within 3 m of where the soil crust sampling was done. The wind tunnel design was a duct-type design equipped with a sediment collection trap in which sterile Whatman xx filter papers were fitted. Further details of design and operation have previously been described by \citet{strong2016development}\footnote{should provide a bit more detail here}. The wind tunnel was run on dune flanks because they are naturally eroded by saltation impact from the dune sand above when it is windy, therefore the potential as an inoculum source to surrounding areas is greater than the higher dune areas. A saltation source was not added to these experiments for the sake of simplicity, as there will be saltation occurring naturally within the wind tunnel anyway. At each site the wind tunnel was run three times on adjacent areas for 5 minutes at 10 m/s for 5 minutes\footnote{Helene collected data to determine the exact run conditions}. This is a moderate treatment intended to be realistic and to collect only the easily mobilised particles / organisms. 
 
 \subsection{Soil properties}
-...
+Total carbon and nitrogen content of soils were determined using a CN element analyser (Leco TruSpec). Particle size distribution was determined by ...
 
 \subsection{DNA sequencing}
 DNA was extracted in the field within 24 hours of sample collection using a Mobio Powersoil DNA extraction kit according to the manufacturers instructions except for increasing the soil amount slightly to 0.4 g per sample as described previously \citet{elliott2014niche}. DNA sequencing targeted the prokaryotic 16S rRNA gene and was performed by the Centre for Genomic Research (CGR) NERC Facility at the University of Liverpool, using an Illumina MiSeq in a Paired end approach. Resultant FastQ files were processed using QIIME \citep{caporaso2010qiime} for clustering, OTU table generation, and taxonomy assignment. These results were analysed using R and the phyloseq package \citep{mcmurdie2013phyloseq} for R.
-
 
 \section{Results}
 
@@ -666,10 +666,10 @@ In dune areas the crust morphology was simpler as the platelet formation surface
 \subsection{Soil properties}
 ... (Figure \ref{fig:chem}).
 
-<<chem_out, echo=FALSE,fig.height=2,fig.cap='Soil properties. \\label{fig:chem}', warning=FALSE, cache=TRUE>>=
+<<chem_out, echo=FALSE,fig.height=2,fig.cap='Mean total carbon and nitrogen (percent w/w) and pH of soil in and around Lake Constance claypan at Diamantina National Park, Australia. Error bars represent the standard error of the mean for each soil type (n = 5). Sample coding for soil types: D sand dune, DF dune flank, N nebkha, P pan surface. \\label{fig:chem}', warning=FALSE, cache=TRUE>>=
 # melt for plotting
-chemistry.melt <- melt(sample_data(bac.earthair),measure.vars=c("N_pc","C_pc","pH"))
-
+chemistry.melt <- melt(sample_data(bac.earthair),measure.vars=c("N_pc","C_pc","pH"),)
+chemistry.melt$variable <- revalue(chemistry.melt$variable, c("N_pc"="nitrogen", "C_pc"="carbon"))
 # make the plot 
 print(ggplot(chemistry.melt, aes(x=zone_code, y=value, shape=element, colour=zone)) + stat_summary(fun.data = "mean_se", size=1) + facet_wrap(~variable,scales = "free_y",nrow=1) + labs(x = "zone") + theme(aspect.ratio=1,legend.position="none") + colScale )
 @
