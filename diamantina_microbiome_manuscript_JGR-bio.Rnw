@@ -311,8 +311,15 @@ ab.earthair <- subset_samples(expt.combined,element!="water")
 # plot phyla (combined archea, bacteria, and fungi)
 
 rich.ab <- plot_richness(expt.combined,measures = "Chao1",color = "zone", shape="element",x="zone") + geom_point(size=5,alpha=0.7) 
+
+rich.ab <- plot_richness(expt.combined,measures = "Chao1",color = "zone", shape="element",x="zone_code") + geom_point(size=5,alpha=0.7, position=position_dodge(width=1)) 
+rich.ab$layers <- rich.ab$layers[3]
+rich.ab$theme$axis.text.x$angle <- 0
+rich.ab$theme$axis.text.x$hjust <- 0.4
+
 ord.ab <- ordinate(ab.earthair, "NMDS", "bray")
 NMDS.ab <- plot_ordination(ab.earthair, ord.ab, type = "sites", color = "zone", shape="element") + geom_point(size=5,alpha=0.7) + theme(aspect.ratio=1) + theme(legend.position="right")
+NMDS.ab$layers <- NMDS.ab$layers[2]
 
 m_reads_total <- sum(get_variable(bac,'n_reads'))/1000000
 m_reads_bac_qc <- sum(otu_table(bac))/1000000
@@ -808,21 +815,35 @@ print(wind_otus_plot.c,vp=vp.02)
 \end{center}
 \end{figure}
 
-The Chao1 species richness estimation (Figure \ref{fig:rich}) indicated in excess of 10,000 species present in each sample, without striking differences with respect to sample type. 
+The Chao1 species richness estimation (Figure \ref{fig:community}) indicated in excess of 10,000 species present in each sample, without striking differences with respect to sample type. 
 
-<<rich_out, echo=FALSE,fig.width=5,fig.height=4,fig.cap='Chao1 richness estimate (all prokaryotes). \\label{fig:rich}', cache=TRUE>>=
+<<community_out, echo=FALSE,fig.height=3.8, warning=FALSE, cache=TRUE,fig.cap='Prokaryotic microbial community diversity of soil (sand dunes, claypan, and nebkha), water channels, and airborne dust (from sand dunes). a. Chao1 richness estimate (alpha diversity); b. NMDS visualisation of community structure (beta diversity). Water channel data are not shown on the NMDS plot because of extreme dissimilarity to other samples.\\label{fig:community}'>>=
 
-print(rich.ab + colScale)
+#Extract Legend 
+g_legend<-function(a.gplot){ 
+  tmp <- ggplot_gtable(ggplot_build(a.gplot)) 
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box") 
+  legend <- tmp$grobs[[leg]] 
+  return(legend)} 
+
+communitylegend <- rich.ab + colScale + theme(legend.position="bottom")
+legend <- g_legend(communitylegend) 
+
+
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(6, 2)))
+vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
+print(rich.ab + colScale + labs(y="number of OTUs", x="zone") + theme(legend.position="none",strip.background = element_blank(),
+  strip.text.x = element_blank()), vp = vplayout(1:5, 1))  # key is to define vplayout
+print(NMDS.ab + colScale + theme(legend.position="none"), vp = vplayout(1:5, 2))
+legend$vp = viewport(layout.pos.row = 6, layout.pos.col = 1:2)
+grid.draw(legend)
+
 @
 
-Microbial community structure was compared with respect to sample source using nonmetric multidimensional scaling (NMDS). Initial results showed that the water samples differed extremely compared to all other samples (see also Figure \ref{fig:waterp}), and this dominated all other inter-sample differences. The water samples were therefore excluded from the NMDS to reveal the community stucutre relationships between the soil and airborne dust samples as shown in Figure \ref{fig:nmds}. The dune community differs from the dune flank community, and the airborne dust community derived from the dune flank differs from the dune flank community. Notably the dust community has a community structure approximately intermediate between the dune and nebkha communities.
+Microbial community structure was compared with respect to sample source using nonmetric multidimensional scaling (NMDS). Initial results showed that the water samples differed extremely compared to all other samples (see also Figure \ref{fig:waterp}), and this dominated all other inter-sample differences. The water samples were therefore excluded from the NMDS to reveal the community stucutre relationships between the soil and airborne dust samples as shown in Figure \ref{fig:community}. The dune community differs from the dune flank community, and the airborne dust community derived from the dune flank differs from the dune flank community. Notably the dust community has a community structure approximately intermediate between the dune and nebkha communities.
 
-<<nmds_out, echo=FALSE, fig.height=4, fig.cap='NMDS visualisation of prokaryotic community structure in soil (sand dunes, claypan, and nebkha) and airborne dust (from sand dunes). Water channel data are not shown on this plot because their extreme dissimilarity to other samples would require plotting at a different scale which obscures the patterns of interest between the other samples. \\label{fig:nmds}', cache=TRUE>>=
-
-print(NMDS.ab + colScale)
-@
-
-Microbial composition of the dune flank, pan, and nebkha sites varied considerably as can be seen from Figure \ref{fig:nmds}. High abundance OTUs are likely to be important contributors to the overall community differences visualised in Figure \ref{fig:nmds}, and details of these can be found in Table \ref{tab:deseq3}. In fact many of the abundant OTUs were related to each other, meaning that community differences may be evident and easier to understand at higher taxonomic ranks as can be seen in Figures \ref{fig:waterp} and \ref{fig:waterc}. In summary of these results it is clear that \textit{Cyanobacteria} numerically dominate at the experimental sites (about 28 \% of bacterial sequences), the overall cyanobacterial abundance at different sites is similar, and the dominant cyanobacterial genus is \textit{Phormidium}. The degree of dominance by \textit{Phormidium} varies, and differences in less abundant cyanobacterial genera (e.g. \textit{Leptolyngbya} and \textit{Microcoleus}) are evident between sites. For example \textit{Microcoleus} is the second most abundant identified cyanobacterial genus, being quite abundant in dune flank (2.1 \%) and claypan (3.1 \%) but rare in nebkha (0.2 \%).
+Microbial composition of the dune flank, pan, and nebkha sites varied considerably as can be seen from Figure \ref{fig:community}. High abundance OTUs are likely to be important contributors to the overall community differences visualised in Figure \ref{fig:community}, and details of these can be found in Table \ref{tab:deseq3}. In fact many of the abundant OTUs were related to each other, meaning that community differences may be evident and easier to understand at higher taxonomic ranks as can be seen in Figures \ref{fig:waterp} and \ref{fig:waterc}. In summary of these results it is clear that \textit{Cyanobacteria} numerically dominate at the experimental sites (about 28 \% of bacterial sequences), the overall cyanobacterial abundance at different sites is similar, and the dominant cyanobacterial genus is \textit{Phormidium}. The degree of dominance by \textit{Phormidium} varies, and differences in less abundant cyanobacterial genera (e.g. \textit{Leptolyngbya} and \textit{Microcoleus}) are evident between sites. For example \textit{Microcoleus} is the second most abundant identified cyanobacterial genus, being quite abundant in dune flank (2.1 \%) and claypan (3.1 \%) but rare in nebkha (0.2 \%).
 
 \subsection{Dispersal of microbes by fluvial and aeolian processes}
 Of the \Sexpr{pan.ntaxa} OTUs found in the claypan, \Sexpr{channel_pan.intersection.n} were also found in water channels, \Sexpr{dune_pan.intersection.n} were found in airborne dust from the dune flank, and \Sexpr{all.intersection} were found in both of these hypothesised inoculum sources. The dune and channel samples had \Sexpr{channel_dune.intersection.n} OTUs in common.
