@@ -7,3 +7,7 @@ diamantina_files/
 *.Rproj
 phylum_breakdown.csv
 data/2015-07-30_Diamantina_DNA.csv
+diamantina_microbiome_manuscript_cache/
+cache/
+diamantina_microbiome_manuscript_Frontiers_cache/
+Frontiers_LaTex_Templates/
