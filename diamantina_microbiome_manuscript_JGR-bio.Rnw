@@ -276,13 +276,15 @@ ab.rel.phylum <- tax_glom(ab.rel,taxrank = "Phylum")
 cyano.rel <- subset_taxa(bac.rel,Phylum=="Cyanobacteria")
 
 # Identify top phyla and cyano genera - so they can be selectively plotted/analysed
-top.phyla = names(sort(tapply(taxa_sums(bac.rel), tax_table(bac.rel)[, "Phylum"], sum), TRUE)[1:10])
+top.phyla = names(sort(tapply(taxa_sums(ab.rel), tax_table(ab.rel)[, "Phylum"], sum), TRUE)[1:10])
 top.cyano.genus = names(sort(tapply(taxa_sums(cyano.rel), tax_table(cyano.rel)[, "Genus"], sum), TRUE)[1:6])
 top.cyano.genus <- top.cyano.genus[top.cyano.genus!="Unknown"]
 
 # keep only the top phyla, but retain all in .all object for when needed
 bac.rel.all <- bac.rel
+ab.rel.all <- ab.rel
 bac.rel <- subset_taxa(bac.rel, Phylum%in%top.phyla)
+ab.rel <- subset_taxa(ab.rel, Phylum%in%top.phyla)
 
 # agglomerate cyanos by genus, used later on
 cyano.rel.g <- tax_glom(cyano.rel,taxrank = "Genus")
@@ -290,6 +292,7 @@ cyano.rel.g <- tax_glom(cyano.rel,taxrank = "Genus")
 # simplify data (speed up processing). If this isn't done it causes long calculation time and problems viewing the PDF. Need to check exactly which outputs this is affecting and whether it matters:
 # - affects the otus.df output to csv
 bac.rel <- prune_taxa(taxa_sums(bac.rel) > prune_pc, bac.rel) 
+ab.rel <- prune_taxa(taxa_sums(ab.rel) > prune_pc, ab.rel)
 #bac.rel <- prune_taxa(taxa_sums(bac.rel) > 0.1, bac.rel) 
 
 # To simplify plots
@@ -417,9 +420,9 @@ map3 <- basemapZoom2 + geom_point(aes(x = lon, y = lat, colour=zone,shape=elemen
 # no output from this block but kept for now as it calculates some useful results/objects.
 # Might be suitable for output as small table or in text mention.
 
-channel <- subset_samples(bac.rel,zone=="channel")
-dune <- subset_samples(bac.rel,element=="air")
-pan <- subset_samples(bac.rel,zone=="pan")
+channel <- subset_samples(ab.rel,zone=="channel")
+dune <- subset_samples(ab.rel,element=="air")
+pan <- subset_samples(ab.rel,zone=="pan")
 
 channel <- prune_taxa(taxa_sums(channel)>0,channel)
 dune <- prune_taxa(taxa_sums(dune)>0,dune)
@@ -443,11 +446,11 @@ all.intersection <- length(all.intersection)
 
 # Now we have the intersections
 # make objects for the pairs and subset to just the intersecting taxa
-channel_pan <- subset_samples(bac.rel,zone%in%c("channel","pan"))
+channel_pan <- subset_samples(ab.rel,zone%in%c("channel","pan"))
 channel_pan <- prune_taxa(channel_pan.intersection, channel_pan)
 otu_table(channel_pan) <- otu_table(channel_pan)/5
 
-channel_dune <- subset_samples(bac.rel,zone%in%c("channel","dune"))
+channel_dune <- subset_samples(ab.rel,zone%in%c("channel","dune"))
 channel_dune <- prune_taxa(channel_dune.intersection, channel_dune)
 otu_table(channel_dune) <- otu_table(channel_dune)/5
 
@@ -461,47 +464,47 @@ otu_table(channel_dune) <- otu_table(channel_dune)/5
 #channel_pan.shared <- plot_bar(channel_pan,x = "zone",fill = "Phylum") + geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack") + scale_y_continuous(name="relative abundance (%)") + scale_fill_manual("Phylum", values = allphyla.col) + scale_colour_manual("Phylum", values = allphyla.col)
 
 # work out OTU abundance for those only in soil
-bac.rel.earth <- subset_samples(bac.rel,element=="earth")
-bac.rel.earth.merged <- merge_samples(bac.rel.earth,rep(T,nsamples(bac.rel.earth)))
-otu_table(bac.rel.earth.merged) <- otu_table(bac.rel.earth.merged)/nsamples(bac.rel.earth)
+ab.rel.earth <- subset_samples(ab.rel,element=="earth")
+ab.rel.earth.merged <- merge_samples(ab.rel.earth,rep(T,nsamples(ab.rel.earth)))
+otu_table(ab.rel.earth.merged) <- otu_table(ab.rel.earth.merged)/nsamples(ab.rel.earth)
 inoc_source_otus <- unique(c(taxa_names(channel),taxa_names(dune)))
 
-soil_only_otus.sum <- round(sum(otu_table(bac.rel.earth.merged)) -  sum(otu_table(bac.rel.earth.merged)[,inoc_source_otus]),1)
+soil_only_otus.sum <- round(sum(otu_table(ab.rel.earth.merged)) -  sum(otu_table(ab.rel.earth.merged)[,inoc_source_otus]),1)
 
 @
 
 <<hyp_analysis2,echo=FALSE, results='hide', cache=TRUE>>=
 # working with merged objects to reduce processing time
 # air samples merged separately because of shared zone name
-bac.rel.merged <- merge_samples(subset_samples(bac.rel,element!="air"),"zone")
-bac.rel.merged.air <- merge_samples(subset_samples(bac.rel,element=="air"),"zone")
-sample_names(bac.rel.merged.air) <- "dune flank air"
-bac.rel.merged <- merge_phyloseq(bac.rel.merged,bac.rel.merged.air)
+ab.rel.merged <- merge_samples(subset_samples(ab.rel,element!="air"),"zone")
+ab.rel.merged.air <- merge_samples(subset_samples(ab.rel,element=="air"),"zone")
+sample_names(ab.rel.merged.air) <- "dune flank air"
+ab.rel.merged <- merge_phyloseq(ab.rel.merged,ab.rel.merged.air)
 
-otu_table(bac.rel.merged) <- otu_table(bac.rel.merged)/5
-bac.rel.merged.phylum <- tax_glom(bac.rel.merged,"Phylum")
+otu_table(ab.rel.merged) <- otu_table(ab.rel.merged)/5
+ab.rel.merged.phylum <- tax_glom(ab.rel.merged,"Phylum")
 
 # make dataframes for output later
-t <- t(otu_table(bac.rel.merged))
+t <- t(otu_table(ab.rel.merged))
 t <- as.data.frame(t)
-otus.df <- as.data.frame(cbind(tax_table(bac.rel.merged),t))
-otus.order <- taxa_names(bac.rel.merged)[order(taxa_sums(bac.rel.merged),decreasing = T)]
+otus.df <- as.data.frame(cbind(tax_table(ab.rel.merged),t))
+otus.order <- taxa_names(ab.rel.merged)[order(taxa_sums(ab.rel.merged),decreasing = T)]
 otus.df <- otus.df[otus.order,]
 # more info will be added to this DF after DESEQ analysis, then it will be output
 
 # Keep only phyla that are > 1% overall:
 # to simplify plot and protect against unequal sampling bias
 
-keep_phyla <- (taxa_sums(bac.rel.merged.phylum)/5)>1
-keep_phyla <- as.character(tax_table(bac.rel.merged.phylum)[keep_phyla,"Phylum"])
-keep_phyla_index <- tax_table(bac.rel.merged)[,"Phylum"]%in%keep_phyla
+keep_phyla <- (taxa_sums(ab.rel.merged.phylum)/5)>1
+keep_phyla <- as.character(tax_table(ab.rel.merged.phylum)[keep_phyla,"Phylum"])
+keep_phyla_index <- tax_table(ab.rel.merged)[,"Phylum"]%in%keep_phyla
 
-bac.rel.merged <- subset_taxa(bac.rel.merged, keep_phyla_index)
-sample_data(bac.rel.merged)$zone <- as.factor(sample_names(bac.rel.merged))
+ab.rel.merged <- subset_taxa(ab.rel.merged, keep_phyla_index)
+sample_data(ab.rel.merged)$zone <- as.factor(sample_names(ab.rel.merged))
 
-airborne <- subset_samples(bac.rel,element=="air")
+airborne <- subset_samples(ab.rel,element=="air")
 airborne <- prune_taxa(taxa_sums(airborne)>0,airborne)
-waterborne <- subset_samples(bac.rel.merged,zone=="channel")
+waterborne <- subset_samples(ab.rel.merged,zone=="channel")
 waterborne <- prune_taxa(taxa_sums(waterborne)>0,waterborne)
 
 airborne_otus <- taxa_names(airborne)[taxa_sums(airborne)>0]
@@ -509,22 +512,25 @@ waterborne_otus <- taxa_names(waterborne)[taxa_sums(waterborne)>0]
 both_otus <- intersect(airborne_otus,waterborne_otus)
 
 # make an object to be modified for plots
+ab.rel.ea <- subset_samples(ab.rel,element!="air")
+otu_table(ab.rel.ea) <- otu_table(ab.rel.ea)/5
 bac.rel.ea <- subset_samples(bac.rel,element!="air")
 otu_table(bac.rel.ea) <- otu_table(bac.rel.ea)/5
 
 # keep only the more abundant phyla (for clarity of plots)
 # this now done globally so shouldn't be needed here
-# bac.rel.ea.p <- subset_taxa(bac.rel.ea, Phylum%in%top.phyla)
+# ab.rel.ea.p <- subset_taxa(ab.rel.ea, Phylum%in%top.phyla)
 bac.rel.ea.p <- bac.rel.ea
+ab.rel.ea.p <- ab.rel.ea
 
 # same again but looking at cyanobacterial genera
 bac.rel.ea.cyano <- subset_taxa(bac.rel.ea, Phylum == "Cyanobacteria")
 # select only the more abundant cyanobacterial genera
 bac.rel.ea.cyano <- subset_taxa(bac.rel.ea.cyano, Genus%in%top.cyano.genus)
 
-airborne_otus <- airborne_otus[airborne_otus%in%taxa_names(bac.rel.ea)]
-waterborne_otus <- waterborne_otus[waterborne_otus%in%taxa_names(bac.rel.ea)]
-both_otus <- both_otus[both_otus%in%taxa_names(bac.rel.ea)]
+airborne_otus <- airborne_otus[airborne_otus%in%taxa_names(ab.rel.ea)]
+waterborne_otus <- waterborne_otus[waterborne_otus%in%taxa_names(ab.rel.ea)]
+both_otus <- both_otus[both_otus%in%taxa_names(ab.rel.ea)]
 
 @
 
@@ -546,7 +552,7 @@ both_otus <- both_otus[both_otus%in%taxa_names(bac.rel.ea)]
   alpha = 0.05
   sigtab = res
 
-  rel.abundance <- apply(otu_table(bac)[rownames(sigtab), ],FUN = max,MARGIN = 1)
+  rel.abundance <- apply(otu_table(ab)[rownames(sigtab), ],FUN = max,MARGIN = 1)
   sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(expt.deseq)[rownames(sigtab), ], "matrix"))
   sigtab$max <- rel.abundance
   
@@ -569,7 +575,7 @@ wanted_cols <- c("Phylum",  "Class",  "Order",	"Family",	"Genus",	"Species","pad
 wanted_rows <- (sigtab$padj<0.05) & (!is.na(sigtab$padj))
 wanted_otus <- sigtab[wanted_rows,"otu.orig"]
 
-expt.rel.df <- subset_samples(bac.rel.all, zone=="dune flank")
+expt.rel.df <- subset_samples(ab.rel.all, zone=="dune flank")
 expt.rel.df.merged <- merge_samples(expt.rel.df,group = "element")
 otus.rel.df.by.type <- otu_table(expt.rel.df.merged)/5
 
@@ -622,11 +628,11 @@ otus.df[row.names(otus.df)%in%otus_air,"sig"] <- "air"
 
 <<source_analysis1, echo=FALSE, message=FALSE, cache=TRUE>>=
 
-colnames(tax_table(bac.rel.ea.p))[1] <- "source"
-tax_table(bac.rel.ea.p)[,"source"] <- "not found in river"
-tax_table(bac.rel.ea.p)[taxa_names(bac.rel.ea.p)%in%waterborne_otus,"source"] <- "found in river"
+colnames(tax_table(ab.rel.ea.p))[1] <- "source"
+tax_table(ab.rel.ea.p)[,"source"] <- "not found in river"
+tax_table(ab.rel.ea.p)[taxa_names(ab.rel.ea.p)%in%waterborne_otus,"source"] <- "found in river"
 
-water_otus_plot <- plot_bar(bac.rel.ea.p,x = "zone",fill = "source")
+water_otus_plot <- plot_bar(ab.rel.ea.p,x = "zone",fill = "source")
 water_otus_plot <- water_otus_plot + geom_bar(aes(color=source, fill=source), stat="identity", position="stack") 
 water_otus_plot <- water_otus_plot + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Set1",direction = -1) + scale_color_brewer(palette = "Set1",direction = -1)
 water_otus_plot <- water_otus_plot + facet_wrap(~Phylum, nrow=2) + theme(legend.position="bottom")
@@ -647,12 +653,12 @@ water_otus_plot.c <- water_otus_plot.c + facet_wrap(~Genus, nrow=1, scales = "fr
 <<deseq_analysis2, echo=FALSE, message=FALSE, cache=TRUE>>=
 # see whether OTU is easy or not to become airborne by wind tunnel treatment
 # this is used later to make the wind_otus_plot
-# using object bac.rel.ea.p - which has only the more abundant phyla
+# using object ab.rel.ea.p - which has only the more abundant phyla
 
-colnames(tax_table(bac.rel.ea.p))[1] <- "behaviour"
-tax_table(bac.rel.ea.p)[,"behaviour"] <- "intermediate"
-tax_table(bac.rel.ea.p)[row.names(tax_table(bac.rel.ea.p))%in%otus_air,"behaviour"] <- "easily becomes airborne"
-tax_table(bac.rel.ea.p)[row.names(tax_table(bac.rel.ea.p))%in%otus_earth,"behaviour"] <- "resists becoming airborne"
+colnames(tax_table(ab.rel.ea.p))[1] <- "behaviour"
+tax_table(ab.rel.ea.p)[,"behaviour"] <- "intermediate"
+tax_table(ab.rel.ea.p)[row.names(tax_table(ab.rel.ea.p))%in%otus_air,"behaviour"] <- "easily becomes airborne"
+tax_table(ab.rel.ea.p)[row.names(tax_table(ab.rel.ea.p))%in%otus_earth,"behaviour"] <- "resists becoming airborne"
 
 colnames(tax_table(bac.rel.ea.cyano))[1] <- "behaviour"
 tax_table(bac.rel.ea.cyano)[,"behaviour"] <- "intermediate"
@@ -671,7 +677,7 @@ deseq_n_diff_earth <- length(sigtab.subset[sigtab.subset$diff>0,"diff"] )
 <<source_analysis2, echo=FALSE, message=FALSE, cache=TRUE>>=
 ###
 
-wind_otus_plot <- plot_bar(bac.rel.ea.p,x = "zone",fill = "behaviour")
+wind_otus_plot <- plot_bar(ab.rel.ea.p,x = "zone",fill = "behaviour")
 wind_otus_plot <- wind_otus_plot + geom_bar(aes(color=behaviour, fill=behaviour), stat="identity", position="stack") 
 wind_otus_plot <- wind_otus_plot + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Accent") + scale_color_brewer(palette = "Accent")
 wind_otus_plot <- wind_otus_plot + facet_wrap(~Phylum, nrow=2) + theme(legend.position="bottom")
@@ -890,7 +896,7 @@ kable(outtab, digits=2, caption = "OTUs which are significantly more abundant in
 
 kable(outtab2, digits=2,caption = "OTUs which are significantly more abundant in dust blown from the soil compared to the whole soil. This is a subset of the DESeq2 analysis output, sorted by magnitude of difference in abundance. \\label{tab:deseq2}")
 
-otus.df.out <- otus.df[1:10,c(rank_names(bac)[c(2,6)],sample_names(bac.rel.merged),"sig")]
+otus.df.out <- otus.df[1:10,c(rank_names(ab)[c(2,6)],sample_names(ab.rel.merged),"sig")]
 colnames(otus.df.out)[colnames(otus.df.out)=="dune flank"] <- "d.flank"
 # class(otus.df$dune)
 # otus.df.out <- as.numeric(otus.df.out)
@@ -902,7 +908,7 @@ kable(otus.df.out,row.names = F, digits=2,caption = "OTU abundance in each sampl
 #length(row.names(sigtab))
 #length(row.names(otus.df))
 
-write.csv(otus.df[,c(rank_names(bac)[1:7],sample_names(bac.rel.merged),"sig")],"Elliott_Diamantina_Microbiome_Table_S4[otus].csv")
+write.csv(otus.df[,c(rank_names(ab)[1:7],sample_names(ab.rel.merged),"sig")],"Elliott_Diamantina_Microbiome_Table_S4[otus].csv")
 
 @
 
