@@ -85,22 +85,27 @@
 
 %%Enter Data Set, Movie, and Audio captions here
 %%EXAMPLE CAPTIONS
+\section*{Data Set S1.} %data/Elliott_Diamantina_Microbiome_Data_S1[otu-tax].biom
+% this data file is otu_table_mc2_w_tax.biom from the analysis pipeline
 
-\section*{Large Table S1.} %Elliott_Diamantina_Microbiome_Table_S1[phyla].csv
+biom formatted OTU table with taxonomy
+
+
+\section*{Large Table S1.} %data/Elliott_Diamantina_Microbiome_Table_S1[sample-metadata].txt
+
+mapping file
+
+\section*{Large Table S2.} %Elliott_Diamantina_Microbiome_Table_S2[phyla].csv
 
 relative abundance of all prokaryotic phyla. 
 
-\section*{Large Table S2.} %Elliott_Diamantina_Microbiome_Table_S2[cyanobacteria].csv
+\section*{Large Table S3.} %Elliott_Diamantina_Microbiome_Table_S3[cyanobacteria].csv
 
 relative abundance of cyanobacteria
 
-\section*{Large Table S3.} %Elliott_Diamantina_Microbiome_Table_S3[wind].csv
-
-Differential mobilisation of OTUs by wind tunnel treatment
-
 \section*{Large Table S4.} %Elliott_Diamantina_Microbiome_Table_S4[otus].csv
 
-OTU abundance in each sampling zone (pc) - full version of excerpt tables presentd in manuscript. Sig column indicates if the OTU was significantly more abundant in soil or wind tunnel filter after running the wind tunnel on dune flanks. 
+OTU abundance in each sampling zone (pc) - full version of excerpt tables presentd in manuscript. Sig column indicates if the OTU was significantly more abundant in soil or wind tunnel filter after running the wind tunnel on dune flanks. Differential mobilisation of OTUs by wind tunnel treatment
 
 \section*{Movie S1.} 
 

@@ -233,9 +233,9 @@ vp.2 <- viewport(layout.pos.col=2, layout.pos.row=1)
 # it does not affect richness, NMDS, deseq2 which use full data
 prune_pc <- 0.2
 
-bac <- import_biom("data/otu_table_mc2_w_tax.biom", "data/rep_set.tre",parseFunction = parse_taxonomy_greengenes)
+bac <- import_biom("data/Elliott_Diamantina_Microbiome_Data_S1[otu-tax].biom", parseFunction = parse_taxonomy_greengenes)
 
-map <- import_qiime(mapfilename = "data/map.txt")
+map <- import_qiime(mapfilename = "data/Elliott_Diamantina_Microbiome_Table_S1[sample-metadata].txt")
 bac <- merge_phyloseq(bac,map)
 
 # fix incorrect spelling of nebkha in the biom file.
@@ -245,9 +245,9 @@ levels(sample_data(bac)$zone)[levels(sample_data(bac)$zone)=="nebka"] <- "nebkha
   bac <- subset_taxa(bac,Class!="Chloroplast")
 
 # shorten long OTU names
-  taxa_names(bac) <- gsub("New","N",taxa_names(bac))
-  taxa_names(bac) <- gsub("Cleanup","C",taxa_names(bac))
-  taxa_names(bac) <- gsub("Reference","R",taxa_names(bac))
+  taxa_names(bac) <- gsub("New.","N",taxa_names(bac))
+  taxa_names(bac) <- gsub("Cleanup.","C",taxa_names(bac))
+  taxa_names(bac) <- gsub("Reference","R.",taxa_names(bac))
   
   # standardise unknown taxon entries
 tax_table(bac)[is.na(tax_table(bac))] <- "Unknown"
@@ -283,17 +283,21 @@ top.cyano.genus <- top.cyano.genus[top.cyano.genus!="Unknown"]
 # keep only the top phyla, but retain all in .all object for when needed
 bac.rel.all <- bac.rel
 ab.rel.all <- ab.rel
-bac.rel <- subset_taxa(bac.rel, Phylum%in%top.phyla)
-ab.rel <- subset_taxa(ab.rel, Phylum%in%top.phyla)
+#bac.rel <- subset_taxa(bac.rel, Phylum%in%top.phyla)
+#ab.rel <- subset_taxa(ab.rel, Phylum%in%top.phyla)
+# commented above removal of rare phyla because similar is done below (ab.phylum.rr)
+# and these objects are used to exporting results where this trimming was not expected (e.g. otus.df)
 
 # agglomerate cyanos by genus, used later on
 cyano.rel.g <- tax_glom(cyano.rel,taxrank = "Genus")
 
 # simplify data (speed up processing). If this isn't done it causes long calculation time and problems viewing the PDF. Need to check exactly which outputs this is affecting and whether it matters:
 # - affects the otus.df output to csv
+
 bac.rel <- prune_taxa(taxa_sums(bac.rel) > prune_pc, bac.rel) 
 ab.rel <- prune_taxa(taxa_sums(ab.rel) > prune_pc, ab.rel)
 #bac.rel <- prune_taxa(taxa_sums(bac.rel) > 0.1, bac.rel) 
+#unique(tax_table(ab.rel)[,1])
 
 # To simplify plots
 # Remove phyla not seen at more than 1 % in at least 10% of the samples.
@@ -311,7 +315,7 @@ tp <- as.data.frame(tp)
 phyla.df <- as.data.frame(cbind(tax_table(ab.rel.phylum.merged),tp))
 phyla.order <- taxa_names(ab.rel.phylum.merged)[order(taxa_sums(ab.rel.phylum.merged),decreasing = T)]
 phyla.df <- phyla.df[phyla.order,]
-write.csv(phyla.df[ ,c(rank_names(bac)[1:2],sample_names(ab.rel.phylum.merged))],"Elliott_Diamantina_Microbiome_Table_S1[phyla].csv", row.names = FALSE)
+write.csv(phyla.df[ ,c(rank_names(bac)[1:2],sample_names(ab.rel.phylum.merged))],"results/Elliott_Diamantina_Microbiome_Table_S2[phyla].csv", row.names = FALSE)
 
 cyano.rel.g.merged <- merge_samples(subset_samples(cyano.rel.g,element!="air"),"zone")
 otu_table(cyano.rel.g.merged) <- otu_table(cyano.rel.g.merged)/5
@@ -320,7 +324,7 @@ tc <- as.data.frame(tc)
 cyano.df <- as.data.frame(cbind(tax_table(cyano.rel.g.merged),tc))
 cyano.order <- taxa_names(cyano.rel.g.merged)[order(taxa_sums(cyano.rel.g.merged),decreasing = T)]
 cyano.df <- cyano.df[cyano.order,]
-write.csv(cyano.df[ ,c(rank_names(bac)[1:6],sample_names(cyano.rel.g.merged))],"Elliott_Diamantina_Microbiome_Table_S2[cyanobacteria].csv", row.names = FALSE)
+write.csv(cyano.df[ ,c(rank_names(bac)[1:6],sample_names(cyano.rel.g.merged))],"results/Elliott_Diamantina_Microbiome_Table_S3[cyanobacteria].csv", row.names = FALSE)
 
 bac.earthair <- subset_samples(bac,element!="water")
 arc.earthair <- subset_samples(arc,element!="water")
@@ -334,8 +338,6 @@ colScale <- scale_colour_manual(name = "zone",values = myColors)
 @
 
 <<analyse1,echo=FALSE,message=FALSE, results='hide', warning=FALSE, cache=TRUE>>=
-# plot phyla (combined archea, bacteria, and fungi)
-
 rich.ab <- plot_richness(ab,measures = "Chao1",color = "zone", shape="element",x="zone") + geom_point(size=5,alpha=0.7) 
 
 rich.ab <- plot_richness(ab,measures = "Chao1",color = "zone", shape="element",x="zone_code") + geom_point(size=5,alpha=0.7, position=position_dodge(width=1)) 
@@ -347,7 +349,7 @@ ord.ab <- ordinate(ab.earthair, "NMDS", "bray")
 NMDS.ab <- plot_ordination(ab.earthair, ord.ab, type = "sites", color = "zone", shape="element") + geom_point(size=5,alpha=0.7) + theme(aspect.ratio=1) + theme(legend.position="right")
 NMDS.ab$layers <- NMDS.ab$layers[2]
 
-m_reads_total <- sum(get_variable(bac,'n_reads'))/1000000
+m_reads_total <- sum(get_variable(ab,'n_reads'))/1000000
 m_reads_bac_qc <- sum(otu_table(bac))/1000000
 m_reads_arc_qc <- sum(otu_table(arc))/1000000
 
@@ -356,7 +358,7 @@ ord.all <- ordinate(ab, "NMDS", "bray")
 NMDS.all <- plot_ordination(ab, ord.all, type = "sites", color = "zone", shape="element") + geom_point(size=5,alpha=0.7) + theme(aspect.ratio=1) + theme(legend.position="right") + colScale
 NMDS.all$layers <- NMDS.all$layers[2]
 
-pdf("Elliott_Diamantina_Microbiome_Figure_S1[nmds].pdf")
+pdf("results/Elliott_Diamantina_Microbiome_Figure_S1[nmds].pdf")
 print(NMDS.all)
 dev.off()
 
@@ -488,6 +490,7 @@ ab.rel.merged.phylum <- tax_glom(ab.rel.merged,"Phylum")
 t <- t(otu_table(ab.rel.merged))
 t <- as.data.frame(t)
 otus.df <- as.data.frame(cbind(tax_table(ab.rel.merged),t))
+otus.df$OTU <- row.names(otus.df)
 otus.order <- taxa_names(ab.rel.merged)[order(taxa_sums(ab.rel.merged),decreasing = T)]
 otus.df <- otus.df[otus.order,]
 # more info will be added to this DF after DESEQ analysis, then it will be output
@@ -597,7 +600,8 @@ sane <- sign(sigtab.subset$log2FoldChange)==(sign(sigtab.subset$diff))
 # order by diff
 sigtab.subset <- sigtab.subset[order(sigtab.subset$diff,decreasing = T),] 
 # save to file
-write.csv(sigtab.subset,"Elliott_Diamantina_Microbiome_Table_S3[wind].csv")
+# not needed any more - now added this to otus.df
+# write.csv(sigtab.subset,"results/Elliott_Diamantina_Microbiome_Table_S3[wind].csv")
 
 outcols <- c("Phylum",		"Family",	"Genus","padj","air",	"earth") #"Class",	"Order",
 outtab <- sigtab.subset[1:10,outcols]
@@ -616,13 +620,11 @@ n_otu_earth <- length(otus_earth)
 n_otu_air <- length(otus_air)
 
 # record significant OTUs in otus.df for output file / table
-otus.df.bak <- otus.df
-otus.df$sig <- NA
+otus.df$sig <- "-"
 #otus.df[otus_earth,"sig"] <- "soil"
 #otus.df[otus_air,"sig"] <- "air"
 otus.df[row.names(otus.df)%in%otus_earth,"sig"] <- "soil"
 otus.df[row.names(otus.df)%in%otus_air,"sig"] <- "air"
-
 @
 
 
@@ -802,6 +804,7 @@ In addition to the soil crust samples a wind tunnel was run on the dune flank zo
 
 \subsection{Soil properties}
 Total carbon and nitrogen content of soils were determined using a CN element analyser (Leco TruSpec). Particle size distribution was determined by ...
+Soil pH was determined using a Sartorius PY-P10 probe after mixing soil in water according to the method of \citet{rowell1994soil}, scaled down for small samples. 
 
 \subsection{DNA sequencing}
 DNA was extracted in the field within 24 hours of sample collection using a Mobio Powersoil DNA extraction kit according to the manufacturers instructions except for increasing the soil amount slightly to 0.4 g per sample as described previously \citet{elliott2014niche}. DNA sequencing targeted the prokaryotic 16S rRNA gene and was performed by the Centre for Genomic Research (CGR) NERC Facility at the University of Liverpool, using an Illumina MiSeq in a Paired end approach. Resultant FastQ files were processed using QIIME\footnote{a bit more detail will be provided} \citep{caporaso2010qiime} for clustering, OTU table generation, and taxonomy assignment. Clustering used the xx method and operational taxonomic units (OTUs) were defined at 97 \% similarity which typically approximates to species-level differences (REF). These results were analysed using R and the phyloseq package \citep{mcmurdie2013phyloseq} for R.
@@ -903,12 +906,15 @@ colnames(otus.df.out)[colnames(otus.df.out)=="dune flank"] <- "d.flank"
 kable(otus.df.out,row.names = F, digits=2,caption = "OTU abundance in each sampling zone (pc), in order of overall abundance. Sig column indicates if the OTU was significantly more abundant in soil or wind tunnel filter after running the wind tunnel on dune flanks. The 10 most abundant OTUs overall are shown, full table with all OTUs is available in supplementary... \\label{tab:deseq3}")
 
 
-# merge otu differential abundance results from sigtab.subset into otus.df for supplementary data
+# merge otu differential abundance results from sigtab into otus.df for supplementary data
+wanted_cols <- colnames((sigtab))[1:5]
+otus.df <- merge(otus.df,sigtab[,wanted_cols],by="row.names",all.x=TRUE)
+colnames(otus.df)[1] <- "OTU"
 
-#length(row.names(sigtab))
-#length(row.names(otus.df))
+# to make output clearer, properly identify which samples the deseq2 analysis was not done on:
+otus.df$sig[is.na(otus.df$baseMean)] <- NA
 
-write.csv(otus.df[,c(rank_names(ab)[1:7],sample_names(ab.rel.merged),"sig")],"Elliott_Diamantina_Microbiome_Table_S4[otus].csv")
+write.csv(otus.df[,c(rank_names(ab)[1:7],sample_names(ab.rel.merged),"sig",wanted_cols)],"results/Elliott_Diamantina_Microbiome_Table_S4[otus].csv")
 
 @
 
