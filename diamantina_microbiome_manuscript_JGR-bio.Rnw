@@ -133,9 +133,9 @@ concordance=TRUE
 %  Each must be 100 characters or less with no special characters or punctuation
 
 \begin{keypoints}
-\item a
-\item b
-\item c
+\item Microbial community of dry ephemeral lake bed and linked geomorphic features characterised
+\item Wind preferentially mobilises specific taxa from dryland biological soil crusts (biocrusts)
+\item Microbial dispersal mechanisms hypothesised to have variety of geomorphic implications
 \end{keypoints}
 
 %% ------------------------------------------------------------------------ %%
@@ -205,6 +205,10 @@ library(scales)   # needed for formatting y-axis labels to non-scientific type
 library(RColorBrewer)
 library("DESeq2")
 library(knitr)
+library(ggmap)
+library(sp)
+library(rgdal) # needed by sp
+
 # set global chunk options
 opts_chunk$set(fig.path='figure/minimal-', fig.align='center', fig.show='hold', message=FALSE)
 options(formatR.arrow=TRUE,width=90)
@@ -223,6 +227,12 @@ vp.2 <- viewport(layout.pos.col=2, layout.pos.row=1)
 @
 
 <<load,echo=FALSE,message=FALSE, warning=FALSE, cache=TRUE>>=
+
+# set the relative % abundance below which we will discard otus for some
+# processing (.rel objects). This affects the otus.df object which outputs to csv
+# it does not affect richness, NMDS, deseq2 which use full data
+prune_pc <- 0.2
+
 bac <- import_biom("data/otu_table_mc2_w_tax.biom", "data/rep_set.tre",parseFunction = parse_taxonomy_greengenes)
 
 map <- import_qiime(mapfilename = "data/map.txt")
@@ -234,18 +244,23 @@ levels(sample_data(bac)$zone)[levels(sample_data(bac)$zone)=="nebka"] <- "nebkha
 # remove chloroplast
   bac <- subset_taxa(bac,Class!="Chloroplast")
 
+# shorten long OTU names
+  taxa_names(bac) <- gsub("New","N",taxa_names(bac))
+  taxa_names(bac) <- gsub("Cleanup","C",taxa_names(bac))
+  taxa_names(bac) <- gsub("Reference","R",taxa_names(bac))
+  
   # standardise unknown taxon entries
 tax_table(bac)[is.na(tax_table(bac))] <- "Unknown"
 tax_table(bac)[tax_table(bac) %in% c("", "unclassified", "Unclassified")] <- "Unknown"
 
 # keep combined kingdom objects
-expt.combined <- bac
+ab <- bac
 
 # separate archaea and bacteria into different objects
 arc <- subset_taxa(bac,Kingdom=="Archaea")
 bac <- subset_taxa(bac,Kingdom=="Bacteria" )
 
-expt.deseq <- subset_samples(bac,zone=="dune flank")
+expt.deseq <- subset_samples(ab,zone=="dune flank")
 expt.deseq = prune_taxa(taxa_sums(expt.deseq) > 0, expt.deseq)
 # add 1 to the whole OTU table, to avoid infinity problems in deseq analysis
 # this will reduce the fold changes
@@ -254,9 +269,10 @@ otu_table(expt.deseq) <- otu_table(expt.deseq)+1
 # convert OTU observations into relative abundance per sample
 arc.rel <- transform_sample_counts(arc, function(x) 100*x/(sum(x)))
 bac.rel <- transform_sample_counts(bac, function(x) 100*x/(sum(x)))
-expt.combined.rel <- merge_phyloseq(otu_table(bac.rel),tax_table(bac.rel),otu_table(arc.rel),tax_table(arc.rel),sample_data(bac.rel))
+ab.rel <- transform_sample_counts(ab, function(x) 100*x/(sum(x)))
+#ab.rel <- merge_phyloseq(otu_table(bac.rel),tax_table(bac.rel),otu_table(arc.rel),tax_table(arc.rel),sample_data(bac.rel))
 
-expt.combined.rel.phylum <- tax_glom(expt.combined.rel,taxrank = "Phylum")
+ab.rel.phylum <- tax_glom(ab.rel,taxrank = "Phylum")
 cyano.rel <- subset_taxa(bac.rel,Phylum=="Cyanobacteria")
 
 # Identify top phyla and cyano genera - so they can be selectively plotted/analysed
@@ -271,27 +287,28 @@ bac.rel <- subset_taxa(bac.rel, Phylum%in%top.phyla)
 # agglomerate cyanos by genus, used later on
 cyano.rel.g <- tax_glom(cyano.rel,taxrank = "Genus")
 
-# simplify data (speed up processing). If this isn't done it causes long calculation time and problems viewing the PDF. Need to check exactly which outputs this is affecting and whether it matters.
-bac.rel <- prune_taxa(taxa_sums(bac.rel) > 0.2, bac.rel) 
+# simplify data (speed up processing). If this isn't done it causes long calculation time and problems viewing the PDF. Need to check exactly which outputs this is affecting and whether it matters:
+# - affects the otus.df output to csv
+bac.rel <- prune_taxa(taxa_sums(bac.rel) > prune_pc, bac.rel) 
 #bac.rel <- prune_taxa(taxa_sums(bac.rel) > 0.1, bac.rel) 
 
 # To simplify plots
 # Remove phyla not seen at more than 1 % in at least 10% of the samples.
-expt.combined.rel.phylum.rr = filter_taxa(expt.combined.rel.phylum, function(x) sum(x > 1) > (0.1*length(x)), TRUE)
+ab.rel.phylum.rr = filter_taxa(ab.rel.phylum, function(x) sum(x > 1) > (0.1*length(x)), TRUE)
 
 # Save a .csv of all the phylum abundances
-#phylumdf.all = psmelt(tax_glom(expt.combined.rel.phylum,taxrank = "Phylum"))
+#phylumdf.all = psmelt(tax_glom(ab.rel.phylum,taxrank = "Phylum"))
 #write.csv(phylumdf.all,"phylum_breakdown.csv")
 
-expt.combined.rel.phylum.merged <- merge_samples(subset_samples(expt.combined.rel.phylum,element!="air"),"zone")
-otu_table(expt.combined.rel.phylum.merged) <- otu_table(expt.combined.rel.phylum.merged)/5
+ab.rel.phylum.merged <- merge_samples(subset_samples(ab.rel.phylum,element!="air"),"zone")
+otu_table(ab.rel.phylum.merged) <- otu_table(ab.rel.phylum.merged)/5
 
-tp <- t(otu_table(expt.combined.rel.phylum.merged))
+tp <- t(otu_table(ab.rel.phylum.merged))
 tp <- as.data.frame(tp)
-phyla.df <- as.data.frame(cbind(tax_table(expt.combined.rel.phylum.merged),tp))
-phyla.order <- taxa_names(expt.combined.rel.phylum.merged)[order(taxa_sums(expt.combined.rel.phylum.merged),decreasing = T)]
+phyla.df <- as.data.frame(cbind(tax_table(ab.rel.phylum.merged),tp))
+phyla.order <- taxa_names(ab.rel.phylum.merged)[order(taxa_sums(ab.rel.phylum.merged),decreasing = T)]
 phyla.df <- phyla.df[phyla.order,]
-write.csv(phyla.df[ ,c(rank_names(bac)[1:2],sample_names(expt.combined.rel.phylum.merged))],"phyla.csv")
+write.csv(phyla.df[ ,c(rank_names(bac)[1:2],sample_names(ab.rel.phylum.merged))],"Elliott_Diamantina_Microbiome_Table_S1[phyla].csv", row.names = FALSE)
 
 cyano.rel.g.merged <- merge_samples(subset_samples(cyano.rel.g,element!="air"),"zone")
 otu_table(cyano.rel.g.merged) <- otu_table(cyano.rel.g.merged)/5
@@ -300,19 +317,25 @@ tc <- as.data.frame(tc)
 cyano.df <- as.data.frame(cbind(tax_table(cyano.rel.g.merged),tc))
 cyano.order <- taxa_names(cyano.rel.g.merged)[order(taxa_sums(cyano.rel.g.merged),decreasing = T)]
 cyano.df <- cyano.df[cyano.order,]
-write.csv(cyano.df[ ,c(rank_names(bac)[1:6],sample_names(cyano.rel.g.merged))],"cyano.csv")
+write.csv(cyano.df[ ,c(rank_names(bac)[1:6],sample_names(cyano.rel.g.merged))],"Elliott_Diamantina_Microbiome_Table_S2[cyanobacteria].csv", row.names = FALSE)
 
 bac.earthair <- subset_samples(bac,element!="water")
 arc.earthair <- subset_samples(arc,element!="water")
-ab.earthair <- subset_samples(expt.combined,element!="water")
+ab.earthair <- subset_samples(ab,element!="water")
+
+#Create a custom color scale
+myColors <- brewer.pal(7,"Set1")[c(2,1,7,5,3)]
+names(myColors) <- levels(get_variable(bac,"zone"))
+colScale <- scale_colour_manual(name = "zone",values = myColors)
+
 @
 
 <<analyse1,echo=FALSE,message=FALSE, results='hide', warning=FALSE, cache=TRUE>>=
 # plot phyla (combined archea, bacteria, and fungi)
 
-rich.ab <- plot_richness(expt.combined,measures = "Chao1",color = "zone", shape="element",x="zone") + geom_point(size=5,alpha=0.7) 
+rich.ab <- plot_richness(ab,measures = "Chao1",color = "zone", shape="element",x="zone") + geom_point(size=5,alpha=0.7) 
 
-rich.ab <- plot_richness(expt.combined,measures = "Chao1",color = "zone", shape="element",x="zone_code") + geom_point(size=5,alpha=0.7, position=position_dodge(width=1)) 
+rich.ab <- plot_richness(ab,measures = "Chao1",color = "zone", shape="element",x="zone_code") + geom_point(size=5,alpha=0.7, position=position_dodge(width=1)) 
 rich.ab$layers <- rich.ab$layers[3]
 rich.ab$theme$axis.text.x$angle <- 0
 rich.ab$theme$axis.text.x$hjust <- 0.4
@@ -325,13 +348,19 @@ m_reads_total <- sum(get_variable(bac,'n_reads'))/1000000
 m_reads_bac_qc <- sum(otu_table(bac))/1000000
 m_reads_arc_qc <- sum(otu_table(arc))/1000000
 
+# ordinate again with all samples for supplementary data
+ord.all <- ordinate(ab, "NMDS", "bray")
+NMDS.all <- plot_ordination(ab, ord.all, type = "sites", color = "zone", shape="element") + geom_point(size=5,alpha=0.7) + theme(aspect.ratio=1) + theme(legend.position="right") + colScale
+NMDS.all$layers <- NMDS.all$layers[2]
+
+pdf("Elliott_Diamantina_Microbiome_Figure_S1[nmds].pdf")
+print(NMDS.all)
+dev.off()
+
 @
 
 <<locations, echo=FALSE, message=FALSE, results='hide', warning=FALSE, eval=TRUE, cache=TRUE>>=
-library(ggmap)
-library(sp)
-library(rgdal) # needed by sp
-library(RColorBrewer)
+
 # Coordinates conversion to locations on the Earth in the Universal Transverse Mercator (UTM) coordinate system using the sp (spatial points) package. 
 
 # Calculate spatial points based on the lat/lon information
@@ -357,11 +386,6 @@ sample_data(bac) <- cbind(sample_data(bac),UTM.df[,c("easting","northing")])
 @
 
 <<map2,echo=FALSE, message=FALSE, results='hide', warning=FALSE,eval=TRUE, cache=TRUE>>=
-
-#Create a custom color scale
-myColors <- brewer.pal(7,"Set1")[c(2,1,7,5,3)]
-names(myColors) <- levels(get_variable(bac,"zone"))
-colScale <- scale_colour_manual(name = "zone",values = myColors)
 
 # plot using ggmap. This just uses lat/lon, not the spatial points.
 
@@ -448,7 +472,12 @@ soil_only_otus.sum <- round(sum(otu_table(bac.rel.earth.merged)) -  sum(otu_tabl
 
 <<hyp_analysis2,echo=FALSE, results='hide', cache=TRUE>>=
 # working with merged objects to reduce processing time
+# air samples merged separately because of shared zone name
 bac.rel.merged <- merge_samples(subset_samples(bac.rel,element!="air"),"zone")
+bac.rel.merged.air <- merge_samples(subset_samples(bac.rel,element=="air"),"zone")
+sample_names(bac.rel.merged.air) <- "dune flank air"
+bac.rel.merged <- merge_phyloseq(bac.rel.merged,bac.rel.merged.air)
+
 otu_table(bac.rel.merged) <- otu_table(bac.rel.merged)/5
 bac.rel.merged.phylum <- tax_glom(bac.rel.merged,"Phylum")
 
@@ -562,7 +591,7 @@ sane <- sign(sigtab.subset$log2FoldChange)==(sign(sigtab.subset$diff))
 # order by diff
 sigtab.subset <- sigtab.subset[order(sigtab.subset$diff,decreasing = T),] 
 # save to file
-write.csv(sigtab.subset,"windtunnel_otus.csv")
+write.csv(sigtab.subset,"Elliott_Diamantina_Microbiome_Table_S3[wind].csv")
 
 outcols <- c("Phylum",		"Family",	"Genus","padj","air",	"earth") #"Class",	"Order",
 outtab <- sigtab.subset[1:10,outcols]
@@ -581,9 +610,13 @@ n_otu_earth <- length(otus_earth)
 n_otu_air <- length(otus_air)
 
 # record significant OTUs in otus.df for output file / table
+otus.df.bak <- otus.df
 otus.df$sig <- NA
-otus.df[otus_earth,"sig"] <- "soil"
-otus.df[otus_air,"sig"] <- "air"
+#otus.df[otus_earth,"sig"] <- "soil"
+#otus.df[otus_air,"sig"] <- "air"
+otus.df[row.names(otus.df)%in%otus_earth,"sig"] <- "soil"
+otus.df[row.names(otus.df)%in%otus_air,"sig"] <- "air"
+
 @
 
 
@@ -698,7 +731,7 @@ Biological crusts on the claypan typically have a blue-green appearance due to t
 
 % Floods supply fresh sediment and inoculum to the claypan, having the effect of ‘re-zeroing’ the claypan surface, burying the effects of previous biotic and wind erosion activity. Once dry, however, time and climatic variation impact the sediment creating a mosaic of surface types. Source boarding sand dunes provide new sediments, larger, heavier particles that have the capacity to break down fine crusts as they bounce across the claypan. 
 
-<<map_out, echo=FALSE,fig.height=4, warning=FALSE, cache=TRUE,fig.cap='Sampling locations. a. General area of claypan including surrounding water channels; b. Closer view of dune and pan area.\\label{fig:map}'>>=
+<<map_out, echo=FALSE,fig.height=3.8, warning=FALSE, cache=TRUE,fig.cap='Sampling locations. a. General area of claypan including surrounding water channels; b. Closer view of dune and pan area.\\label{fig:map}'>>=
 
 #Extract Legend 
 g_legend<-function(a.gplot){ 
@@ -863,7 +896,14 @@ colnames(otus.df.out)[colnames(otus.df.out)=="dune flank"] <- "d.flank"
 # otus.df.out <- as.numeric(otus.df.out)
 kable(otus.df.out,row.names = F, digits=2,caption = "OTU abundance in each sampling zone (pc), in order of overall abundance. Sig column indicates if the OTU was significantly more abundant in soil or wind tunnel filter after running the wind tunnel on dune flanks. The 10 most abundant OTUs overall are shown, full table with all OTUs is available in supplementary... \\label{tab:deseq3}")
 
-write.csv(otus.df[ ,c(rank_names(bac)[1:7],sample_names(bac.rel.merged))],"all_otus.csv")
+
+# merge otu differential abundance results from sigtab.subset into otus.df for supplementary data
+
+#length(row.names(sigtab))
+#length(row.names(otus.df))
+
+write.csv(otus.df[,c(rank_names(bac)[1:7],sample_names(bac.rel.merged),"sig")],"Elliott_Diamantina_Microbiome_Table_S4[otus].csv")
+
 @
 
 
