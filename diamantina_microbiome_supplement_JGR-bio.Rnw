@@ -74,11 +74,12 @@
 \section*{Additional Supporting Information (Files uploaded separately)}
 
 \begin{enumerate}
-\item Captions for large Tables S1 to S3 (if larger than 1 page, upload as separate excel file)
+\item Caption for Data Set S1
+\item Captions for large Tables S1 and S2 (if larger than 1 page, upload as separate excel file)
 \end{enumerate}
 
-\section*{Introduction}
-
+\section*{Figure S1}
+...
 %Delete all unused file types below. 
 %Copy/paste for multiples of each file type as needed.
 
@@ -87,43 +88,26 @@
 %%EXAMPLE CAPTIONS
 \section*{Data Set S1.} %data/Elliott_Diamantina_Microbiome_Data_S1[otu-tax].biom
 % this data file is otu_table_mc2_w_tax.biom from the analysis pipeline
-
-biom formatted OTU table with taxonomy
+Table of OTU reads per sample and assigned taxonomy. This is the raw OTU table in biom format output from the QIIME pipeline, and starting point of analyses in R.
 
 
 \section*{Large Table S1.} %data/Elliott_Diamantina_Microbiome_Table_S1[sample-metadata].txt
-
-mapping file
+Sample metadata include GPS locations and soil properties. This is a tab separated text file as used in the QIIME pipeline and other downstream analyses. 
 
 \section*{Large Table S2.} %Elliott_Diamantina_Microbiome_Table_S2[phyla].csv
 
 relative abundance of all prokaryotic phyla. 
+
 
 \section*{Large Table S3.} %Elliott_Diamantina_Microbiome_Table_S3[cyanobacteria].csv
 
 relative abundance of cyanobacteria
 
 \section*{Large Table S4.} %Elliott_Diamantina_Microbiome_Table_S4[otus].csv
+OTU taxonomy and relative abundance in each sampling zone (pc). This is an extended version of excerpt tables XX and XX presentd in the main manuscript manuscript. Sig column indicates if the OTU was significantly more abundant in soil or wind tunnel filter after running the wind tunnel on dune flanks. Columns to the right of this show the statistical results from DESEQ2 analysis which are the basis for the interpretation of differential mobilisation of OTUs by wind tunnel treatment. OTUs with an overall relative abundance less than 0.2 perecnt are excluded.
 
-OTU abundance in each sampling zone (pc) - full version of excerpt tables presentd in manuscript. Sig column indicates if the OTU was significantly more abundant in soil or wind tunnel filter after running the wind tunnel on dune flanks. Differential mobilisation of OTUs by wind tunnel treatment
-
-\section*{Movie S1.} 
-
-Type or paste caption here.
-
-Upload your movie(s) to AGU's journal submission site and select,
-"Supporting Information (SI)" as the file type. Following naming convention: ms01.
-
-Repeat any additional Supporting movies
-
-\section*{Audio S1.} 
-
-Type or paste caption here.
-
-Upload your audio file(s) to AGU's journal submission site and select
-Supporting Information ``(SI)" as the file type. Following naming
-convention: auds01.
-
-Repeat for any additional Supporting audio files
 
 \end{document}
+
+
+
