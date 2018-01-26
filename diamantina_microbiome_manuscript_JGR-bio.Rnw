@@ -636,7 +636,9 @@ colnames(tax_table(ab.rel.ea.p))[1] <- "source"
 tax_table(ab.rel.ea.p)[,"source"] <- "not found in river"
 tax_table(ab.rel.ea.p)[taxa_names(ab.rel.ea.p)%in%waterborne_otus,"source"] <- "found in river"
 
-water_otus_plot <- plot_bar(ab.rel.ea.p,x = "zone",fill = "source")
+ab.rel.ea.p.top <- subset_taxa(ab.rel.ea.p, Phylum%in%top.phyla)
+
+water_otus_plot <- plot_bar(ab.rel.ea.p.top,x = "zone",fill = "source")
 water_otus_plot <- water_otus_plot + geom_bar(aes(color=source, fill=source), stat="identity", position="stack") 
 water_otus_plot <- water_otus_plot + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Set1",direction = -1) + scale_color_brewer(palette = "Set1",direction = -1)
 water_otus_plot <- water_otus_plot + facet_wrap(~Phylum, nrow=2) + theme(legend.position="bottom")
@@ -664,6 +666,8 @@ tax_table(ab.rel.ea.p)[,"behaviour"] <- "intermediate"
 tax_table(ab.rel.ea.p)[row.names(tax_table(ab.rel.ea.p))%in%otus_air,"behaviour"] <- "easily becomes airborne"
 tax_table(ab.rel.ea.p)[row.names(tax_table(ab.rel.ea.p))%in%otus_earth,"behaviour"] <- "resists becoming airborne"
 
+ab.rel.ea.p.top <- subset_taxa(ab.rel.ea.p, Phylum%in%top.phyla)
+
 colnames(tax_table(bac.rel.ea.cyano))[1] <- "behaviour"
 tax_table(bac.rel.ea.cyano)[,"behaviour"] <- "intermediate"
 tax_table(bac.rel.ea.cyano)[row.names(tax_table(bac.rel.ea.cyano))%in%otus_air,"behaviour"] <- "easily becomes airborne"
@@ -681,7 +685,7 @@ deseq_n_diff_earth <- length(sigtab.subset[sigtab.subset$diff>0,"diff"] )
 <<source_analysis2, echo=FALSE, message=FALSE, cache=TRUE>>=
 ###
 
-wind_otus_plot <- plot_bar(ab.rel.ea.p,x = "zone",fill = "behaviour")
+wind_otus_plot <- plot_bar(ab.rel.ea.p.top,x = "zone",fill = "behaviour")
 wind_otus_plot <- wind_otus_plot + geom_bar(aes(color=behaviour, fill=behaviour), stat="identity", position="stack") 
 wind_otus_plot <- wind_otus_plot + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Accent") + scale_color_brewer(palette = "Accent")
 wind_otus_plot <- wind_otus_plot + facet_wrap(~Phylum, nrow=2) + theme(legend.position="bottom")
@@ -713,7 +717,7 @@ A conceptual model shown in Figure \ref{fig:dispersal-hazards} illustrates inter
 
 \begin{figure}
   \centering
-      \includegraphics[width=1\textwidth]{img/dispersal-hazards-fig}
+      \includegraphics[width=1\textwidth]{figure/dispersal-hazards-fig}
   \caption{Photographs of main system compartments with identification of key hazards for microbial life and illustration of expected linkages by Aeolian and hydrological transfer of sediment and inoculum. In our sampling the sand dune flank samples belong to the sand dune compartment and the nebkha samples belong to the claypan compartment - these are expected to be subject to the same respective hazards and linkages.}
   \label{fig:dispersal-hazards}
 \end{figure}
@@ -778,14 +782,14 @@ Sampled areas were 10x10 cm and were selected to represent the diversity of bioc
 
 \begin{figure}
   \centering
-      \includegraphics[trim = 17mm 10mm 17mm 10mm, clip,width=1\textwidth]{photos/photos1}
+      \includegraphics[trim = 17mm 10mm 17mm 10mm, clip,width=1\textwidth]{figure/photos1}
   \caption{Photographs of sampling areas including detail of nebkha and crust formations on the claypan.}
   \label{fig:photo-area}
 \end{figure}
 
 \begin{figure}
   \centering
-      \includegraphics[trim = 17mm 10mm 17mm 10mm, clip,width=1\textwidth]{photos/photos2}
+      \includegraphics[trim = 17mm 10mm 17mm 10mm, clip,width=1\textwidth]{figure/photos2}
   \caption{Photographs taken during soil sampling, showing cuts made to 10 cm x 10 cm square areas of crust prior to lifting aseptically.}
   \label{fig:photo-sampling}
 \end{figure}
@@ -889,17 +893,25 @@ Of the \Sexpr{pan.ntaxa} OTUs found in the claypan, \Sexpr{channel_pan.intersect
 
 The DESeq2 model based approach \citep{love2014moderated} was used to identify OTUs with significantly different abundance between the dune flank soil and the collected dust derived from the same soil obtained by wind tunnel treatment. This technique avoids problems associated with uneven sampling effort and includes correction for multiple testing. The results (adjusted p \textless 0.05) indicated that \Sexpr{deseq_n_diff_air} OTUs (\Sexpr{round(deseq_sum_diff_air*-1)} \% of reads) were  more abundant in air samples and \Sexpr{deseq_n_diff_earth} OTUs (\Sexpr{round(deseq_sum_diff_earth)} \% of reads) were more abundant in soil samples. Details for a subset of these OTUs are shown in Tables \ref{tab:deseq1} and \ref{tab:deseq2} (extended results provided in Table S4). Results from these analyses were used to colour code Figures \ref{fig:waterp} and \ref{fig:waterc} to indicate whether taxa easily become airborne under windy conditions or not. It can be seen from these figures that some phyla and particualr cyanobacterial genera differed in abundance between the dune flank soil and airborne dust liberated from the same soil by wind tunnel treatment. For example phylum \textit{Cyanobacteria} was more abundant in soil (resist becoming airborne) and phylum \textit{Firmicutes} was more abundant in dust (easily become airborne). Detail of cyanobacterial distribution given in Figure \ref{fig:waterc} shows that \textit{Phormidium} and \textit{Microcoleus} species were more common in soil compared to airborne dust, whereas \textit{Leptolyngbya} species were more common in the soil compared to dust. \textit{Nodularia} species and \textit{Synechococcus} species were more common in water channels compared to soils, whilst the other genera mentioned were more common in soils. 
 
+
 <<deseq_out1, echo=FALSE, cache=FALSE>>=
 kable(outtab, digits=2, caption = "OTUs which are significantly more abundant in soil compared to dust blown from the soil. This is a subset of the DESeq2 analysis output, sorted by magnitude of difference in abundance. The padj column indicates the probability of the observed distribution including adjustment for multiple testing. Extended results are provided in Table S4. \\label{tab:deseq1}")
+@
 
+
+<<deseq_out2, echo=FALSE, cache=FALSE>>=
 kable(outtab2, digits=2,caption = "OTUs which are significantly more abundant in dust blown from the soil compared to the whole soil. This is a subset of the DESeq2 analysis output, sorted by magnitude of difference in abundance. Extended results are provided in Table S4. \\label{tab:deseq2}")
+@
 
+<<deseq_out3, echo=FALSE, cache=FALSE>>=
 otus.df.out <- otus.df[1:10,c(rank_names(ab)[c(2,6)],sample_names(ab.rel.merged)[-6],"sig")]
 colnames(otus.df.out)[colnames(otus.df.out)=="dune flank"] <- "d.flank"
 # class(otus.df$dune)
 # otus.df.out <- as.numeric(otus.df.out)
 kable(otus.df.out,row.names = F, digits=2,caption = "OTU abundance in each sampling zone (pc), in order of overall abundance. Sig column indicates if the OTU was significantly more abundant in soil or wind tunnel filter after running the wind tunnel on dune flanks. The 10 most abundant OTUs overall are shown, extended results are provided in Table S4. \\label{tab:deseq3}")
+@
 
+<<deseq_out4, echo=FALSE, cache=FALSE>>=
 # merge otu differential abundance results from sigtab into otus.df for supplementary data
 wanted_cols <- colnames((sigtab))[1:6]
 otus.df <- merge(otus.df,sigtab[,wanted_cols],by="row.names",all.x=TRUE)
@@ -909,7 +921,6 @@ otus.df <- merge(otus.df,sigtab[,wanted_cols],by="row.names",all.x=TRUE)
 otus.df$sig[is.na(otus.df$baseMean)] <- NA
 
 write.csv(otus.df[,c("OTU",rank_names(ab)[1:7],sample_names(ab.rel.merged),"sig",wanted_cols)],"results/Elliott_Diamantina_Microbiome_Table_S4[otus].csv",row.names=FALSE)
-
 @
 
 
@@ -965,7 +976,7 @@ We propose that biocrust microbes in common with other organisms also have a var
     \hline
     Aerial\newline{}e.g. \textit{Deinococcus} sp. (Thermi); \textit{Hymenobacter} sp. (Bacteroidetes) & Recently exposed soil and transient landscape features. Possibly active whilst airborne.\newline{}e.g. nebkha & copiotrophic\newline{}exploitative\newline{}Limited recovery from localised disturbance\newline{}Medium water requirement & Partially stabilise soil\newline{}Promote moderate dust production including removal of soil nutrients \\
     \hline
-    Fluvial\newline{}e.g. \textit{Nodularia} spp. & Water bodies, flood plains and pans\newline{}e.g. claypan & Copiotrophic\newline{}Excludes aerial invaders\newline{}Poor ability to recover from localised disturbance\newline{}High water requirement & Partially stabilise soil\newline{}Suppress dust production\newline{}Neutral soil fertility influence \\
+    Fluvial\newline{}e.g. \textit{Microcoleus} spp. & Water bodies, flood plains and pans\newline{}e.g. claypan & Copiotrophic\newline{}Excludes aerial invaders\newline{}Poor ability to recover from localised disturbance\newline{}High water requirement & Partially stabilise soil\newline{}Suppress dust production\newline{}Neutral soil fertility influence \\
     \end{tabular}%
     \label{tab:concept}%
 \end{sidewaystable}%
