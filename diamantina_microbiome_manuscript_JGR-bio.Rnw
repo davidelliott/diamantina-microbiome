@@ -219,7 +219,7 @@ theme_set(theme_bw())
 # setup grid
 g0 <- grid.layout(nrow=2, ncol=1)
 vp.01 <- viewport(layout.pos.col=1, layout.pos.row=1) 
-vp.02 <- viewport(layout.pos.col=1, layout.pos.row=2,)
+vp.02 <- viewport(layout.pos.col=1, layout.pos.row=2)
 
 gl <- grid.layout(nrow=1, ncol=2)
 vp.1 <- viewport(layout.pos.col=1, layout.pos.row=1) 
@@ -809,7 +809,7 @@ Water channels were sampled by dragging a 5 ml sterile bijoux along the bank whe
 In addition to the soil crust samples a wind tunnel was run on the dune flank zones within 3 m of where the soil crust sampling was done. The wind tunnel was a duct-type design equipped with a sediment collection trap in which sterile Whatman xx\footnote{need filter paper type} filter papers were fitted. Further details of design and operation have previously been described by \citet{strong2016development}\footnote{should provide a bit more detail here}. The wind tunnel was run on dune flanks because they are naturally eroded by saltation impact from the dune sand above when it is windy, therefore the potential as an inoculum source to surrounding areas is greater than the higher dune areas. At each site the wind tunnel was run three times on adjacent areas for 5 minutes at 10 m/s for 5 minutes\footnote{Helene collected data to determine the exact run conditions}. This is a moderate treatment intended to be realistic and to collect only the easily mobilised particles / organisms. 
 
 \subsection{Soil properties}
-Total carbon and nitrogen content of soils were determined using a CN element analyser (Leco TruSpec). Particle size distribution was determined by ...\footnote{Jo please can you provide method}. 
+Total carbon and nitrogen content of soils were determined using a CN element analyser (Leco TruSpec). Particle size distribution was determined using a Beckman-Coulter LS280 laser-sizer in the range 0.375-2000 um with 93 class intervals. 
 Soil pH was determined using a Sartorius PY-P10 probe after mixing soil in water according to the method of \citet{rowell1994soil}, scaled down for small samples. 
 
 \subsection{DNA sequencing}
@@ -820,15 +820,33 @@ DNA was extracted in the field within 24 hours of sample collection using a Mobi
 \label{sec:res}
 
 \subsection{Soil properties}
-... (Figure \ref{fig:chem})\footnote{awaiting final particle size data}.
+abc (Figure \ref{fig:chem})
+
 
 <<chem_out, echo=FALSE,fig.height=2,fig.cap='Mean total carbon and nitrogen (percent w/w) and pH of soil in and around Lake Constance claypan at Diamantina National Park, Australia. Error bars represent the standard error of the mean for each soil type (n = 5). Sample coding for soil types: D sand dune, DF dune flank, N nebkha, P pan surface. \\label{fig:chem}', warning=FALSE, cache=TRUE>>=
 # melt for plotting
-chemistry.melt <- melt(sample_data(bac.earthair),measure.vars=c("N_pc","C_pc","pH"),)
+chemistry.melt <- melt(sample_data(bac.earthair),measure.vars=c("N_pc","C_pc","pH"))
 chemistry.melt$variable <- revalue(chemistry.melt$variable, c("N_pc"="nitrogen", "C_pc"="carbon"))
 # make the plot 
 print(ggplot(chemistry.melt, aes(x=zone_code, y=value, shape=element, colour=zone)) + stat_summary(fun.data = "mean_se", size=1) + facet_wrap(~variable,scales = "free_y",nrow=1) + labs(x = "zone") + theme(aspect.ratio=1,legend.position="none") + colScale )
 @
+
+The dune and dune flank sediments are very similar in terms of particle-size distribution.  They are dominated by very fine to fine sands (46-48 pc) with the modal particle-size in the range 185-270 um.  The dune sediments are slightly coarser overall containing a higher percentage of medium and coarse sands and lower percentages of silt and clay than the dune flank (Table \ref{tab:partsize}).  The nebkha are also dominated by very fine to fine sands (60pc; mode 169-185 um) and the sediments are well-sorted.  The pan sites are less well sorted than any of the sites dominated by wind-blown material.  The pan sites include the highest proportion of clay (c. 10 pc) and silts (55 pc total) and lowest percentage of sand-sized material (<35 pc).
+
+<<partsize_out, echo=FALSE, cache=FALSE>>=
+
+
+partsizetab <- data.frame(Clay = c(4.39,5.10,3.98,9.52),
+                          Very_fine_silt = c(7.59,8.67,6.99,21.10),
+                          Medium_coarse_silt = c(17.95,23.82,17.09,35.54),
+                          Very_fine_fine_sand = c(48.17,46.33,59.72,28.70),
+                          Medium_coarse_sand = c(21,16.09,12.23,6.14),
+                          row.names = c("Dune","Dune Flank","Nebkha","Pan"), check.names="F")
+
+kable(partsizetab, digits=2, caption = "Mean pc volume of sediment by size class for all sites. \\label{tab:partsize}")
+@
+
+
 
 \subsection{DNA sequencing and general microbial community composition}
 DNA was successfully extracted and sequenced from \Sexpr{nsamples(bac)} samples, yielding \Sexpr{round(m_reads_total,1)} million reads. After pairing reads and quality control \Sexpr{round(m_reads_bac_qc,1)} million bacterial reads and \Sexpr{round(m_reads_arc_qc,1)} million archaeal reads remained. 
