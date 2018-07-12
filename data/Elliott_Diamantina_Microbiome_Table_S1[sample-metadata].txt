@@ -1,4 +1,4 @@
-#SampleID	BarcodeSequence	LinkerPrimerSequence	sample_ID	DNA_ID	zone	zone_code	element	transect	lat	lon	filter_yield_g	DNA_ng_per_ul	N_pc	C_pc	pH	ps_d10	ps_d50	ps_d90	ps_sp.surf.area	ps_lt4	ps_4-16	ps_16-63	ps_63-250	ps_gt250	n_reads	Description
+#SampleID	BarcodeSequence	LinkerPrimerSequence	sample_ID	DNA_ID	zone	zone_code	element	transect	lat	lon	filter_yield_g	DNA_ng_per_ul	N_pc	C_pc	pH	ps_d10	ps_d50	ps_d90	ps_sp.surf.area	ps_lt4	ps_4to16	ps_16to63	ps_63to250	ps_gt250	n_reads	Description
 dune1	notused	notused	1	333	dune	D	earth	1	-23.783576	141.011798	NA	16.2	0.0428	0.2948	6.3	14.44	125	306.9	2903	4.183	7.2	21.57	51.61	15.4317	726003	1: Sand dune 1
 dune2	notused	notused	2	334	dune	D	earth	2	-23.781323	141.00902	NA	34.9	0.0551	0.3816	6.26	30.49	177.9	398.3	1869	2.604	4	13.59	51.94	27.8124	1049687	2: Sand dune 2
 dune3	notused	notused	3	335	dune	D	earth	3	-23.772664	140.998775	NA	17	0.0436	0.3148	6.38	9.356	96.72	270.2	3807	5.5	10.66	25.15	47.37	11.294	996395	3: Sand dune 3
