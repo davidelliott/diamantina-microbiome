@@ -240,6 +240,8 @@ bac <- merge_phyloseq(bac,map)
 
 # fix incorrect spelling of nebkha in the biom file.
 levels(sample_data(bac)$zone)[levels(sample_data(bac)$zone)=="nebka"] <- "nebkha"
+sample_names(bac) <- gsub(pattern = "nebka" , x = sample_names(bac), replacement = "nebkha")
+
 
 # remove chloroplast
   bac <- subset_taxa(bac,Class!="Chloroplast")
@@ -365,14 +367,7 @@ pdf("results/Elliott_Diamantina_Microbiome_Figure_S1[nmds].pdf")
 print(NMDS.all)
 dev.off()
 
-# ordinate using phyloseq for stepwise model fitting
-ord.step <- ordinate(ab.earth, "CCA") # this takes a long time
-plot(ord.step, display="sites")
-
-# get map out of phyloseq object
-map.df3 <- data.frame(sample_data(ab.earth.rel))
-
-
+# ordinate using phyloseq then stepwise model fitting
 # define some limit models for automatic model building
 mod0 <- ordinate(ab.earth.rel, "RDA", formula = ~ 1) # Model with intercept only
 mod1 <- ordinate(ab.earth.rel, "RDA", formula = ~ N_pc + C_pc + pH + ps_d10 + ps_d50 + ps_d90 + ps_sp.surf.area + ps_lt4 + ps_4to16 + ps_16to63 + ps_63to250 + ps_gt250 ) # Model with all explanatory variables
@@ -384,11 +379,10 @@ step.result$anova
 
 # Plot the automatically selected model
 
-levels(map.df3$zone)
 
 cols <- c("green4", "mediumblue", "red2", "black")
 plot(step.result,type = "none")
-points(step.result,pch=as.numeric(map.df3$zone_code), col=cols[as.numeric(map.df3$zone_code)])
+points(step.result,pch=as.numeric(sample_data(ab.earth.rel)$zone_code), col=cols[as.numeric(sample_data(ab.earth.rel)$zone_code)])
 points(step.result, display = "cn", lwd=1.5,head.arrow = 0.15 )
 text(step.result, display = "cn")
 text(step.result)
@@ -431,7 +425,7 @@ loc <- c(lon = mean(get_variable(bac,"lon")), lat = mean(get_variable(bac,"lat")
 locZoom <- c(lon = mean(get_variable(bac,"lon")[get_variable(bac,"zone")!="channel"]), lat = mean(get_variable(bac,"lat")[get_variable(bac,"zone")!="channel"]))
 locZoom2 <- c(lon = mean(get_variable(bac,"lon")[1:2]), lat = mean(get_variable(bac,"lat")[1:2] ))
 
-locZoom2 <- c(lon = mean(samples_latlon$lon["dune4"]), lat = mean(samples_latlon$lat["nebka4"] ))
+locZoom2 <- c(lon = mean(samples_latlon$lon["dune4"]), lat = mean(samples_latlon$lat["nebkha4"] ))
 
 dMap <- get_map(location=loc, source="google", maptype = "satellite", zoom = 11)
 dMapZoom <- get_map(location=locZoom, source="google", maptype = "satellite", zoom = 14)
