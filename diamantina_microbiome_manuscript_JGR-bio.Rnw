@@ -373,20 +373,20 @@ mod0 <- ordinate(ab.earth.rel, "RDA", formula = ~ 1) # Model with intercept only
 mod1 <- ordinate(ab.earth.rel, "RDA", formula = ~ N_pc + C_pc + pH + ps_d10 + ps_d50 + ps_d90 + ps_sp.surf.area + ps_lt4 + ps_4to16 + ps_16to63 + ps_63to250 + ps_gt250 ) # Model with all explanatory variables
 
 # Use ordistep to select constraints for RDA
-(step.result <- ordistep(object=mod0,scope=formula(mod1),direction="forward"))
-step.result$call
-step.result$anova
+step.result <- ordistep(object=mod0,scope=formula(mod1),direction="both")
+#step.result$call
+#step.result$anova
 
-# Plot the automatically selected model
+# Plot the automatically selected model (for supplementary info)
 
-
-cols <- c("green4", "mediumblue", "red2", "black")
+pdf("results/Elliott_Diamantina_Microbiome_Figure_S1A[RDA].pdf")
+cols <- myColors[c("dune","dune flank", "nebkha","pan")]
 plot(step.result,type = "none")
 points(step.result,pch=as.numeric(sample_data(ab.earth.rel)$zone_code), col=cols[as.numeric(sample_data(ab.earth.rel)$zone_code)])
 points(step.result, display = "cn", lwd=1.5,head.arrow = 0.15 )
 text(step.result, display = "cn")
-text(step.result)
-
+text(step.result, col=cols[as.numeric(sample_data(ab.earth.rel)$zone_code)])
+dev.off()
 
 
 @
@@ -838,8 +838,15 @@ Total carbon and nitrogen content of soils were determined using a CN element an
 Soil pH was determined using a Sartorius PY-P10 probe after mixing soil in water according to the method of \citet{rowell1994soil}, scaled down for small samples. 
 
 \subsection{DNA sequencing}
-DNA was extracted in the field within 24 hours of sample collection using a Mobio Powersoil DNA extraction kit according to the manufacturers instructions except for increasing the soil amount slightly to 0.4 g per sample as described previously \citet{elliott2014niche}. DNA sequencing targeted the prokaryotic 16S rRNA gene and was performed by the Centre for Genomic Research (CGR) NERC Facility at the University of Liverpool, using an Illumina MiSeq in a Paired end approach. Resultant FastQ files were processed using QIIME \citep{caporaso2010qiime}. Clustering used the UCLUST method \citep{edgar2010search} with open-reference approach using the Greengenes 16S rRNA reference database (REF). Operational taxonomic units (OTUs) were defined at 97 \% similarity which typically approximates to species-level differences (REF). Quality control procedures included... Resulting OTU tables with assigned taxonomy were analysed using R and the phyloseq package \citep{mcmurdie2013phyloseq} for R.\footnote{DE to check and fill in some detail here}
+DNA was extracted in the field within 24 hours of sample collection using a Mobio Powersoil DNA extraction kit according to the manufacturers instructions except for increasing the soil amount slightly to 0.4 g per sample as described previously \citet{elliott2014niche}. DNA sequencing targeted the prokaryotic 16S rRNA gene and was performed by the Centre for Genomic Research (CGR) NERC Facility at the University of Liverpool, using an Illumina MiSeq in a Paired end approach. 
 
+\subsection{Bioinformatics}
+FastQ files from DNA sequencing were processed using QIIME \citep{caporaso2010qiime} with default settings. Clustering used the UCLUST method \citep{edgar2010search} and open-reference OTU picking using the Greengenes 16S rRNA reference database \citep{desantis2006greengenes}. OTUs were defined at 97 \% similarity which typically approximates to species-level differences \citep{stackebrandt1994taxonomic}. 
+
+\subsection{Statistics}
+OTU tables with assigned taxonomy from the bioinformatics pipeline were analysed using R \citep{R2017} with the phyloseq \citep{mcmurdie2013phyloseq} and vegan packages \citep{oksanen2017vegan}. Sequences identified as originating from chloroplasts or  mitochondria were removed. Microbial community structure was visualised with respect to sample source using nonmetric multidimensional scaling (NMDS) based on Bray-Curtis dissimilarity. Possible correlation of measured variables with microbial community structure was evaluated by stepwise model building to select constraining variables for redundancy analysis (RDA), and using anova to test significance of variables to the model. All measured variables were used in this process including pH, C, N, and a range of particle size parameters (variables are available in supp....). Alpha diversity was evaluated by calculating the Chao1 richness estimate for each sample.
+
+To identify OTUs with different relative abundance in the wind tunnel collection filter compared to the source dune flank soil we used the model based DESeq2 approach \citep{love2014moderated} as implemented in the phyloseq package. The DESeq2 technique includes correction for multiple testing and is highly efficient on data preservation because it eliminates the need to perform rarefaction or normalization of count data \citep{mcmurdie2014waste}. 
 
 \section{Results}
 \label{sec:res}
@@ -856,7 +863,7 @@ chemistry.melt$variable <- revalue(chemistry.melt$variable, c("N_pc"="nitrogen",
 print(ggplot(chemistry.melt, aes(x=zone_code, y=value, shape=element, colour=zone)) + stat_summary(fun.data = "mean_se", size=1) + facet_wrap(~variable,scales = "free_y",nrow=1) + labs(x = "zone") + theme(aspect.ratio=1,legend.position="none") + colScale )
 @
 
-The dune and dune flank sediments are very similar in terms of particle-size distribution.  They are dominated by very fine to fine sands (46-48 pc) with the modal particle-size in the range 185-270 um.  The dune sediments are slightly coarser overall containing a higher percentage of medium and coarse sands and lower percentages of silt and clay than the dune flank (Table \ref{tab:partsize}).  The nebkha are also dominated by very fine to fine sands (60pc; mode 169-185 um) and the sediments are well-sorted.  The pan sites are less well sorted than any of the sites dominated by wind-blown material.  The pan sites include the highest proportion of clay (c. 10 pc) and silts (55 pc total) and lowest percentage of sand-sized material (<35 pc).
+The dune and dune flank sediments are very similar in terms of particle-size distribution.  They are dominated by very fine to fine sands (46-48 \%) with the modal particle-size in the range 185-270 $\mu$m.  The dune sediments are slightly coarser overall containing a higher percentage of medium and coarse sands and lower percentages of silt and clay than the dune flank (Table \ref{tab:partsize}).  The nebkha are also dominated by very fine to fine sands (60 \%; mode 169-185 $\mu$m) and the sediments are well-sorted.  The pan sites are less well sorted than any of the sites dominated by wind-blown material.  The pan sites include the highest proportion of clay (c. 10 \%) and silts (55 \% total) and lowest percentage of sand-sized material ($<$35 \%).
 
 <<partsize_out, echo=FALSE, cache=FALSE>>=
 
@@ -878,7 +885,7 @@ DNA was successfully extracted and sequenced from \Sexpr{nsamples(bac)} samples,
 
 There were \Sexpr{ntaxa(bac)} bacterial OTUs and \Sexpr{ntaxa(arc)} archael OTUs detected (OTUs defined by 97 \% similarity which is approximately species-level difference between OTUs). This analysis was planned to target bacteria, and as archaea make up only \Sexpr{round(100*m_reads_arc_qc / m_reads_bac_qc,1)} \% of sequences bacteria are the main focus of this paper, however archaeal reads were retained for the analyses. The Chao1 species richness estimation (Figure \ref{fig:community}) indicated in excess of 10,000 species present in each sample, without striking differences with respect to sample type. 
 
-Microbial community structure was compared with respect to sample source using nonmetric multidimensional scaling (NMDS). Initial results (Figure S1) showed that the water samples differed extremely compared to all other samples, and this dominated all other inter-sample differences. The water samples were therefore excluded from the NMDS to reveal the community stucutre relationships between the soil and airborne dust samples as shown in Figure \ref{fig:community}. The dune community differs from the dune flank community, and the airborne dust community derived from the dune flank differs from the dune flank community. Notably the dust community has a community structure approximately intermediate between the dune and nebkha communities.
+Initial visualisation of microbial community structure by NMDS (Figure S1) showed that the water samples differed extremely compared to all other samples, and this dominated all other inter-sample differences. The water samples were therefore excluded from the NMDS to reveal the community stucutre relationships between the soil and airborne dust samples as shown in Figure \ref{fig:community}. The dune community differs from the dune flank community, and the airborne dust community derived from the dune flank differs from the dune flank community. Notably the dust community has a community structure approximately intermediate between the dune and nebkha communities.
 
 <<community_out, echo=FALSE,fig.height=3.8, warning=FALSE, cache=TRUE,fig.cap='Prokaryotic microbial community diversity of soil (sand dunes, claypan, and nebkha), water channels, and airborne dust (from sand dunes). a. Chao1 richness estimate (alpha diversity); b. NMDS visualisation of community structure (beta diversity). Water channel data are not shown on the NMDS plot because of extreme dissimilarity to other samples.\\label{fig:community}'>>=
 
