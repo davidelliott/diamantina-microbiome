@@ -555,13 +555,21 @@ map3 <- basemapZoom2 + geom_point(aes(x = lon, y = lat, colour=zone,shape=elemen
 
 @
 
-<<hyp_analysis,echo=FALSE, results='hide', cache=TRUE>>=
+<<hyp_analysis,echo=FALSE, results='hide', cache=FALSE>>=
 # no output from this block but kept for now as it calculates some useful results/objects.
 # Might be suitable for output as small table or in text mention.
 
-channel <- subset_samples(ab.rel,zone=="channel")
-dune <- subset_samples(ab.rel,element=="air")
-pan <- subset_samples(ab.rel,zone=="pan")
+channel.rel <- subset_samples(ab.rel,zone=="channel")
+dune.rel <- subset_samples(ab.rel,element=="air")
+pan.rel <- subset_samples(ab.rel,zone=="pan")
+
+channel <- subset_samples(ab,zone=="channel")
+dune <- subset_samples(ab,element=="air")
+pan <- subset_samples(ab,zone=="pan")
+
+channel.rel <- prune_taxa(taxa_sums(channel.rel)>0,channel.rel)
+dune.rel <- prune_taxa(taxa_sums(dune.rel)>0,dune.rel)
+pan.rel <- prune_taxa(taxa_sums(pan.rel)>0,pan.rel)
 
 channel <- prune_taxa(taxa_sums(channel)>0,channel)
 dune <- prune_taxa(taxa_sums(dune)>0,dune)
@@ -570,6 +578,8 @@ pan <- prune_taxa(taxa_sums(pan)>0,pan)
 channel.ntaxa <- ntaxa(channel)
 dune.ntaxa <- ntaxa(dune)
 pan.ntaxa <- ntaxa(pan)
+
+
 
 channel_dune.intersection <- intersect(taxa_names(channel),taxa_names(dune))
 channel_dune.intersection.n <- length(channel_dune.intersection)  
@@ -606,7 +616,7 @@ otu_table(channel_dune) <- otu_table(channel_dune)/5
 ab.rel.earth <- subset_samples(ab.rel,element=="earth")
 ab.rel.earth.merged <- merge_samples(ab.rel.earth,rep(T,nsamples(ab.rel.earth)))
 otu_table(ab.rel.earth.merged) <- otu_table(ab.rel.earth.merged)/nsamples(ab.rel.earth)
-inoc_source_otus <- unique(c(taxa_names(channel),taxa_names(dune)))
+inoc_source_otus <- unique(c(taxa_names(channel.rel),taxa_names(dune.rel)))
 
 soil_only_otus.sum <- round(sum(otu_table(ab.rel.earth.merged)) -  sum(otu_table(ab.rel.earth.merged)[,inoc_source_otus]),1)
 
