@@ -1,90 +1,77 @@
-\documentclass[linenumbers]{agujournal}
+%% 11/23/2015
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% AGUJournalTemplate.tex: this template file is for articles formatted with LaTeX
+%
+% This file includes commands and instructions
+% given in the order necessary to produce a final output that will
+% satisfy AGU requirements. 
+%
+% You may copy this file and give it your
+% article name, and enter your text.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PLEASE DO NOT USE YOUR OWN MACROS
+% DO NOT USE \newcommand, \renewcommand, or \def, etc.
+%
+% FOR FIGURES, DO NOT USE \psfrag or \subfigure.
+% DO NOT USE \psfrag or \subfigure commands.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% All questions should be e-mailed to latex@agu.org.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 1: Set the \documentclass
+%
+% There are two options for article format:
+%
+% 1) PLEASE USE THE DRAFT OPTION TO SUBMIT YOUR PAPERS.
+% The draft option produces double spaced output.
+% 
+% 2) numberline will give you line numbers.
+
 %% To submit your paper:
 %% \documentclass[linenumbers,draft]{agujournal}
+\documentclass[linenumbers,draft]{agujournal}
+
+%% For final version.
+% \documentclass{agujournal}
+
+% Now, type in the journal name: \journalname{<Journal Name>}
+
+% ie, \journalname{Journal of Geophysical Research}
+%% Choose from this list of Journals:
+%
+% JGR-Atmospheres
+% JGR-Biogeosciences
+% JGR-Earth Surface
+% JGR-Oceans
+% JGR-Planets
+% JGR-Solid Earth
+% JGR-Space Physics
+% Global Biochemical Cycles
+% Geophysical Research Letters
+% Paleoceanography
+% Radio Science
+% Reviews of Geophysics
+% Tectonics
+% Space Weather
+% Water Resource Research
+% Geochemistry, Geophysics, Geosystems
+% Journal of Advances in Modeling Earth Systems (JAMES)
+% Earth's Future
+% Earth and Space Science
+%
+%
 
 %% remove this usepackage before submission.
-\usepackage{url,hyperref}
+%% \usepackage{url,hyperref}
 
 \journalname{JGR-Biogeosciences}
 
-%% ------------------------------------------------------------------------ %%
-%
-%  ENTER Title Page commands:
-%
-%% ------------------------------------------------------------------------ %%
-
-% (A title should be specific, informative, and brief. Use
-% abbreviations only if they are defined in the abstract. Titles that
-% start with general terms then specific results are optimized in
-% searches)
-
-% Example: \title{This is a test title}
-
-% (List authors by first name or initial followed by last name and
-% separated by commas. Use \affil{} to number affiliations, and
-% \thanks{} for author notes.
-% Additional author notes should be indicated with \thanks{} (for
-% example, for current addresses).
-
-% Example: \authors{A. B. Author\affil{1}\thanks{Current address, Antartica}, B. C. Author\affil{2,3}, and D. E.
-% Author\affil{3,4}\thanks{Also funded by Monsanto.}}
-
-% (include name and email addresses of the corresponding author.  More
-% than one corresponding author is allowed in this LaTeX file and for
-% publication; but only one corresponding author is allowed in our
-% editorial system.)
-
-%% Corresponding Author:
-% Corresponding author mailing address and e-mail address:
-
-% Example: \correspondingauthor{First and Last Name}{email@address.edu}
-
-% Authors are individuals who have significantly contributed to the
-% research and preparation of the article. Group authors are allowed, if
-% each author in the group is separately identified in an appendix.)
-
-% \affiliation{1}{First Affiliation}
-% \affiliation{2}{Second Affiliation}
-% \affiliation{3}{Third Affiliation}
-% \affiliation{4}{Fourth Affiliation}
-
-%% Keypoints, final entry on title page.
-% Example:
-% \begin{keypoints}
-% \item	List up to three key points (at least one is required)
-% \item	Key Points summarize the main points and conclusions of the article
-% \item	Each must be 100 characters or less with no special
-% characters or punctuation
-% \end{keypoints}
-
-%% \begin{abstract} begins second page
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Track Changes:
-% To add words, \added{<word added>}
-% To delete words, \deleted{<word deleted>}
-% To replace words, \replaced{<word to be replaced>}{<replacement word>}
-% To explain why change was made: \explain{<explanation>}
-
-% At the end of the document, use \listofchanges, which will list the
-% changes and the page and line number where the change was made.
-
-% When final version, \listofchanges will not produce anything,
-% \added{} word will be printed, \deleted{} will take away the word,
-% \replaced{}{} will print only the 2nd argument.
-% \explain will not print anything.
-
-% Optional argument:
-% You can also add additional information to be printed with the list
-% of changes, to indicate the initials of the person changing the text,
-% and the time and/or date of the change, or any other comment by using
-% the optional [] argument:
-% \added[AH, 3:30pm, Feb 18, 2016]{added term}
-% will yield
-% [AH, 3:30pm, Feb 18, 2016] added term on page...
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
+
 
 <<include=FALSE>>=
 library(knitr)
@@ -94,11 +81,16 @@ concordance=TRUE
 @
 
 %% ------------------------------------------------------------------------ %%
-%
-%  TITLE
+%  Title
+% 
+% (A title should be specific, informative, and brief. Use
+% abbreviations only if they are defined in the abstract. Titles that
+% start with general keywords then specific terms are optimized in
+% searches)
 %
 %% ------------------------------------------------------------------------ %%
 
+% Example: \title{This is a test title}
 
 \title{Landscape Stability in Drylands Influenced by Dispersal Strategy of Soil Bacteria}
 
@@ -109,9 +101,22 @@ concordance=TRUE
 %
 %% ------------------------------------------------------------------------ %%
 
- \authors{David R. Elliott\affil{1},
- Andrew D. Thomas\affil{2}, Craig L. Strong\affil{3},
- Helene A. Aubault\affil{4}, Grant H. McTainsh\affil{5}, and Joanna Bullard\affil{6}}
+% Authors are individuals who have significantly contributed to the
+% research and preparation of the article. Group authors are allowed, if
+% each author in the group is separately identified in an appendix.)
+
+% List authors by first name or initial followed by last name and
+% separated by commas. Use \affil{} to number affiliations, and
+% \thanks{} for author notes.  
+% Additional author notes should be indicated with \thanks{} (for
+% example, for current addresses). 
+
+% Example: \authors{A. B. Author\affil{1}\thanks{Current address, Antarctica}, B. C. Author\affil{2,3}, and D. E.
+% Author\affil{3,4}\thanks{Also funded by Monsanto.}}
+
+\authors{David R. Elliott\affil{1},
+Andrew D. Thomas\affil{2}, Craig L. Strong\affil{3},
+Helene A. Aubault\affil{4}, Grant H. McTainsh\affil{5}, and Joanna Bullard\affil{6}}
 
 \affiliation{1}{Environmental Sustainability Research Centre, University of Derby, Derby, UK.}
 \affiliation{2}{Department of Geography and Earth Sciences, Aberystwyth University, Aberystwyth, UK.}
@@ -128,9 +133,18 @@ concordance=TRUE
 
 \correspondingauthor{D. R. Elliott}{d.r.elliott@derby.ac.uk}
 
+%% Keypoints, final entry on title page.
+
+% Example: 
+% \begin{keypoints}
+% \item	List up to three key points (at least one is required)
+% \item	Key Points summarize the main points and conclusions of the article
+% \item	Each must be 100 characters or less with no special characters or punctuation 
+% \end{keypoints}
+
 %  List up to three key points (at least one is required)
 %  Key Points summarize the main points and conclusions of the article
-%  Each must be 100 characters or less with no special characters or punctuation
+%  Each must be 100 characters or less with no special characters or punctuation 
 
 \begin{keypoints}
 \item Microbial community of dryland ephemeral lake bed, dunes, and river channels characterised
@@ -142,8 +156,13 @@ concordance=TRUE
 %
 %  ABSTRACT
 %
+% A good abstract will begin with a short description of the problem
+% being addressed, briefly describe the new data or analyses, then
+% briefly states the main conclusion(s) and how they are supported and
+% uncertainties. 
 %% ------------------------------------------------------------------------ %%
 
+%% \begin{abstract} starts the second page 
 
 \begin{abstract}
 The abstract (1) states the nature of the investigation and (2) summarizes the important conclusions. The abstract should be suitable for indexing. Your abstract should:
@@ -168,26 +187,112 @@ define all abbreviations.
 
 %%% Suggested section heads:
 % \section{Introduction}
-%
+% 
 % The main text should start with an introduction. Except for short
 % manuscripts (such as comments and replies), the text should be divided
-% into sections, each with its own heading.
+% into sections, each with its own heading. 
 
 % Headings should be sentence fragments and do not begin with a
 % lowercase letter or number. Examples of good headings are:
 
 % \section{Materials and Methods}
 % Here is text on Materials and Methods.
-
+%
 % \subsection{A descriptive heading about methods}
 % More about Methods.
-%
+% 
 % \section{Data} (Or section title might be a descriptive heading about data)
-%
+% 
 % \section{Results} (Or section title might be a descriptive heading about the
 % results)
-%
+% 
 % \section{Conclusions}
+
+%Text here ===>>>
+
+%%
+
+%  Numbered lines in equations:
+%  To add line numbers to lines in equations,
+%  \begin{linenomath*}
+%  \begin{equation}
+%  \end{equation}
+%  \end{linenomath*}
+
+
+
+%% Enter Figures and Tables near as possible to where they are first mentioned:
+%
+% DO NOT USE \psfrag or \subfigure commands.
+%
+% Figure captions go below the figure.
+% Table titles go above tables;  other caption information
+%  should be placed in last line of the table, using
+% \multicolumn2l{$^a$ This is a table note.}
+%
+%----------------
+% EXAMPLE FIGURE
+%
+% \begin{figure}[h]
+% \centering
+% when using pdflatex, use pdf file:
+% \includegraphics[width=20pc]{figsamp.pdf}
+%
+% when using dvips, use .eps file:
+% \includegraphics[width=20pc]{figsamp.eps}
+%
+% \caption{Short caption}
+% \label{figone}
+%  \end{figure}
+%
+% ---------------
+% EXAMPLE TABLE
+%
+% \begin{table}
+% \caption{Time of the Transition Between Phase 1 and Phase 2$^{a}$}
+% \centering
+% \begin{tabular}{l c}
+% \hline
+%  Run  & Time (min)  \\
+% \hline
+%   $l1$  & 260   \\
+%   $l2$  & 300   \\
+%   $l3$  & 340   \\
+%   $h1$  & 270   \\
+%   $h2$  & 250   \\
+%   $h3$  & 380   \\
+%   $r1$  & 370   \\
+%   $r2$  & 390   \\
+% \hline
+% \multicolumn{2}{l}{$^{a}$Footnote text here.}
+% \end{tabular}
+% \end{table}
+
+%% SIDEWAYS FIGURE and TABLE 
+% AGU prefers the use of {sidewaystable} over {landscapetable} as it causes fewer problems.
+%
+% \begin{sidewaysfigure}
+% \includegraphics[width=20pc]{figsamp}
+% \caption{caption here}
+% \label{newfig}
+% \end{sidewaysfigure}
+% 
+%  \begin{sidewaystable}
+%  \caption{Caption here}
+% \label{tab:signif_gap_clos}
+%  \begin{tabular}{ccc}
+% one&two&three\\
+% four&five&six
+%  \end{tabular}
+%  \end{sidewaystable}
+
+%% If using numbered lines, please surround equations with \begin{linenomath*}...\end{linenomath*}
+%\begin{linenomath*}
+%\begin{equation}
+%y|{f} \sim g(m, \sigma),
+%\end{equation}
+%\end{linenomath*}
+
 
 
 \section{Introduction}
@@ -235,7 +340,7 @@ prune_pc <- 0.2
 
 bac <- import_biom("data/Elliott_Diamantina_Microbiome_Data_S1[otu-tax].biom", parseFunction = parse_taxonomy_greengenes)
 
-map <- import_qiime(mapfilename = "data/Elliott_Diamantina_Microbiome_Table_S1[sample-metadata].txt")
+map <- import_qiime(mapfilename = "data/Elliott_Diamantina_Microbiome_Table_S1[sample-metadata].txt",verbose = FALSE)
 bac <- merge_phyloseq(bac,map)
 
 # fix incorrect spelling of nebkha in the biom file.
@@ -739,13 +844,13 @@ In drylands where vegetation is sparse, soil microbes provide some ecosystem fun
 
 Landscape processes in some drylands are driven by the interplay between fluvial and aeolian processes \citep{mctainsh1987desert,bullard2003aeolian,field2009toward,langford1989fluvial}. \citet{mctainsh1987desert} proposed a model of sediment recycling that provides an integrated interpretation of fluvial and aeolian processes in the landscape. Rivers feeding internal draining endorheic basins such as Lake Chad, the Tarim Basin, and Lake Eyre transport vast amounts of fine sediments, feeding the large dust source regions out of Africa, China and Australia respectively. By linking river systems and wind erosion, McTainsh proposed looking at dryland geomorphology as a system of sediment recycling operating on a massive scale. Microbiota have not generally been considered as a component of this fluvial - aeolian interaction, however it has been noted by \citet{viles2008understanding} and others that biocrust organisms actively modify their environment sufficiently that they can be called ecosystem engineers, so consequently the role of biocrusts in large scale desert geomorphology is an area requiring further research activity. 
 
-The extent to which “microscopic ecosystem engineers” contribute to interacting fluvial-aeolian geomorphic processes is explored in this paper. We investigated the microbial ecology of a dynamic dryland ecosystem in central Australia comprising a 25 km$^{2}$ claypan in the Lake Eyre basin bounded by sand dunes and ephemeral river channels. Fluvial-aeolian interactions are thought to have been occurring at least since the last glacial maximum about 10 kBp \citep{bullard2003aeolian}. Before that structural controls for internally draining rivers were established 20 –- 24 Ma \citep{simon1996evolution}, establishing an enclosed geological system of fluvial-aeolian sediment movement that has persisted in some form to the present day. 
+The extent to which "microscopic ecosystem engineers" contribute to interacting fluvial-aeolian geomorphic processes is explored in this paper. We investigated the microbial ecology of a dynamic dryland ecosystem in central Australia comprising a 25 km$^{2}$ claypan in the Lake Eyre basin bounded by sand dunes and ephemeral river channels. Fluvial-aeolian interactions are thought to have been occurring at least since the last glacial maximum about 10 kBp \citep{bullard2003aeolian}. Before that structural controls for internally draining rivers were established 20 - 24 Ma \citep{simon1996evolution}, establishing an enclosed geological system of fluvial-aeolian sediment movement that has persisted in some form to the present day. 
 
 Sediment recycling in fluvial-aeolian systems like this results in a constantly changing soil surface, presenting considerable challenges to life. Due to the long term existence of the Lake Eyre basin system and others like it, we expect that microscopic organisms will have evolved adaptations to survive and exploit predictable system features. To investigate this, we characterised the microbial communities in different parts of the system including sand dunes, pan sediments, river channels, and airborne dust liberated by \textit{in-situ} wind tunnel treatment on sand dunes. By comparing the microbial composition of different system parts we evaluated possible dispersal strategies of individual taxa and interpreted these findings in relation to landscape stability and dust production.
 
 A conceptual model shown in Figure \ref{fig:dispersal-hazards} illustrates interactions between fluvial and aeolian processes in the Lake Eyre basin, and some of the threats and opportunities these present for the microbiota. Broadly speaking, microbes living in ephemeral lakes may be adapted for life in water, life on land, or for a life-cycle incorporating adaptations for both situations. Organisms with these (and other) different life strategies can co-exist in the same system, occupying different niches through different adaptations - some of which may have geomorphic relevance, for instance promotion of landscape stability or promotion of dust production. Microbial modification of the environment in this way my relate to a survival outcome for the microbe and thus would be positively seleceted by natural selection, or it may be incidental and not directly influence survival prospects. 
 
-\begin{figure}
+\begin{figure}[tbp]
   \centering
       \includegraphics[width=1\textwidth]{figure/dispersal-hazards-fig}
   \caption{Photographs of main system compartments with identification of key hazards for microbial life and illustration of expected linkages by Aeolian and hydrological transfer of sediment and inoculum. In our sampling the sand dune flank samples belong to the sand dune compartment and the nebkha samples belong to the claypan compartment - these are expected to be subject to the same respective hazards and linkages.}
@@ -810,14 +915,14 @@ The following locations were targeted for soil sampling (See Figures \ref{fig:ph
 
 Sampled areas were 10x10 cm and were selected to represent the diversity of biocrust in the area (Figure \ref{fig:photo-sampling}). The sampled depth was dictated by coherence of the biocrust. The area was cut out with a sterile scalpel and the crust was lifted off the looser soil beneath. In areas where differing crust types were noticeable the sampled areas were selected to have both types where applicable (e.g. biological/physical, light/dark). In visibly disturbed areas e.g. from animals, un-disturbed crusts were selected (2x dune sites).
 
-\begin{figure}
+\begin{figure}[tbp]
   \centering
       \includegraphics[trim = 17mm 10mm 17mm 10mm, clip,width=1\textwidth]{figure/photos1}
   \caption{Photographs of sampling areas including detail of nebkha and crust formations on the claypan.}
   \label{fig:photo-area}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[tbp]
   \centering
       \includegraphics[trim = 17mm 10mm 17mm 10mm, clip,width=1\textwidth]{figure/photos2}
   \caption{Photographs taken during soil sampling, showing cuts made to 10 cm x 10 cm square areas of crust prior to lifting aseptically.}
@@ -839,13 +944,13 @@ Water channels were sampled by dragging a 5 ml sterile bijoux along the bank whe
 In addition to the soil crust samples a wind tunnel was run on the dune flank zones within 3 m of where the soil crust sampling was done. The wind tunnel was a duct-type design equipped with a sediment collection trap in which sterile Whatman xx\footnote{need filter paper type} filter papers were fitted. Further details of design and operation have previously been described by \citet{strong2016development}\footnote{should provide a bit more detail here}. The wind tunnel was run on dune flanks because they are naturally eroded by saltation impact from the dune sand above when it is windy, therefore the potential as an inoculum source to surrounding areas is greater than the higher dune areas. At each site the wind tunnel was run three times on adjacent areas for 5 minutes at 10 m/s for 5 minutes\footnote{Helene collected data to determine the exact run conditions}. This is a moderate treatment intended to be realistic and to collect only the easily mobilised particles / organisms. 
 
 \subsection{Soil properties}
-Total carbon and nitrogen content of soils were determined using a CN element analyser (Leco TruSpec). Particle size distribution was determined using a Beckman-Coulter LS280 laser-sizer in the range 0.375-2000 um with 93 class intervals. 
+Total carbon and nitrogen content of soils were determined using a CN element analyser (Leco TruSpec). Particle size distribution was determined using a Beckman-Coulter LS280 laser-sizer in the range 0.375-2000 $\mu$m with 93 class intervals. 
 Soil pH was determined using a Sartorius PY-P10 probe after mixing soil in water according to the method of \citet{rowell1994soil}, scaled down for small samples. 
 
 \subsection{DNA sequencing}
 DNA was extracted in the field within 24 hours of sample collection using a Mobio Powersoil DNA extraction kit according to the manufacturers instructions except for increasing the soil amount slightly to 0.4 g per sample as described previously \citet{elliott2014niche}. DNA sequencing targeted the prokaryotic 16S rRNA gene v4 region and was performed by the Centre for Genomic Research (CGR) NERC Facility at the University of Liverpool, using an Illumina MiSeq in a Paired end approach (2x250 using v2 reagents). The primer design, PCR, and barcoding approach followed the method of \citet{caporaso2010global} using primers 515F and 806R (15 cycles) for amplification of v4 region, then a second nested PCR (15 cycles) to incorporate illumina adapter sequences and barcodes. Barcodes were as described in the Illumina Nextera protocol.
 
-\\ We used our standard v4 primers for your previous project, as per the attached protocol, but with one change.  We performed 15 + 15 cycles for first and second round PCRs on the basis of your testing prior to sending us the samples.  Sequencing was 2x250 on the MiSeq using v2 reagents.  I’ve attached traces of the amplicons to this email for you.
+% We used our standard v4 primers for your previous project, as per the attached protocol, but with one change.  We performed 15 + 15 cycles for first and second round PCRs on the basis of your testing prior to sending us the samples.  Sequencing was 2x250 on the MiSeq using v2 reagents.  I’ve attached traces of the amplicons to this email for you.
 
 
 \subsection{Bioinformatics}
@@ -883,7 +988,7 @@ partsizetab <- data.frame(Clay = c(4.39,5.10,3.98,9.52),
                           Medium_coarse_sand = c(21,16.09,12.23,6.14),
                           row.names = c("Dune","Dune Flank","Nebkha","Pan"), check.names="F")
 
-kable(partsizetab, digits=2, caption = "Mean percent volume of sediment by particle size in um for all sites. \\label{tab:partsize}",col.names=c("$<$4","4-16","16-63","63-250","$>$250"),escape = FALSE)
+kable(partsizetab, digits=2, caption = "Mean percent volume of sediment by particle size in $\\mu$m for all sites. \\label{tab:partsize}",col.names=c("$<$4","4-16","16-63","63-250","$>$250"),escape = FALSE)
 @
 
 
@@ -921,7 +1026,7 @@ grid.draw(legend)
 
 Microbial composition of the dune flank, pan, and nebkha sites varied considerably (Figure \ref{fig:community}). High abundance OTUs are likely to be important contributors to the overall community differences (Figure \ref{fig:community}), and many of the abundant OTUs were related to each other (Table S4), meaning that community differences may be evident and easier to understand at higher taxonomic ranks (Figures \ref{fig:waterp} and \ref{fig:waterc}). A total of \Sexpr{length(unique(tax_table(bac)[,"Phylum"]))} bacterial phyla and \Sexpr{length(unique(tax_table(arc)[,"Phylum"]))} archael phyla were identified. Frequencies of the most abundant phyla are shown in Figure \ref{fig:waterp} and are provided in full in Table S2. It can be seen that water channel samples are dissimilar to the soil-based samples at the phylum level although all abundant phyla are represented in both soil and water. \textit{Cyanobacteria} numerically dominate at the experimental sites (about 28 \% of prokaryotic sequences), the overall cyanobacterial abundance at different sites is similar, and the dominant cyanobacterial genus is \textit{Phormidium}. The degree of dominance by \textit{Phormidium} varies, and differences in less abundant cyanobacterial genera (e.g. \textit{Leptolyngbya} and \textit{Microcoleus}) are evident between sites. For example \textit{Microcoleus} is the second most abundant identified cyanobacterial genus, being quite abundant in dune flank (2.1 \%) and claypan (3.1 \%) but rare in nebkha (0.2 \%). \footnote{could note here potential limitations of cyanobacterial taxonomy and ID etc.}
 
-\begin{figure}[]
+\begin{figure}[tbp]
 \begin{center}
 <<OTU_source_out, echo=FALSE,fig.height=8.5, cache=FALSE>>=
 grid.newpage()
@@ -933,7 +1038,7 @@ print(wind_otus_plot,vp=vp.02)
 \end{center}
 \end{figure}
 
-\begin{figure}[]
+\begin{figure}[tbp]
 \begin{center}
 <<OTU_source_out2, echo=FALSE,fig.height=5.5, cache=FALSE>>=
 grid.newpage()
@@ -1069,31 +1174,106 @@ In conclusion, we have shown that biocrust taxa vary in their capacity to be mob
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Optional Appendix goes here
+%
+% The \appendix command resets counters and redefines section heads
+%
+% After typing \appendix
+%
+%\section{Here Is Appendix Title}
+% will show
+% A: Here Is Appendix Title
+%
+%\appendix
+%\section{Here is a sample appendix}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Optional Glossary, Notation or Acronym section goes here:
+%
+%%%%%%%%%%%%%%  
+% Glossary is only allowed in Reviews of Geophysics
+%  \begin{glossary}
+%  \term{Term}
+%   Term Definition here
+%  \term{Term}
+%   Term Definition here
+%  \term{Term}
+%   Term Definition here
+%  \end{glossary}
 
+%
+%%%%%%%%%%%%%%
+% Acronyms
+%   \begin{acronyms}
+%   \acro{Acronym}
+%   Definition here
+%   \acro{EMOS}
+%   Ensemble model output statistics 
+%   \acro{ECMWF}
+%   Centre for Medium-Range Weather Forecasts
+%   \end{acronyms}
+
+%
+%%%%%%%%%%%%%%
+% Notation 
+%   \begin{notation}
+%   \notation{$a+b$} Notation Definition here
+%   \notation{$e=mc^2$} 
+%   Equation in German-born physicist Albert Einstein's theory of special
+%  relativity that showed that the increased relativistic mass ($m$) of a
+%  body comes from the energy of motion of the body—that is, its kinetic
+%  energy ($E$)—divided by the speed of light squared ($c^2$).
+%   \end{notation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ACKNOWLEDGMENTS
+%
+% The acknowledgments must list:
+%
+% •	All funding sources related to this work from all authors
+%
+% •	Any real or perceived financial conflicts of interests for any
+%	author
+%
+% •	Other affiliations for any author that may be perceived as
+% 	having a conflict of interest with respect to the results of this
+% 	paper.
+%
+% •	A statement that indicates to the reader where the data
+% 	supporting the conclusions can be obtained (for example, in the
+% 	references, tables, supporting information, and other databases).
+%
+% It is also the appropriate place to thank colleagues and other contributors. 
+% AGU does not normally allow dedications.
 
+
+\acknowledgments
+ = enter acknowledgments here =
 
 
 \bibliography{references}
-%\bibliographystyle{plain}
 %%  REFERENCE LIST AND TEXT CITATIONS
 %
 % Either type in your references using
 %
 % \begin{thebibliography}{}
+% \bibitem[{\textit{Kobayashi et~al.}}(2003)]{R2013} Kobayashi, T.,
+% Tran, A.~H., Nishijo, H., Ono, T., and Matsumoto, G.  (2003).
+% Contribution of hippocampal place cell activity to learning and
+% formation of goal-directed navigation in rats. \textit{Neuroscience}
+% 117, 1025--1035.
+%
 % \bibitem{}
 % Text
 % \end{thebibliography}
 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Or, to use BibTeX:
 %
 % Follow these steps
 %
-% 1. Type in \bibliography{<name of your .bib file>}
+% 1. Type in \bibliography{<name of your .bib file>} 
 %    Run LaTeX on your LaTeX file.
 %
 % 2. Run BiBTeX on your LaTeX file.
@@ -1106,27 +1286,26 @@ In conclusion, we have shown that biocrust taxa vary in their capacity to be mob
 % AGU does not want a .bib or a .bbl file. Please copy in the contents of your .bbl file here.
 
 
-%\begin{thebibliography}{}
+%% After you run BibTeX, Copy in the contents of the .bbl file here:
 
-%\bibitem[{\textit{Bell and Munoz}}(2008)]{Boug10} Bell, A.~H., and
-%Munoz, D.~P.  (2008). Activity in the superior colliculus reflects
-%dynamic interactions between voluntary and involuntary influences on
-%orienting behaviour. \textit{Eur. J. Neurosci.} 28, 1654--1660.
 
-%\end{thebibliography}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Track Changes:
 % To add words, \added{<word added>}
 % To delete words, \deleted{<word deleted>}
 % To replace words, \replace{<word to be replaced>}{<replacement word>}
+% To explain why change was made: \explain{<explanation>} This will put
+% a comment into the right margin.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % At the end of the document, use \listofchanges, which will list the
 % changes and the page and line number where the change was made.
 
 % When final version, \listofchanges will not produce anything,
-% \added{} word will be printed, \deleted{} will take away the word,
-% \replaced{}{} will print only the 2nd argument.
+% \added{<word or words>} word will be printed, \deleted{<word or words} will take away the word,
+% \replaced{<delete this word>}{<replace with this word>} will print only the replacement word.
+%  In the final version, \explain will not print anything.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%
 \listofchanges
