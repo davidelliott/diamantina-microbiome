@@ -986,12 +986,18 @@ To identify OTUs with different relative abundance in the wind tunnel collection
 Soils were all poor in carbon and nitrogen content (Figure \ref{fig:chem}). Dune and dune flank sites contained approximately double the amount of carbon (approximately 0.35 \% w/w) and nitrogen (approximately 0.055 \% w/w) compared to nebkha and pan sites (approximately 0.20 \% and 0.35 \% respectively). The pH also differed in a similar pattern with dune and dune flank sites being similar around pH 6.5 whereas pan and nebkha sites were higher at around pH 7.0.
 
 
-<<chem_out, echo=FALSE,fig.height=2,fig.cap='Mean total carbon and nitrogen (percent w/w) and pH of soil in and around Lake Constance claypan at Diamantina National Park, Australia. Error bars represent the standard error of the mean for each soil type (n = 5). Sample coding for soil types: D sand dune, DF dune flank, N nebkha, P pan surface. \\label{fig:chem}', warning=FALSE, cache=TRUE>>=
+<<chem_out, echo=FALSE,fig.height=2,fig.cap='Soil properties in and around Lake Constance claypan at Diamantina National Park, Australia. a. Mean total carbon and nitrogen (percent w/w), pH, and particle mass median diameter (um); b. particle size distribution. Error bars represent the standard error of the mean for each soil type (n = 5). Sample coding for soil types: D sand dune, DF dune flank, N nebkha, P pan surface. \\label{fig:chem}', warning=FALSE, cache=TRUE>>=
 # melt for plotting
-chemistry.melt <- melt(sample_data(bac.earthair),measure.vars=c("N_pc","C_pc","pH","ps_d50","ps_lt4","ps_4to16","ps_16to63","ps_63to250","ps_gt250"))
-chemistry.melt$variable <- revalue(chemistry.melt$variable, c("N_pc"="nitrogen", "C_pc"="carbon", "ps_d50"=expression("mass "*"median "*"diameter "*"(d50)"),"ps_lt4"=expression("< 4 "*mu*"m"),"ps_4to16"=expression("4 - 16 "*mu*"m"),"ps_16to63"=expression("16 - 63 "*mu*"m"),"ps_63to250"=expression("63 - 250 "*mu*"m"), "ps_gt250"=expression("> 250 "*mu*"m")))
+chemistry.melt <- melt(sample_data(bac.earthair),measure.vars=c("N_pc","C_pc","pH","ps_d50"))
+chemistry.melt$variable <- revalue(chemistry.melt$variable, c("N_pc"="nitrogen", "C_pc"="carbon", "ps_d50"=expression("d50")))
 # make the plot 
-print(ggplot(chemistry.melt, aes(x=zone_code, y=value, shape=element, colour=zone)) + stat_summary(fun.data = "mean_se", size=1) + facet_wrap(~variable,scales = "free_y",nrow=3,labeller = label_parsed) + labs(x = "zone") + theme(aspect.ratio=1,legend.position="none") + colScale )
+print(ggplot(chemistry.melt, aes(x=zone_code, y=value, shape=element, colour=zone)) + stat_summary(fun.data = "mean_se", size=1) + facet_wrap(~variable,scales = "free_y",nrow=1,labeller = label_parsed) + labs(x = "zone") + theme(aspect.ratio=1,legend.position="none") + colScale )
+
+ps.melt <- melt(sample_data(bac.earthair),measure.vars=c("ps_lt4","ps_4to16","ps_16to63","ps_63to250","ps_gt250"))
+ps.melt$variable <- revalue(ps.melt$variable, c("ps_lt4"=expression("< 4 "*mu*"m"),"ps_4to16"=expression("4 - 16 "*mu*"m"),"ps_16to63"=expression("16 - 63 "*mu*"m"),"ps_63to250"=expression("63 - 250 "*mu*"m"), "ps_gt250"=expression("> 250 "*mu*"m")))
+# make the plot 
+print(ggplot(ps.melt, aes(x=zone_code, y=value, shape=element, colour=zone)) + stat_summary(fun.data = "mean_se", size=1) + facet_wrap(~variable,scales = "fixed",nrow=1,labeller = label_parsed) + labs(x = "zone", y = "%") + theme(aspect.ratio=1,legend.position="none") + colScale )
+
 @
 
 The dune and dune flank sediments were very similar in terms of particle-size distribution.  They are dominated by very fine to fine sands (46-48 \%) with the modal particle-size in the range 185-270 $\mu$m.  The dune sediments are slightly coarser overall containing a higher percentage of medium and coarse sands and lower percentages of silt and clay than the dune flank (Table \ref{tab:partsize}).  The nebkha are also dominated by very fine to fine sands (60 \%; mode 169-185 $\mu$m) and the sediments are well-sorted.  The pan sites are less well sorted than any of the sites dominated by wind-blown material.  The pan sites include the highest proportion of clay (c. 10 \%) and silts (55 \% total) and lowest percentage of sand-sized material ($<$35 \%).
