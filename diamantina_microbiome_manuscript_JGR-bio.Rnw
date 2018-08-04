@@ -71,13 +71,11 @@
 
 
 \begin{document}
+% this file is set up to use knitr not sweave.
 
 
 <<include=FALSE>>=
 library(knitr)
-opts_chunk$set(
-concordance=TRUE
-)
 @
 
 %% ------------------------------------------------------------------------ %%
@@ -338,8 +336,7 @@ vp.2 <- viewport(layout.pos.col=2, layout.pos.row=1)
 # it does not affect richness, NMDS, deseq2 which use full data
 prune_pc <- 0.2
 
-bac <- import_biom("data/Elliott_Diamantina_Microbiome_Data_S1[otu-tax].biom", parseFunction = parse_taxonomy_greengenes)
-
+bac <- import_biom("data/otus/Elliott_Diamantina_Microbiome_Data_S1[otu-tax].biom", parseFunction = parse_taxonomy_greengenes)
 map <- import_qiime(mapfilename = "data/Elliott_Diamantina_Microbiome_Table_S1[sample-metadata].txt",verbose = FALSE)
 bac <- merge_phyloseq(bac,map)
 
@@ -419,7 +416,11 @@ otu_table(ab.rel.phylum.merged) <- otu_table(ab.rel.phylum.merged)/5
 
 tp <- t(otu_table(ab.rel.phylum.merged))
 tp <- as.data.frame(tp)
-phyla.df <- as.data.frame(cbind(tax_table(ab.rel.phylum.merged),tp))
+# correct mangled colnames
+colnames(tp) <- gsub(pattern = "value.",replacement = "",x = colnames(tp))
+colnames(tp) <- gsub(pattern = '.',replacement = " ",x = colnames(tp),fixed = T)
+
+phyla.df <- as.data.frame(cbind(as.matrix(tax_table(ab.rel.phylum.merged)),as.matrix(tp)))
 phyla.order <- taxa_names(ab.rel.phylum.merged)[order(taxa_sums(ab.rel.phylum.merged),decreasing = T)]
 phyla.df <- phyla.df[phyla.order,]
 
@@ -429,7 +430,11 @@ cyano.rel.g.merged <- merge_samples(subset_samples(cyano.rel.g,element!="air"),"
 otu_table(cyano.rel.g.merged) <- otu_table(cyano.rel.g.merged)/5
 tc <- t(otu_table(cyano.rel.g.merged))
 tc <- as.data.frame(tc)
-cyano.df <- as.data.frame(cbind(tax_table(cyano.rel.g.merged),tc))
+# correct mangled colnames
+colnames(tc) <- gsub(pattern = "value.",replacement = "",x = colnames(tc))
+colnames(tc) <- gsub(pattern = '.',replacement = " ",x = colnames(tc),fixed = T)
+
+cyano.df <- as.data.frame(cbind(as.matrix(tax_table(cyano.rel.g.merged)),as.matrix(tc)))
 cyano.order <- taxa_names(cyano.rel.g.merged)[order(taxa_sums(cyano.rel.g.merged),decreasing = T)]
 cyano.df <- cyano.df[cyano.order,]
 

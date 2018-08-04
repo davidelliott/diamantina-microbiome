@@ -157,7 +157,7 @@ phylumdf.rr$Phylum <- paste(substr(phylumdf.rr$Kingdom,1,1),phylumdf.rr$Phylum,s
 phyla.combined <- ggplot(phylumdf.rr, aes(x=zone_code, y=Abundance, color = element,shape = element)) + geom_boxplot() + facet_wrap(~Phylum, nrow=3) + scale_y_log10(name="relative abundance (%)",labels=comma) 
 # plot cyanos
 
-cyano.plot <- ggplot(cyano.df, aes(x=zone_code, y=Abundance, color = element, shape = element)) + geom_boxplot() + facet_wrap(~Genus, nrow=1) + scale_y_log10(name="relative abundance (%)",labels=comma)
+cyano.plot <- ggplot(cyanodf, aes(x=zone_code, y=Abundance, color = element, shape = element)) + geom_boxplot() + facet_wrap(~Genus, nrow=1) + scale_y_log10(name="relative abundance (%)",labels=comma)
 
 rich.ab <- plot_richness(expt.combined,measures = "Chao1",color = "zone", shape="element",x="zone") + geom_point(size=5,alpha=0.7) 
 ord.ab <- ordinate(ab.earthair, "NMDS", "bray")

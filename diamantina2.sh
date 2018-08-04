@@ -35,4 +35,8 @@ multiple_split_libraries_fastq.py -i joined -o ./ --demultiplexing_method sample
 # pick OTUs, assign taxonomy, make otu table
 pick_open_reference_otus.py -i /home/david/git/diamantina-microbiome/data/seqs.fna -o /home/david/git/diamantina-microbiome/data/otus
 
+# copy the biom file which we will be using in downstream analyses and providing as supplementary data:
+cp data/otus/otu_table_mc2_w_tax.biom data/otus/Elliott_Diamantina_Microbiome_Data_S1[otu-tax].biom
 
+# prepare a folder for results from R script
+mkdir results
