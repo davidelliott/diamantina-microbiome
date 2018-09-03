@@ -59,7 +59,7 @@ vp.2 <- viewport(layout.pos.col=2, layout.pos.row=1)
 ```
 
 ```{r load,echo=FALSE,message=FALSE,results='hide', warning=FALSE, cache=TRUE}
-bac <- import_biom("data/otu_table_mc2_w_tax.biom", "data/rep_set.tre",parseFunction = parse_taxonomy_greengenes)
+bac <- import_biom("data/otus/otu_table_mc2_w_tax.biom", "data/rep_set.tre",parseFunction = parse_taxonomy_greengenes)
 
 map <- import_qiime(mapfilename = "data/map.txt")
 bac <- merge_phyloseq(bac,map)
@@ -124,7 +124,7 @@ otu_table(expt.combined.rel.phylum.merged) <- otu_table(expt.combined.rel.phylum
 
 tp <- t(otu_table(expt.combined.rel.phylum.merged))
 tp <- as.data.frame(tp)
-phyla.df <- as.data.frame(cbind(tax_table(expt.combined.rel.phylum.merged),tp))
+phyla.df <- as.data.frame(cbind(as.matrix(tax_table(expt.combined.rel.phylum.merged)),as.matrix(tp)))
 phyla.order <- taxa_names(expt.combined.rel.phylum.merged)[order(taxa_sums(expt.combined.rel.phylum.merged),decreasing = T)]
 phyla.df <- phyla.df[phyla.order,]
 write.csv(phyla.df[ ,c(rank_names(bac)[1:2],sample_names(expt.combined.rel.phylum.merged))],"phyla.csv")
@@ -140,7 +140,7 @@ cyano.rel.g.merged <- merge_samples(subset_samples(cyano.rel.g,element!="air"),"
 otu_table(cyano.rel.g.merged) <- otu_table(cyano.rel.g.merged)/5
 tc <- t(otu_table(cyano.rel.g.merged))
 tc <- as.data.frame(tc)
-cyano.df <- as.data.frame(cbind(tax_table(cyano.rel.g.merged),tc))
+cyano.df <- as.data.frame(cbind(as.matrix(tax_table(cyano.rel.g.merged)),as.matrix(tc)))
 cyano.order <- taxa_names(cyano.rel.g.merged)[order(taxa_sums(cyano.rel.g.merged),decreasing = T)]
 cyano.df <- cyano.df[cyano.order,]
 write.csv(cyano.df[ ,c(rank_names(bac)[1:6],sample_names(cyano.rel.g.merged))],"cyano.csv")
