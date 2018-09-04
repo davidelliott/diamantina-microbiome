@@ -646,27 +646,27 @@ sample_data(bac) <- cbind(sample_data(bac),UTM.df[,c("easting","northing")])
 
 # plot using ggmap. This just uses lat/lon, not the spatial points.
 
-loc <- c(lon = mean(get_variable(bac,"lon")), lat = mean(get_variable(bac,"lat")))
+# loc <- c(lon = mean(get_variable(bac,"lon")), lat = mean(get_variable(bac,"lat")))
 locZoom <- c(lon = mean(get_variable(bac,"lon")[get_variable(bac,"zone")!="channel"]), lat = mean(get_variable(bac,"lat")[get_variable(bac,"zone")!="channel"]))
-locZoom2 <- c(lon = mean(get_variable(bac,"lon")[1:2]), lat = mean(get_variable(bac,"lat")[1:2] ))
+# locZoom2 <- c(lon = mean(get_variable(bac,"lon")[1:2]), lat = mean(get_variable(bac,"lat")[1:2] ))
 
-locZoom2 <- c(lon = mean(samples_latlon$lon["dune4"]), lat = mean(samples_latlon$lat["nebkha4"] ))
+# locZoom2 <- c(lon = mean(samples_latlon$lon["dune4"]), lat = mean(samples_latlon$lat["nebkha4"] ))
 
-dMap <- get_map(location=loc, source="google", maptype = "satellite", zoom = 11)
-dMapZoom <- get_map(location=locZoom, source="google", maptype = "satellite", zoom = 14)
-dMapZoom2 <- get_map(location=locZoom2, source="google", maptype = "satellite", zoom = 17)
+# dMap <- get_map(location=loc, source="google", maptype = "satellite", zoom = 11)
+dMapZoom <- get_map(location=locZoom, source="google", maptype = "satellite", zoom = 14, )
+# dMapZoom2 <- get_map(location=locZoom2, source="google", maptype = "satellite", zoom = 17)
 
-basemap <- ggmap(dMap)
+# basemap <- ggmap(dMap)
 basemapZoom <- ggmap(dMapZoom)
-basemapZoom2 <- ggmap(dMapZoom2)
+# basemapZoom2 <- ggmap(dMapZoom2)
 
-map1 <- basemap + geom_point(aes(x = lon, y = lat, colour=zone,shape=element),alpha=0.5, data = sample_data(bac), size = 4) + colScale
+# map1 <- basemap + geom_point(aes(x = lon, y = lat, colour=zone,shape=element),alpha=0.5, data = sample_data(bac), size = 4) + colScale
 
 bac.zoommap <- sample_data(subset_samples(physeq = bac,zone!="channel"))
 map2 <- basemapZoom + geom_point(aes(x = lon, y = lat, colour=zone,shape=element),alpha=0.5, data = bac.zoommap, size = 4) + geom_text(aes(label=transect),size=2.5, data = bac.zoommap) + colScale
 
 # higher zoom map for Lyell meeting
-map3 <- basemapZoom2 + geom_point(aes(x = lon, y = lat, colour=zone,shape=element),alpha=0.5, data = bac.zoommap, size = 8) + geom_text(aes(label=transect),size=4, data = bac.zoommap) + colScale
+# map3 <- basemapZoom2 + geom_point(aes(x = lon, y = lat, colour=zone,shape=element),alpha=0.5, data = bac.zoommap, size = 8) + geom_text(aes(label=transect),size=4, data = bac.zoommap) + colScale
 
 @
 
@@ -994,27 +994,8 @@ Work was carried out at Diamantina National Park in western Queensland, Australi
 
 Biocrusts on the claypan typically have a blue-green appearance due to the presence of photosynthetic organisms, and have a platelet formation caused by physical weathering. They appear to have once been widespread but had been largely eroded away at the time of sampling in July 2015. Underneath claypan platelet crusts was a brown coloured crust (Figure \ref{fig:photo-area}), and this was not sampled in the present study. In many places on the claypan there were small nebkha dunes and the crust platelets encroached up the nebkha flanks. 
 
-<<map_out, echo=FALSE,fig.height=3.8, warning=FALSE, cache=TRUE,fig.cap='Sampling locations. a. General area of claypan including surrounding water channels; b. Closer view of dune and pan area.\\label{fig:map}'>>=
-
-#Extract Legend 
-g_legend<-function(a.gplot){ 
-  tmp <- ggplot_gtable(ggplot_build(a.gplot)) 
-  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box") 
-  legend <- tmp$grobs[[leg]] 
-  return(legend)} 
-
-maplegend <- map1 + theme(legend.position="bottom")
-legend <- g_legend(maplegend) 
-
-
-grid.newpage()
-pushViewport(viewport(layout = grid.layout(6, 2)))
-vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
-print(map1 + theme(legend.position="none"), vp = vplayout(1:5, 1))  # key is to define vplayout
-print(map2 + theme(legend.position="none"), vp = vplayout(1:5, 2))
-legend$vp = viewport(layout.pos.row = 6, layout.pos.col = 1:2)
-grid.draw(legend)
-
+<<map_out, echo=FALSE,fig.height=6, warning=FALSE, cache=TRUE,fig.cap='Aerial imagery of sampling locations showing transect locations extending from dune through dune flank into pan. River channel samples are beyond the scope shown. Coordinates for all samples are provided in Supplementary Table S1. \\label{fig:map}'>>=
+print(map2)
 @
 
 The following locations were targeted for soil sampling (See Figure \ref{fig:photo-area} for photographs; Table S1 for coordinates):
@@ -1158,21 +1139,14 @@ OTU differential abundance analysis indicated that 648 OTUs (25 \% of reads) wer
 
 
 <<deseq_out1, echo=FALSE, cache=FALSE>>=
-kable(outtab, digits=2, caption = "OTUs which are significantly more abundant in soil compared to dust blown from the soil. This is a subset of the differential abundance analysis output, sorted by magnitude of difference in abundance. The padj column indicates the probability of the observed distribution including adjustment for multiple testing. Extended results are provided in Table S4. \\label{tab:deseq1}")
+kable(outtab,digits=2,row.names=F, caption = "OTUs which are significantly more abundant in soil compared to dust blown from the soil. This is a subset of the differential abundance analysis output, sorted by magnitude of difference in abundance. The padj column indicates the probability of the observed distribution including adjustment for multiple testing. OTU IDs and extended results are provided in Table S4. \\label{tab:deseq1}")
 @
 
 
 <<deseq_out2, echo=FALSE, cache=FALSE>>=
-kable(outtab2, digits=2,caption = "OTUs which are significantly more abundant in dust blown from the soil compared to the whole soil. This is a subset of the differential abundance analysis output, sorted by magnitude of difference in abundance. Extended results are provided in Table S4. \\label{tab:deseq2}")
+kable(outtab2,row.names=F, digits=2,caption = "OTUs which are significantly more abundant in dust blown from the soil compared to the whole soil. This is a subset of the differential abundance analysis output, sorted by magnitude of difference in abundance. OTU IDs and extended results are provided in Table S4. \\label{tab:deseq2}")
 @
 
-<<deseq_out3, echo=FALSE, cache=FALSE>>=
-otus.df.out <- otus.df[1:10,c(rank_names(ab)[c(2,6)],sample_names(ab.rel.merged)[-6],"sig")]
-colnames(otus.df.out)[colnames(otus.df.out)=="dune flank"] <- "d.flank"
-# class(otus.df$dune)
-# otus.df.out <- as.numeric(otus.df.out)
-kable(otus.df.out,row.names = F, digits=2,caption = "OTU abundance in each sampling zone (pc), in order of overall abundance. Sig column indicates if the OTU was significantly more abundant in soil or wind tunnel filter after running the wind tunnel on dune flanks. The 10 most abundant OTUs overall are shown, extended results are provided in Table S4. \\label{tab:deseq3}")
-@
 
 <<deseq_out4, echo=FALSE, cache=FALSE>>=
 # merge otu differential abundance results from sigtab into otus.df for supplementary data
@@ -1190,8 +1164,7 @@ write.csv(otus.df[,c("OTU",rank_names(ab)[1:7],sample_names(ab.rel.merged),"sig"
 
 \section{Discussion}
 \label{sec:disc}
-We have performed the first detailed characterisation of the prokaryotic community in a landscape-scale dryland system comprising terrestrial, fluvial, and aeolian components. This is also one of only a few studies to identify the microbes present in the central Australian drylands which cover over xx\footnote{can anyone provide figure and ref?} KM$^{2}$. Whilst determining the microbial composition of soils was not our primary objective, our results in addition to those presented are made available in the NCBI Sequence Read Archive (project SRP150526) and supplementary materials. This is an important contribution as such data on drylands are lacking in the global literature \citep{ferrenberg2017biological}. Our novel approach used landscape sampling combined with model based differential abundance analysis, enabling us to test hypotheses about the ecology of biocrust organisms in drylands, particularly focusing on the implications of dispersal strategies for landscape stability and dust production.
-
+We have performed the first detailed characterisation of the prokaryotic community in a landscape-scale dryland system comprising terrestrial, fluvial, and aeolian components. This is also one of only a few studies to identify the microbes present in the central Australian drylands which cover over xx\footnote{can anyone provide figure and ref?} KM$^{2}$. Whilst determining the microbial composition of soils was not our primary objective, community data in addition to those presented are made available in the NCBI Sequence Read Archive (project SRP150526) and supplementary tables S2, S3, S4. This is an important contribution as such data on drylands are lacking in the global literature \citep{ferrenberg2017biological}. Our novel approach used landscape sampling combined with model based differential abundance analysis, enabling us to test hypotheses about the ecology of biocrust organisms in drylands, particularly focusing on the implications of dispersal strategies for landscape stability and dust production.
 
 
 \subsection{Microbial community of biocrusts in a dryland ephemeral lake bed and surrounding dunes}
