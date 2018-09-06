@@ -79,43 +79,6 @@
 }
 \makeatother
 
-\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
-\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
-\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
-\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
-\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
-\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
-\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
-\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
-\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
-\let\hlipl\hlkwb
-
-\usepackage{framed}
-\makeatletter
-\newenvironment{kframe}{%
- \def\at@end@of@kframe{}%
- \ifinner\ifhmode%
-  \def\at@end@of@kframe{\end{minipage}}%
-  \begin{minipage}{\columnwidth}%
- \fi\fi%
- \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
- \colorbox{shadecolor}{##1}\hskip-\fboxsep
-     % There is no \\@totalrightmargin, so:
-     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
- \MakeFramed {\advance\hsize-\width
-   \@totalleftmargin\z@ \linewidth\hsize
-   \@setminipage}}%
- {\par\unskip\endMakeFramed%
- \at@end@of@kframe}
-\makeatother
-
-\definecolor{shadecolor}{rgb}{.97, .97, .97}
-\definecolor{messagecolor}{rgb}{0, 0, 0}
-\definecolor{warningcolor}{rgb}{1, 0, 1}
-\definecolor{errorcolor}{rgb}{1, 0, 0}
-\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
-
 \usepackage{alltt}
 
 %% For final version.
@@ -1194,7 +1157,7 @@ Unlike pan surfaces, stabilised sand dunes do not experience wholesale disruptio
 \subsubsection{Aeolian dispersal strategy}
 Biocrusts may also be established from airborne inocula, and the nebkha biocrusts are most likely an example of this. Because strongly adhesive biocrust taxa are less likely to become airborne, biocrusts established from airborne sediments may lack the strength of vegetatively established biocrusts at least initially until more stabilising vegetative taxa move in (and possibly ultimately out-compete them). They must therefore rely on other stabilising landscape features such as stones and plants, enabling them to settle without investing strongly in promoting landscape stability, although they probably do this incidentally. Taxa adapted for aerial dispersal must achieve high numbers in the atmosphere to be successful, thus they are likely to be R-strategists or copiotrophs that exploit islands of fertility to produce more airborne inocula. This means that although they have some capacity to stabilise soil, they may also contribute to dust production and export of nutrients from the soil. 
 
-Our data suggest \textit{Erwinia}, \textit{Deinococcus}, and \textit{Hymenobacter} species may be adapted for aeolian dispersal as part of their life cycle (Table \ref{tab:deseq2}). \textit{Erwinia} species include plant pathogens which are known to disperse on the wind \citep{graham1975potential}, however they are not commonly reported or expected to reside in biocrust soils so we do not consider them further here. \textit{Hymenobacter} species are recognised as extremophiles and \textit{H. arizonensis} was first isolated from a biocrust in Arizona \citep{reddy2013description}. Described properties align with our expectations for aerially dispersing biocrust microbes, including capability to use a wide range of carbon sources and possessing pigmentation possibly enabling resistance to radiation and desiccation which is a known feature of the genus \citep{rainey2005extensive}. \textit{Deinococcus} species are also well known for their remarkable ability to withstand dessication and intense radiation \citep{makarova2001genome}. Like \textit{Hymenobacter} this genus has been found in desert soils before \citep[e.g][]{rainey2005extensive}, and citet[][]{li2012carbon} detected \textit{Deinococcus} species at low abundance in aerosols thought to be derived from biocrusts or saline lake sediments in Australia. According to the latest version of Bergey's manual \citep{whitman2015bergey} the natural habitat of \textit{Deinococcus} species remains unknown. We suggest then that the habitat of this ancient lineage is in fact the biocrust top surface, and it is adapted for wind dispersal. With such ecology \textit{Deinococcus} and other wind dispersed biocrust species may serve a protective function to the biocrust, and can also ensure that they quickly colonise any newly emerging biocrust which will immediately benefit from such protection early in their development. 
+Our data suggest \textit{Erwinia}, \textit{Deinococcus}, and \textit{Hymenobacter} species may be adapted for aeolian dispersal as part of their life cycle (Table \ref{tab:deseq2}). \textit{Erwinia} species include plant pathogens which are known to disperse on the wind \citep{graham1975potential}, however they are not commonly reported or expected to reside in biocrust soils so we do not consider them further here. \textit{Hymenobacter} species are recognised as extremophiles and \textit{H. arizonensis} was first isolated from a biocrust in Arizona \citep{reddy2013description}. Described properties align with our expectations for aerially dispersing biocrust microbes, including capability to use a wide range of carbon sources and possessing pigmentation possibly enabling resistance to radiation and desiccation which is a known feature of the genus \citep{rainey2005extensive}. \textit{Deinococcus} species are also well known for their remarkable ability to withstand dessication and intense radiation \citep{makarova2001genome}. Like \textit{Hymenobacter} this genus has been found in desert soils before \citep[e.g][]{rainey2005extensive}, and \citet[][]{li2012carbon} detected \textit{Deinococcus} species at low abundance in aerosols thought to be derived from biocrusts or saline lake sediments in Australia. According to the latest version of Bergey's manual \citep{whitman2015bergey} the natural habitat of \textit{Deinococcus} species remains unknown. We suggest then that the habitat of this ancient lineage is in fact the biocrust top surface, and it is adapted for wind dispersal. With such ecology \textit{Deinococcus} and other wind dispersed biocrust species may serve a protective function to the biocrust, and can also ensure that they quickly colonise any newly emerging biocrust which will immediately benefit from such protection early in their development. 
 
 
 \section{Conclusions}
