@@ -371,6 +371,8 @@ library(knitr)
 library(ggmap)
 library(sp)
 library(rgdal) # needed by sp
+library(stringr)
+library(readr)
 
 # set global chunk options
 opts_chunk$set(fig.path='figure/minimal-', fig.align='center', fig.show='hold', message=FALSE)
@@ -396,14 +398,42 @@ vp.2 <- viewport(layout.pos.col=2, layout.pos.row=1)
 # it does not affect richness, NMDS, deseq2 which use full data
 prune_pc <- 0.2
 
-bac <- import_biom("data/otus/Elliott_Diamantina_Microbiome_Data_S1[otu-tax].biom", parseFunction = parse_taxonomy_greengenes)
+#all_otutab <- read_delim("data/all.otutab.txt", "\t")
+#all_otutab <- as.data.frame(all_otutab)
+#row.names(all_otutab) <- all_otutab[,1]
+#all_otutab <- all_otutab[,-1]
+#otutab <- otu_table(all_otutab,taxa_are_rows = T)
+#sample_names(otutab) <- gsub(pattern = "duneflank",replacement = "dune_flank",x = sample_names(otutab))
+
+biomin <- import_biom(BIOMfilename = "data/all.otutab.biom")
+# sample_names(biomin) <- gsub(pattern = "duneflank",replacement = "dune_flank",x = sample_names(biomin))
+taxin <- read_delim("data/uclust_assigned_taxonomy/all.otus_tax_assignments.txt", trim_ws = TRUE, delim = "\t", escape_double = FALSE, col_names = FALSE)
+taxin <- as.data.frame(taxin)
+row.names(taxin) <- gsub(pattern = ";.*",replacement = "",x = taxin$X1)
+
+tax <- str_split_fixed(string = taxin$X2, pattern = ";",n = 7)
+row.names(tax) <- gsub(pattern = ";.*",replacement = "",x = taxin$X1)
+colnames(tax) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+# fix taxa names
+#tax <- gsub(pattern="[a-z]__",replacement="",x = tax)
+tax <- gsub(pattern=" ?[a-z]__",replacement="",x = tax)
+
+taxtab <- tax_table(as.matrix(tax))
+#bac <- import_biom("data/otus/Elliott_Diamantina_Microbiome_Data_S1[otu-tax].biom", parseFunction = parse_taxonomy_greengenes)
 map <- import_qiime(mapfilename = "data/Elliott_Diamantina_Microbiome_Table_S1[sample-metadata].txt",verbose = FALSE)
-bac <- merge_phyloseq(bac,map)
+#bac <- merge_phyloseq(bac,map)
+
+bac <- phyloseq(biomin,map)
+
+
+#replace(tax_m, tax_m == " ", NA) -> tax123
+
+# add taxonomy to phyloseq object
+tax_table(bac) <- taxtab
 
 # fix incorrect spelling of nebkha in the biom file.
 levels(sample_data(bac)$zone)[levels(sample_data(bac)$zone)=="nebka"] <- "nebkha"
 sample_names(bac) <- gsub(pattern = "nebka" , x = sample_names(bac), replacement = "nebkha")
-
 
 # remove chloroplast
   bac <- subset_taxa(bac,Class!="Chloroplast")
@@ -415,7 +445,7 @@ sample_names(bac) <- gsub(pattern = "nebka" , x = sample_names(bac), replacement
   
   # standardise unknown taxon entries
 tax_table(bac)[is.na(tax_table(bac))] <- "Unknown"
-tax_table(bac)[tax_table(bac) %in% c("", "unclassified", "Unclassified")] <- "Unknown"
+tax_table(bac)[tax_table(bac) %in% c("", " ", "unclassified", "Unclassified")] <- "Unknown"
 
 # keep combined kingdom objects
 ab <- bac
@@ -429,7 +459,7 @@ expt.deseq = prune_taxa(taxa_sums(expt.deseq) > 0, expt.deseq)
 # add 1 to the whole OTU table, to avoid infinity problems in deseq analysis
 # this will reduce the fold changes
 otu_table(expt.deseq) <- otu_table(expt.deseq)+1
-  
+
 # convert OTU observations into relative abundance per sample
 arc.rel <- transform_sample_counts(arc, function(x) 100*x/(sum(x)))
 bac.rel <- transform_sample_counts(bac, function(x) 100*x/(sum(x)))
