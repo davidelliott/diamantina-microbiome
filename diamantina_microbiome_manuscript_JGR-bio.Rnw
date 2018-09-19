@@ -407,16 +407,33 @@ prune_pc <- 0.2
 
 biomin <- import_biom(BIOMfilename = "data/all.otutab.biom")
 # sample_names(biomin) <- gsub(pattern = "duneflank",replacement = "dune_flank",x = sample_names(biomin))
-taxin <- read_delim("data/uclust_assigned_taxonomy/all.otus_tax_assignments.txt", trim_ws = TRUE, delim = "\t", escape_double = FALSE, col_names = FALSE)
+# greengenes taxonomy assigned using RDP
+# taxin <- read_delim("data/uclust_assigned_taxonomy/all.otus_tax_assignments.txt", trim_ws = TRUE, delim = "\t", escape_double = FALSE, col_names = FALSE)
+# SILVA taxonomy assigned using uclust
+taxin <- read_delim("data/uclust-silva-assigned-tax-99/all.otus_tax_assignments.txt", trim_ws = TRUE, delim = "\t", escape_double = FALSE, col_names = FALSE)
+
+# processing for taxonomy if using RDP/greengenes
+#### taxin <- as.data.frame(taxin)
+#### row.names(taxin) <- gsub(pattern = ";.*",replacement = "",x = taxin$X1)
+
+#### tax <- str_split_fixed(string = taxin$X2, pattern = ";",n = 7)
+#### row.names(tax) <- gsub(pattern = ";.*",replacement = "",x = taxin$X1)
+#### colnames(tax) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+#### tax <- gsub(pattern=" ?[a-z]__",replacement="",x = tax)
+####
+
+# processing for taxonomy if using UCLUST/SILVA
 taxin <- as.data.frame(taxin)
 row.names(taxin) <- gsub(pattern = ";.*",replacement = "",x = taxin$X1)
 
-tax <- str_split_fixed(string = taxin$X2, pattern = ";",n = 7)
+tax <- str_split_fixed(string = taxin$X2, pattern = ";D_",n = 7)
 row.names(tax) <- gsub(pattern = ";.*",replacement = "",x = taxin$X1)
 colnames(tax) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
-# fix taxa names
-#tax <- gsub(pattern="[a-z]__",replacement="",x = tax)
-tax <- gsub(pattern=" ?[a-z]__",replacement="",x = tax)
+tax <- gsub(pattern=" ?[0-9]__",replacement="",x = tax)
+tax <- gsub(pattern="D_",replacement="",x = tax)
+tax <- gsub(pattern="uncultured.*",replacement="Unknown",x = tax)
+tax <- gsub(pattern="Unclassified.*",replacement="Unknown",x = tax)
+tax <- gsub(pattern="unclassified.*",replacement="Unknown",x = tax)
 
 taxtab <- tax_table(as.matrix(tax))
 #bac <- import_biom("data/otus/Elliott_Diamantina_Microbiome_Data_S1[otu-tax].biom", parseFunction = parse_taxonomy_greengenes)
@@ -424,9 +441,6 @@ map <- import_qiime(mapfilename = "data/Elliott_Diamantina_Microbiome_Table_S1[s
 #bac <- merge_phyloseq(bac,map)
 
 bac <- phyloseq(biomin,map)
-
-
-#replace(tax_m, tax_m == " ", NA) -> tax123
 
 # add taxonomy to phyloseq object
 tax_table(bac) <- taxtab
@@ -443,9 +457,8 @@ sample_names(bac) <- gsub(pattern = "nebka" , x = sample_names(bac), replacement
   taxa_names(bac) <- gsub("Cleanup.","C",taxa_names(bac))
   taxa_names(bac) <- gsub("Reference","R.",taxa_names(bac))
   
-  # standardise unknown taxon entries
+# standardise unknown taxon entries
 tax_table(bac)[is.na(tax_table(bac))] <- "Unknown"
-tax_table(bac)[tax_table(bac) %in% c("", " ", "unclassified", "Unclassified")] <- "Unknown"
 
 # keep combined kingdom objects
 ab <- bac
