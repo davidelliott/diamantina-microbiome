@@ -574,8 +574,8 @@ dev.off()
 @
 
 <<hyp_analysis,echo=FALSE, results='hide', cache=FALSE>>=
-# no output from this block but kept for now as it calculates some useful results/objects.
-# Might be suitable for output as small table or in text mention.
+# no output from this block but kept for now as it calculates some useful results/objects 
+# which may help answering potential reviewer questions
 
 channel.rel <- subset_samples(ab.rel,zone=="channel")
 dune.rel <- subset_samples(ab.rel,element=="air")
@@ -596,8 +596,6 @@ pan <- prune_taxa(taxa_sums(pan)>0,pan)
 channel.ntaxa <- ntaxa(channel)
 dune.ntaxa <- ntaxa(dune)
 pan.ntaxa <- ntaxa(pan)
-
-
 
 channel_dune.intersection <- intersect(taxa_names(channel),taxa_names(dune))
 channel_dune.intersection.n <- length(channel_dune.intersection)  
@@ -685,13 +683,7 @@ otu_table(ab.rel.ea) <- otu_table(ab.rel.ea)/5
 bac.rel.ea <- subset_samples(bac.rel,element!="air")
 otu_table(bac.rel.ea) <- otu_table(bac.rel.ea)/5
 
-# keep only the more abundant phyla (for clarity of plots)
-# this now done globally so shouldn't be needed here
-# ab.rel.ea.p <- subset_taxa(ab.rel.ea, Phylum%in%top.phyla)
-bac.rel.ea.p <- bac.rel.ea
-ab.rel.ea.p <- ab.rel.ea
-
-# same again but looking at cyanobacterial genera
+# and subset for cyanobacteria plots
 bac.rel.ea.cyano <- subset_taxa(bac.rel.ea, Phylum == "Cyanobacteria")
 # select only the more abundant cyanobacterial genera
 bac.rel.ea.cyano <- subset_taxa(bac.rel.ea.cyano, Genus%in%top.cyano.genus)
@@ -703,7 +695,8 @@ both_otus <- both_otus[both_otus%in%taxa_names(ab.rel.ea)]
 @
 
 <<deseq_analysis1, echo=FALSE, message=FALSE, results='hide', cache=TRUE>>=
-
+  # differential abundance analysis using deseq2
+  # does the wind tunnel preferentially lift certain otus?
   typedds = phyloseq_to_deseq2(expt.deseq, ~ element)
   typedds = DESeq(typedds, test="Wald",fitType="parametric")
   # DESeq docs:
@@ -764,19 +757,12 @@ sane <- sign(sigtab.subset$log2FoldChange)==(sign(sigtab.subset$diff))
 
 # order by diff
 sigtab.subset <- sigtab.subset[order(sigtab.subset$diff,decreasing = T),] 
-# save to file
-# not needed any more - now added this to otus.df
-# write.csv(sigtab.subset,"results/Elliott_Diamantina_Microbiome_Table_S3[wind].csv")
 
 outcols <- c("Phylum",		"Family",	"Genus","padj","air",	"earth") #"Class",	"Order",
 outtab <- sigtab.subset[1:10,outcols]
 outtab2 <- sigtab.subset[nrow(sigtab.subset):(nrow(sigtab.subset)-10),outcols]
-# there are NAs in outtab2 because of something wrong in working out the mean abundances
-# as can be seen by this line
-# otu_table(bac)["4397479"]
-# otu_table(expt.rel.df.merged)["4397479"]
-# there are observations for filter but it comes out as 0 in the table.
-# This is just because the OTU "4397479" is present in bac used for deseq analysis, but not in the subset object.
+# there are some NAs in outtab2 
+# This is just because some OTUs are present in bac used for deseq analysis, but not in the subset object.
 
 otus_earth <- row.names(sigtab.subset[sigtab.subset$diff>0,])
 otus_air <- row.names(sigtab.subset[sigtab.subset$diff<0,])
@@ -786,28 +772,27 @@ n_otu_air <- length(otus_air)
 
 # record significant OTUs in otus.df for output file / table
 otus.df$sig <- "-"
-#otus.df[otus_earth,"sig"] <- "soil"
-#otus.df[otus_air,"sig"] <- "air"
 otus.df[row.names(otus.df)%in%otus_earth,"sig"] <- "soil"
 otus.df[row.names(otus.df)%in%otus_air,"sig"] <- "air"
 @
 
 
 <<source_analysis1, echo=FALSE, message=FALSE, cache=TRUE>>=
+# which otus were found in the river?
 
-colnames(tax_table(ab.rel.ea.p))[1] <- "source"
-tax_table(ab.rel.ea.p)[,"source"] <- "not found in river"
-tax_table(ab.rel.ea.p)[taxa_names(ab.rel.ea.p)%in%waterborne_otus,"source"] <- "found in river"
+# find out presence in river by phylum
+colnames(tax_table(ab.rel.ea))[1] <- "source"
+tax_table(ab.rel.ea)[,"source"] <- "not found in river"
+tax_table(ab.rel.ea)[taxa_names(ab.rel.ea)%in%waterborne_otus,"source"] <- "found in river"
 
-ab.rel.ea.p.top <- subset_taxa(ab.rel.ea.p, Phylum%in%top.phyla)
+ab.rel.ea.top <- subset_taxa(ab.rel.ea, Phylum%in%top.phyla)
 
-water_otus_plot <- plot_bar(ab.rel.ea.p.top,x = "zone",fill = "source")
+water_otus_plot <- plot_bar(ab.rel.ea.top,x = "zone",fill = "source")
 water_otus_plot <- water_otus_plot + geom_bar(aes(color=source, fill=source), stat="identity", position="stack") 
 water_otus_plot <- water_otus_plot + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Set1",direction = -1) + scale_color_brewer(palette = "Set1",direction = -1)
 water_otus_plot <- water_otus_plot + facet_wrap(~Phylum, nrow=2) + theme(legend.position="bottom")
 
-###
-
+# find out presence in river with focus on cyanobacteria
 colnames(tax_table(bac.rel.ea.cyano))[1] <- "source"
 tax_table(bac.rel.ea.cyano)[,"source"] <- "not found in river"
 tax_table(bac.rel.ea.cyano)[taxa_names(bac.rel.ea.cyano)%in%waterborne_otus,"source"] <- "found in river"
@@ -819,17 +804,18 @@ water_otus_plot.c <- water_otus_plot.c + facet_wrap(~Genus, nrow=1, scales = "fr
 
 @
 
-<<deseq_analysis2, echo=FALSE, message=FALSE, cache=TRUE>>=
+<<deseq_analysis_continued, echo=FALSE, message=FALSE, cache=TRUE>>=
+# interrogating the deseq2 analysis above
 # see whether OTU is easy or not to become airborne by wind tunnel treatment
 # this is used later to make the wind_otus_plot
-# using object ab.rel.ea.p - which has only the more abundant phyla
+# using object ab.rel.ea - which has only the more abundant phyla
 
-colnames(tax_table(ab.rel.ea.p))[1] <- "behaviour"
-tax_table(ab.rel.ea.p)[,"behaviour"] <- "intermediate"
-tax_table(ab.rel.ea.p)[row.names(tax_table(ab.rel.ea.p))%in%otus_air,"behaviour"] <- "easily becomes airborne"
-tax_table(ab.rel.ea.p)[row.names(tax_table(ab.rel.ea.p))%in%otus_earth,"behaviour"] <- "resists becoming airborne"
+colnames(tax_table(ab.rel.ea))[1] <- "behaviour"
+tax_table(ab.rel.ea)[,"behaviour"] <- "intermediate"
+tax_table(ab.rel.ea)[row.names(tax_table(ab.rel.ea))%in%otus_air,"behaviour"] <- "easily becomes airborne"
+tax_table(ab.rel.ea)[row.names(tax_table(ab.rel.ea))%in%otus_earth,"behaviour"] <- "resists becoming airborne"
 
-ab.rel.ea.p.top <- subset_taxa(ab.rel.ea.p, Phylum%in%top.phyla)
+ab.rel.ea.top <- subset_taxa(ab.rel.ea, Phylum%in%top.phyla)
 
 colnames(tax_table(bac.rel.ea.cyano))[1] <- "behaviour"
 tax_table(bac.rel.ea.cyano)[,"behaviour"] <- "intermediate"
@@ -844,21 +830,23 @@ deseq_n_diff_air <- length(sigtab.subset[sigtab.subset$diff<0,"diff"] )
 deseq_n_diff_earth <- length(sigtab.subset[sigtab.subset$diff>0,"diff"] )
 
 # work out fraction of nebkha taxa that easily become airborne
-ab.rel.ea.p.nebkha <- subset_samples(ab.rel.ea.p,zone=="nebkha")
-ab.rel.ea.p.nebkha.airborne <- prune_taxa(as.logical(tax_table(ab.rel.ea.p.nebkha)[,1]=="easily becomes airborne") , ab.rel.ea.p.nebkha)
-pc_nebkha_easily_airborne <- 100*(sum(taxa_sums(ab.rel.ea.p.nebkha.airborne)) / sum(taxa_sums(ab.rel.ea.p.nebkha)) )
+ab.rel.ea.nebkha <- subset_samples(ab.rel.ea,zone=="nebkha")
+ab.rel.ea.nebkha.airborne <- prune_taxa(as.logical(tax_table(ab.rel.ea.nebkha)[,1]=="easily becomes airborne") , ab.rel.ea.nebkha)
+pc_nebkha_easily_airborne <- 100*(sum(taxa_sums(ab.rel.ea.nebkha.airborne)) / sum(taxa_sums(ab.rel.ea.nebkha)) )
 
 @
 
-<<source_analysis2, echo=FALSE, message=FALSE, cache=TRUE>>=
-###
+<<source_analysis_continued, echo=FALSE, message=FALSE, cache=TRUE>>=
+# plot taxa with colouring to indicate "behaviour" in relation to wind dunnel treatment
 
-wind_otus_plot <- plot_bar(ab.rel.ea.p.top,x = "zone",fill = "behaviour")
+### by phylum
+
+wind_otus_plot <- plot_bar(ab.rel.ea.top,x = "zone",fill = "behaviour")
 wind_otus_plot <- wind_otus_plot + geom_bar(aes(color=behaviour, fill=behaviour), stat="identity", position="stack") 
 wind_otus_plot <- wind_otus_plot + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Accent") + scale_color_brewer(palette = "Accent")
 wind_otus_plot <- wind_otus_plot + facet_wrap(~Phylum, nrow=2) + theme(legend.position="bottom")
 
-###
+### same again with focus on cyanobacteria
 
 wind_otus_plot.c <- plot_bar(bac.rel.ea.cyano,x = "zone",fill = "behaviour")
 wind_otus_plot.c <- wind_otus_plot.c + geom_bar(aes(color=behaviour, fill=behaviour), stat="identity", position="stack") 
@@ -948,14 +936,19 @@ Soils and sediments all contained low concentrations of carbon and nitrogen (Fig
 
 
 <<chem_out, echo=FALSE,fig.height=2,fig.cap='Soil properties in and around Lake Constance claypan at Diamantina National Park, Australia. a. Mean total carbon and nitrogen (percent w/w), pH, and particle mass median diameter (um); b. particle size distribution. Error bars represent the standard error of the mean for each soil type (n = 5). Sample coding for soil types: D sand dune, DF dune flank, N nebkha, P pan surface. \\label{fig:chem}', warning=FALSE, cache=TRUE>>=
-# melt for plotting
+# plot sample data
+
+# melt for plotting (chemistry and d50)
 chemistry.melt <- melt(sample_data(bac.earthair),measure.vars=c("N_pc","C_pc","pH","ps_d50"))
 chemistry.melt$variable <- revalue(chemistry.melt$variable, c("N_pc"="nitrogen", "C_pc"="carbon", "ps_d50"=expression("d50")))
+
 # make the plot 
 print(ggplot(chemistry.melt, aes(x=zone_code, y=value, shape=element, colour=zone)) + stat_summary(fun.data = "mean_se", size=1) + facet_wrap(~variable,scales = "free_y",nrow=1,labeller = label_parsed) + labs(x = "zone") + theme(aspect.ratio=1,legend.position="none") + colScale )
 
+# melt for plotting (particle size)
 ps.melt <- melt(sample_data(bac.earthair),measure.vars=c("ps_lt4","ps_4to16","ps_16to63","ps_63to250","ps_gt250"))
 ps.melt$variable <- revalue(ps.melt$variable, c("ps_lt4"=expression("< 4 "*mu*"m"),"ps_4to16"=expression("4 - 16 "*mu*"m"),"ps_16to63"=expression("16 - 63 "*mu*"m"),"ps_63to250"=expression("63 - 250 "*mu*"m"), "ps_gt250"=expression("> 250 "*mu*"m")))
+
 # make the plot 
 print(ggplot(ps.melt, aes(x=zone_code, y=value, shape=element, colour=zone)) + stat_summary(fun.data = "mean_se", size=1) + facet_wrap(~variable,scales = "fixed",nrow=1,labeller = label_parsed) + labs(x = "zone", y = "%") + theme(aspect.ratio=1,legend.position="none") + colScale )
 
@@ -1053,11 +1046,9 @@ write.csv(otus.df[,c("OTU",rank_names(ab)[1:7],sample_names(ab.rel.merged),"sig"
 @
 
 
-
 \section{Discussion}
 \label{sec:disc}
 We have performed the first detailed characterisation of the prokaryotic community in a landscape-scale dryland system comprising terrestrial, fluvial, and aeolian components. This is also one of only a few studies to identify the microbes present in the central Australian drylands which cover over xx\footnote{can anyone provide figure and ref?} KM$^{2}$. Whilst determining the microbial composition of soils was not our primary objective, community data in addition to those presented are made available in the NCBI Sequence Read Archive (project SRP150526) and supplementary tables S2, S3, S4. This is an important contribution as such data on drylands are lacking in the global literature \citep{ferrenberg2017biological}. Our novel approach used landscape sampling combined with model based differential abundance analysis, enabling us to test hypotheses about the ecology of biocrust organisms in drylands, particularly focusing on the implications of dispersal strategies for landscape stability and dust production.
-
 
 \subsection{Microbial community of biocrusts in a dryland ephemeral lake bed and surrounding dunes}
 Previous research on biocrust microbial communities in drylands is still rare in the literature \citep{ferrenberg2017biological} and has focused mainly on dune environments. We found that the dunes at our study site harboured typical biocrust communities with over 30 \% of sequences being of cyanobacterial origin, along with much of the remainder belonging to the phyla \textit{Actinobacteria}, \textit{Acidobacteria}, \textit{Chloroflexi}, and \textit{Proteobacteria} (Figure \ref{fig:waterp}). The same phyla in similar proportions have previously been found in biocrusts of the Kalahari in Botswana \citep{elliott2014niche}.
