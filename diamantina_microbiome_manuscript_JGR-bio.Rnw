@@ -411,8 +411,17 @@ colnames(tax) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Sp
 tax <- gsub(pattern=" ?[0-9]__",replacement="",x = tax)
 tax <- gsub(pattern="D_",replacement="",x = tax)
 tax <- gsub(pattern="uncultured.*",replacement="Unknown",x = tax)
+tax <- gsub(pattern="metagenome",replacement="Unknown",x = tax)
 tax <- gsub(pattern="Unclassified.*",replacement="Unknown",x = tax)
 tax <- gsub(pattern="unclassified.*",replacement="Unknown",x = tax)
+
+## for some genera there are more than one listed. Combining the cyanobacterial ones (we only work at genus level with cyanobacteria, it doesn't matter for the others):
+duplicated_genus <- c("Anabaena", "Calothrix", "Crinalium", "Cuspidothrix", "Cyanobium",  "Cylindrospermum", "Leptolyngbya", "Microcystis", "Microcoleus", "Nodularia", "Nostoc", "Phormidium", "Pseudanabaena", "Symplocastrum", "Tolypothrix", "Trichocoleus", "Tychonema", "Wilmottia")
+# the last one "Wilmottia" was not actually duplicated but is included here to shorten the name which had a code at the end of it.
+for(genus in duplicated_genus) {
+  my_pattern <- paste(genus,".*",sep="")
+  tax <- gsub(pattern=my_pattern,replacement=genus,x = tax)
+}
 
 # create phyloseq taxonomy table from the pre-processed taxonomy results
 taxtab <- tax_table(as.matrix(tax))
@@ -420,7 +429,7 @@ taxtab <- tax_table(as.matrix(tax))
 # import sample metadata
 map <- import_qiime(mapfilename = "data/Elliott_Diamantina_Microbiome_Table_S1[sample-metadata].txt",verbose = FALSE)
 
-# create the top level phyloseq object which will be the main masis for downstream analyses
+# create the top level phyloseq object which will be the main basis for downstream analyses
 bac <- phyloseq(biomin,map)
 
 # add taxonomy to phyloseq object
@@ -432,9 +441,11 @@ sample_names(bac) <- gsub(pattern = "nebka" , x = sample_names(bac), replacement
 
 # remove chloroplast
   bac <- subset_taxa(bac,Class!="Chloroplast")
+  bac <- subset_taxa(bac,Order!="Chloroplast")
 
 # fill in any NA in the tax table with "Unknown"
 tax_table(bac)[is.na(tax_table(bac))] <- "Unknown"
+tax_table(bac)[tax_table(bac)==""] <- "Unknown"
 
 # keep combined kingdom objects (bac objecct at this stage still contains archaea)
 ab <- bac
@@ -459,9 +470,10 @@ ab.rel.phylum <- tax_glom(ab.rel,taxrank = "Phylum")
 cyano.rel <- subset_taxa(bac.rel,Phylum=="Cyanobacteria")
 
 # Identify top phyla and cyano genera - so they can be selectively plotted/analysed
-top.phyla = names(sort(tapply(taxa_sums(ab.rel), tax_table(ab.rel)[, "Phylum"], sum), TRUE)[1:10])
-top.cyano.genus = names(sort(tapply(taxa_sums(cyano.rel), tax_table(cyano.rel)[, "Genus"], sum), TRUE)[1:6])
-top.cyano.genus <- top.cyano.genus[top.cyano.genus!="Unknown"]
+top.phyla = names(sort(tapply(taxa_sums(ab.rel), tax_table(ab.rel)[, "Phylum"], sum), TRUE))
+top.phyla <- top.phyla[top.phyla!="Unknown"][1:10]
+top.cyano.genus = names(sort(tapply(taxa_sums(cyano.rel), tax_table(cyano.rel)[, "Genus"], sum), TRUE))
+top.cyano.genus <- top.cyano.genus[top.cyano.genus!="Unknown"][1:5]
 
 # keep only the top phyla, but retain all in .all object for when needed
 bac.rel.all <- bac.rel
@@ -785,12 +797,19 @@ colnames(tax_table(ab.rel.ea))[1] <- "source"
 tax_table(ab.rel.ea)[,"source"] <- "not found in river"
 tax_table(ab.rel.ea)[taxa_names(ab.rel.ea)%in%waterborne_otus,"source"] <- "found in river"
 
-ab.rel.ea.top <- subset_taxa(ab.rel.ea, Phylum%in%top.phyla)
+# showing only the most abundant phyla.
+# as determined by
+# being in the top 10 overall abundance
+# and being >1% overall abundance
+ab.rel.ea.top <- subset_taxa(ab.rel.ea, Phylum%in%intersect(top.phyla,keep_phyla))
 
 water_otus_plot <- plot_bar(ab.rel.ea.top,x = "zone",fill = "source")
 water_otus_plot <- water_otus_plot + geom_bar(aes(color=source, fill=source), stat="identity", position="stack") 
 water_otus_plot <- water_otus_plot + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Set1",direction = -1) + scale_color_brewer(palette = "Set1",direction = -1)
 water_otus_plot <- water_otus_plot + facet_wrap(~Phylum, nrow=2) + theme(legend.position="bottom")
+
+# this line is to fix a plotting error (keep only data where abundance is not zero, see explanation in a block below):
+water_otus_plot$data <- water_otus_plot$data[water_otus_plot$data$Abundance!=0,]
 
 # find out presence in river with focus on cyanobacteria
 colnames(tax_table(bac.rel.ea.cyano))[1] <- "source"
@@ -800,7 +819,7 @@ tax_table(bac.rel.ea.cyano)[taxa_names(bac.rel.ea.cyano)%in%waterborne_otus,"sou
 water_otus_plot.c <- plot_bar(bac.rel.ea.cyano,x = "zone",fill = "source")
 water_otus_plot.c <- water_otus_plot.c + geom_bar(aes(color=source, fill=source), stat="identity", position="stack") 
 water_otus_plot.c <- water_otus_plot.c + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Set1",direction = -1) + scale_color_brewer(palette = "Set1",direction = -1)
-water_otus_plot.c <- water_otus_plot.c + facet_wrap(~Genus, nrow=1, scales = "free") + theme(legend.position="bottom")
+water_otus_plot.c <- water_otus_plot.c + facet_wrap(~Genus, nrow=1) + theme(legend.position="bottom") # , scales = "free"
 
 @
 
@@ -814,8 +833,6 @@ colnames(tax_table(ab.rel.ea))[1] <- "behaviour"
 tax_table(ab.rel.ea)[,"behaviour"] <- "intermediate"
 tax_table(ab.rel.ea)[row.names(tax_table(ab.rel.ea))%in%otus_air,"behaviour"] <- "easily becomes airborne"
 tax_table(ab.rel.ea)[row.names(tax_table(ab.rel.ea))%in%otus_earth,"behaviour"] <- "resists becoming airborne"
-
-ab.rel.ea.top <- subset_taxa(ab.rel.ea, Phylum%in%top.phyla)
 
 colnames(tax_table(bac.rel.ea.cyano))[1] <- "behaviour"
 tax_table(bac.rel.ea.cyano)[,"behaviour"] <- "intermediate"
@@ -839,19 +856,42 @@ pc_nebkha_easily_airborne <- 100*(sum(taxa_sums(ab.rel.ea.nebkha.airborne)) / su
 <<source_analysis_continued, echo=FALSE, message=FALSE, cache=TRUE>>=
 # plot taxa with colouring to indicate "behaviour" in relation to wind dunnel treatment
 
-### by phylum
+# showing only the most abundant phyla.
+# as determined by
+# being in the top 10 overall abundance
+# and being >1% overall abundance
+ab.rel.ea.top <- subset_taxa(ab.rel.ea, Phylum%in%intersect(top.phyla,keep_phyla))
+
+##  first create a custom palette
+# this ensures consistency among plots when some factors are not present
+behaviour.col <- brewer.pal(3,"Accent")
+names(behaviour.col) <- c("easily becomes airborne", "intermediate", "resists becoming airborne")
+
+## by phylum
 
 wind_otus_plot <- plot_bar(ab.rel.ea.top,x = "zone",fill = "behaviour")
 wind_otus_plot <- wind_otus_plot + geom_bar(aes(color=behaviour, fill=behaviour), stat="identity", position="stack") 
-wind_otus_plot <- wind_otus_plot + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Accent") + scale_color_brewer(palette = "Accent")
+wind_otus_plot <- wind_otus_plot + scale_y_continuous(name="relative abundance (%)") + scale_fill_manual(values=behaviour.col, drop="FALSE") + scale_color_manual(values=behaviour.col, drop="FALSE")
 wind_otus_plot <- wind_otus_plot + facet_wrap(~Phylum, nrow=2) + theme(legend.position="bottom")
 
-### same again with focus on cyanobacteria
+# there is something strange with the above plot.
+# some taxa "not found in river" are plotted in the "channel" bars
+# An example is deinococcus.
+# The below shows that this is a plotting error in ggplot:
 
+wotudata <- wind_otus_plot$data
+wotudata <- wotudata[wotudata$Genus=="Deinococcus",]
+wotudata <- wotudata[wotudata$zone=="channel",]
+plot_check <- sum(wotudata$Abundance) ## this comes out as zero: so Deinococcus really is absent from channels and is not in the plotting dataframe, but it is shown present in the plot
+
+# this line is to fix that plotting error (keep only data where abundance is not zero):
+wind_otus_plot$data <- wind_otus_plot$data[wind_otus_plot$data$Abundance!=0,]
+
+### same again with focus on cyanobacteria
 wind_otus_plot.c <- plot_bar(bac.rel.ea.cyano,x = "zone",fill = "behaviour")
 wind_otus_plot.c <- wind_otus_plot.c + geom_bar(aes(color=behaviour, fill=behaviour), stat="identity", position="stack") 
-wind_otus_plot.c <- wind_otus_plot.c + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Accent") + scale_color_brewer(palette = "Accent")
-wind_otus_plot.c <- wind_otus_plot.c + facet_wrap(~Genus, nrow=1, scales = "free") + theme(legend.position="bottom")
+wind_otus_plot.c <- wind_otus_plot.c + scale_y_continuous(name="relative abundance (%)") + scale_fill_manual(values=behaviour.col, drop="FALSE") + scale_color_manual(values=behaviour.col, drop="FALSE")
+wind_otus_plot.c <- wind_otus_plot.c + facet_wrap(~Genus, nrow=1) + theme(legend.position="bottom") # , scales = "free"
 @
 
 
@@ -988,29 +1028,39 @@ grid.draw(legend)
 
 @
 
-Microbial composition of the dune flank, pan, and nebkha sites varied considerably (Figure \ref{fig:community}). High abundance OTUs are likely to be important contributors to the overall community differences (Figure \ref{fig:community}), and many of the abundant OTUs were related to each other (Table S4), meaning that community differences may be evident and easier to understand at higher taxonomic ranks (Figures \ref{fig:waterp} and \ref{fig:waterc}). A total of \Sexpr{length(unique(tax_table(bac)[,"Phylum"]))} bacterial phyla and \Sexpr{length(unique(tax_table(arc)[,"Phylum"]))} archael phyla were identified. Frequencies of the most abundant phyla are shown in Figure \ref{fig:waterp} and are provided in full in Table S2. It can be seen that water channel samples are dissimilar to the soil-based samples at the phylum level although all abundant phyla are represented in both soil and water. \textit{Cyanobacteria} numerically dominate at the experimental sites (about 28 \% of prokaryotic sequences), the overall cyanobacterial abundance at different sites is similar, and the dominant cyanobacterial genus is \textit{Phormidium}. The degree of dominance by \textit{Phormidium} varies, and differences in less abundant cyanobacterial genera (e.g. \textit{Leptolyngbya} and \textit{Microcoleus}) are evident between sites. For example \textit{Microcoleus} is the second most abundant identified cyanobacterial genus, being quite abundant in dune flank (2.1 \%) and claypan (3.1 \%) but rare in nebkha (0.2 \%).
+Microbial composition of the dune flank, pan, and nebkha sites varied considerably (Figure \ref{fig:community}). High abundance OTUs are likely to be important contributors to the overall community differences (Figure \ref{fig:community}), and many of the abundant OTUs were related to each other (Table S4), meaning that community differences may be evident and easier to understand at higher taxonomic ranks (Figures \ref{fig:waterp} and \ref{fig:waterc}). A total of \Sexpr{length(unique(tax_table(bac)[,"Phylum"]))} bacterial phyla and \Sexpr{length(unique(tax_table(arc)[,"Phylum"]))} archael phyla were identified. Frequencies of the most abundant phyla are shown in Figure \ref{fig:waterp} and are provided in full in Table S2. It can be seen that water channel samples are dissimilar to the soil-based samples at the phylum level although all abundant phyla are represented in both soil and water. \textit{Cyanobacteria} numerically dominate at the experimental sites (about 28 \% of prokaryotic sequences), the overall cyanobacterial abundance at different sites is similar, and the dominant cyanobacterial genus is \textit{Phormidium}. The degree of dominance by \textit{Phormidium} varies, and differences in less abundant cyanobacterial genera (e.g. \textit{Leptolyngbya} and \textit{Microcoleus}) are evident between sites. For example \textit{Microcoleus} is the second most abundant identified cyanobacterial genus, being quite abundant in dune flank (2.1 \%) and claypan (3.1 \%) but rare in nebkha (0.2 \%). \footnote{this section needs adjusting after taxonomy update, note there are hardcoded values here which will be wrong.}
 
 \begin{figure}[tbp]
 \begin{center}
 <<OTU_source_out, echo=FALSE,fig.height=8.5, cache=FALSE>>=
+# adjust names to fit in the panel
+water_otus_plot$data$Phylum <- gsub(pattern = "Deinococcus-Thermus",replacement="Deinococcus",x=water_otus_plot$data$Phylum)
+wind_otus_plot$data$Phylum <- gsub(pattern = "Deinococcus-Thermus",replacement="Deinococcus",x=wind_otus_plot$data$Phylum)
+
 grid.newpage()
 pushViewport(viewport(layout=g0))
 print(water_otus_plot,vp=vp.01)
 print(wind_otus_plot,vp=vp.02)
 @
-\caption{ Relative abundance of bacterial phyla. Colouring indicates whether individual OTUs (97 \% similarity) contributing to the phylum abundance were found in the water channels (top), and whether they were significantly more abundant in soil or wind tunnel collectors at the dune flank sites (bottom). Only the 10 most abundant phyla are shown for clarity (full data provided in Table S2). Source designation is not indicative of the ultimate origin of OTUs.}\label{fig:waterp}
+\caption{ Relative abundance of identified bacterial phyla. Colouring indicates whether individual OTUs (97 \% similarity) contributing to the phylum abundance were found in the water channels (top), and whether they were significantly more abundant in soil or wind tunnel collectors at the dune flank sites (bottom). Only the 10 most abundant phyla are shown for clarity (full data provided in Table S2). Source designation is not indicative of the ultimate origin of OTUs.}\label{fig:waterp}
 \end{center}
 \end{figure}
 
 \begin{figure}[tbp]
 \begin{center}
-<<OTU_source_out2, echo=FALSE,fig.height=5.5, cache=FALSE>>=
+<<OTU_source_out2, echo=FALSE,fig.height=6.5, cache=FALSE>>=
+# adjust names to fit in the panel
+water_otus_plot.c$data$Genus <- gsub(pattern = " ",replacement="\n",x=water_otus_plot.c$data$Genus)
+water_otus_plot.c$data$Genus <- gsub(pattern = "Ambiguous_taxa",replacement="Ambig.",x=water_otus_plot.c$data$Genus)
+wind_otus_plot.c$data$Genus <- gsub(pattern = " ", replacement ="\n",x=wind_otus_plot.c$data$Genus)
+wind_otus_plot.c$data$Genus <- gsub(pattern = "Ambiguous_taxa", replacement ="Ambig.",x=wind_otus_plot.c$data$Genus)
+
 grid.newpage()
 pushViewport(viewport(layout=g0))
 print(water_otus_plot.c,vp=vp.01)
 print(wind_otus_plot.c,vp=vp.02)
 @
-\caption{ Relative abundance of cyanobacterial genera. Colouring indicates whether individual OTUs (97 pc similarity) contributing to the genus abundance were found in the water channels (top), and whether they were significantly more abundant in soil or wind tunnel collectors at the dune flank sites (bottom). Unidentified OTUs were excluded. Only the 5 most abundant identified cyanobacterial genera are shown for clarity (full data provided in Table S3). Source designation is not indicative of the ultimate origin of OTUs.}\label{fig:waterc}
+\caption{ Relative abundance of identified cyanobacterial genera. Colouring indicates whether individual OTUs (97 \% similarity) contributing to the genus abundance were found in the water channels (top), and whether they were significantly more abundant in soil or wind tunnel collectors at the dune flank sites (bottom). Only the 5 most abundant identified cyanobacterial genera are shown for clarity (full data provided in Table S3). Source designation is not indicative of the ultimate origin of OTUs.}\label{fig:waterc}
 \end{center}
 \end{figure}
 
@@ -1020,7 +1070,7 @@ A stepwise model building approach was used to identify measured variables which
 \subsection{Dispersal of microbes by fluvial and aeolian processes}
 Of the \Sexpr{pan.ntaxa} OTUs found in the claypan, \Sexpr{channel_pan.intersection.n} were also found in water channels, \Sexpr{dune_pan.intersection.n} were found in airborne dust from the dune flank, and \Sexpr{all.intersection} were found in both. The dune and channel samples had \Sexpr{channel_dune.intersection.n} OTUs in common. Whilst many soil OTUs were not detected in the air or water samples, most of the OTUs found exclusively in soil were rare, collectively accounting for only \Sexpr{soil_only_otus.sum} \% of reads in the soil samples. 
 
-OTU differential abundance analysis indicated that \Sexpr{deseq_n_diff_air} OTUs (\Sexpr{round(deseq_sum_diff_air*-1)} \% of reads) were  more abundant in air samples and \Sexpr{deseq_n_diff_earth} OTUs (\Sexpr{round(deseq_sum_diff_earth)} \% of reads) were more abundant in soil samples (adjusted p \textless 0.05). Details for a subset of these OTUs are shown in Tables \ref{tab:deseq1} and \ref{tab:deseq2} (extended results provided in Table S4). Results from these analyses were used to colour code Figures \ref{fig:waterp} and \ref{fig:waterc} to indicate whether taxa easily become airborne under windy conditions or not. It can be seen from these figures that some phyla and particular cyanobacterial genera differed in abundance between the dune flank soil and airborne dust liberated from the same soil by wind tunnel treatment. For example phylum \textit{Cyanobacteria} was more abundant in soil (resist becoming airborne) and phylum \textit{Firmicutes} was more abundant in dust (easily become airborne). Detail of cyanobacterial distribution given in Figure \ref{fig:waterc} shows that \textit{Phormidium} and \textit{Microcoleus} species were more common in soil compared to airborne dust, whereas \textit{Leptolyngbya} species were more common in the soil compared to dust. \textit{Nodularia} species and \textit{Synechococcus} species were more common in water channels compared to soils, whilst the other genera mentioned were more common in soils. 
+OTU differential abundance analysis indicated that \Sexpr{deseq_n_diff_air} OTUs (\Sexpr{round(deseq_sum_diff_air*-1)} \% of reads) were  more abundant in air samples and \Sexpr{deseq_n_diff_earth} OTUs (\Sexpr{round(deseq_sum_diff_earth)} \% of reads) were more abundant in soil samples (adjusted p \textless 0.05). Details for a subset of these OTUs are shown in Tables \ref{tab:deseq1} and \ref{tab:deseq2} (extended results provided in Table S4). Results from these analyses were used to colour code Figures \ref{fig:waterp} and \ref{fig:waterc} to indicate whether taxa easily become airborne under moderate windy conditions or not. It can be seen from these figures that some phyla and particular cyanobacterial genera differed in abundance between the dune flank soil and airborne dust liberated from the same soil by wind tunnel treatment. For example phylum \textit{Cyanobacteria} was more abundant in soil (resist becoming airborne) and phylum \textit{Firmicutes} was more abundant in dust (easily become airborne). Detail of cyanobacterial distribution given in Figure \ref{fig:waterc} shows that the common cyanobacteria in the biocrust are from the genera \textit{Microcoleus} and \textit{Tychonema}. Most OTUs in these genera were more common in soil compared to airborne dust but some were classified as intermediate which means no significant difference in abundance was found between soil and airborne dust. Most of these OTUs were also found in river channels but OTUs belonging to \textit{Microcoleus} group SAG 1449-1a were not found in channels. \footnote{this needs revising to reflect latest results}
 
 
 <<deseq_out1, echo=FALSE, cache=FALSE>>=
