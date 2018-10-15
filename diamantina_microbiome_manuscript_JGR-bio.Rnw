@@ -368,9 +368,6 @@ library(scales)   # needed for formatting y-axis labels to non-scientific type
 library(RColorBrewer)
 library("DESeq2")
 library(knitr)
-library(ggmap)
-library(sp)
-library(rgdal) # needed by sp
 library(stringr)
 library(readr)
 
@@ -398,31 +395,13 @@ vp.2 <- viewport(layout.pos.col=2, layout.pos.row=1)
 # it does not affect richness, NMDS, deseq2 which use full data
 prune_pc <- 0.2
 
-#all_otutab <- read_delim("data/all.otutab.txt", "\t")
-#all_otutab <- as.data.frame(all_otutab)
-#row.names(all_otutab) <- all_otutab[,1]
-#all_otutab <- all_otutab[,-1]
-#otutab <- otu_table(all_otutab,taxa_are_rows = T)
-#sample_names(otutab) <- gsub(pattern = "duneflank",replacement = "dune_flank",x = sample_names(otutab))
-
+# import the biom from the bioinformatics pipeline shell script "diamantina-vsearch-pipeline-silva.sh"
 biomin <- import_biom(BIOMfilename = "data/all.otutab.biom")
-# sample_names(biomin) <- gsub(pattern = "duneflank",replacement = "dune_flank",x = sample_names(biomin))
-# greengenes taxonomy assigned using RDP
-# taxin <- read_delim("data/uclust_assigned_taxonomy/all.otus_tax_assignments.txt", trim_ws = TRUE, delim = "\t", escape_double = FALSE, col_names = FALSE)
-# SILVA taxonomy assigned using uclust
+
+# import SILVA taxonomy results (was assigned using uclust)
 taxin <- read_delim("data/uclust-silva-assigned-tax-99/all.otus_tax_assignments.txt", trim_ws = TRUE, delim = "\t", escape_double = FALSE, col_names = FALSE)
 
-# processing for taxonomy if using RDP/greengenes
-#### taxin <- as.data.frame(taxin)
-#### row.names(taxin) <- gsub(pattern = ";.*",replacement = "",x = taxin$X1)
-
-#### tax <- str_split_fixed(string = taxin$X2, pattern = ";",n = 7)
-#### row.names(tax) <- gsub(pattern = ";.*",replacement = "",x = taxin$X1)
-#### colnames(tax) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
-#### tax <- gsub(pattern=" ?[a-z]__",replacement="",x = tax)
-####
-
-# processing for taxonomy if using UCLUST/SILVA
+# pre-process the taxonomy for consistency of naming etc.
 taxin <- as.data.frame(taxin)
 row.names(taxin) <- gsub(pattern = ";.*",replacement = "",x = taxin$X1)
 
@@ -435,38 +414,36 @@ tax <- gsub(pattern="uncultured.*",replacement="Unknown",x = tax)
 tax <- gsub(pattern="Unclassified.*",replacement="Unknown",x = tax)
 tax <- gsub(pattern="unclassified.*",replacement="Unknown",x = tax)
 
+# create phyloseq taxonomy table from the pre-processed taxonomy results
 taxtab <- tax_table(as.matrix(tax))
-#bac <- import_biom("data/otus/Elliott_Diamantina_Microbiome_Data_S1[otu-tax].biom", parseFunction = parse_taxonomy_greengenes)
-map <- import_qiime(mapfilename = "data/Elliott_Diamantina_Microbiome_Table_S1[sample-metadata].txt",verbose = FALSE)
-#bac <- merge_phyloseq(bac,map)
 
+# import sample metadata
+map <- import_qiime(mapfilename = "data/Elliott_Diamantina_Microbiome_Table_S1[sample-metadata].txt",verbose = FALSE)
+
+# create the top level phyloseq object which will be the main masis for downstream analyses
 bac <- phyloseq(biomin,map)
 
 # add taxonomy to phyloseq object
 tax_table(bac) <- taxtab
 
-# fix incorrect spelling of nebkha in the biom file.
+# fix incorrect spelling of nebkha carried over from the biom file.
 levels(sample_data(bac)$zone)[levels(sample_data(bac)$zone)=="nebka"] <- "nebkha"
 sample_names(bac) <- gsub(pattern = "nebka" , x = sample_names(bac), replacement = "nebkha")
 
 # remove chloroplast
   bac <- subset_taxa(bac,Class!="Chloroplast")
 
-# shorten long OTU names
-  taxa_names(bac) <- gsub("New.","N",taxa_names(bac))
-  taxa_names(bac) <- gsub("Cleanup.","C",taxa_names(bac))
-  taxa_names(bac) <- gsub("Reference","R.",taxa_names(bac))
-  
-# standardise unknown taxon entries
+# fill in any NA in the tax table with "Unknown"
 tax_table(bac)[is.na(tax_table(bac))] <- "Unknown"
 
-# keep combined kingdom objects
+# keep combined kingdom objects (bac objecct at this stage still contains archaea)
 ab <- bac
 
 # separate archaea and bacteria into different objects
 arc <- subset_taxa(bac,Kingdom=="Archaea")
 bac <- subset_taxa(bac,Kingdom=="Bacteria" )
 
+# for differential analyses of wind tunnel we only want the dune flank samples because that is where the wind tunnel was run.
 expt.deseq <- subset_samples(ab,zone=="dune flank")
 expt.deseq = prune_taxa(taxa_sums(expt.deseq) > 0, expt.deseq)
 # add 1 to the whole OTU table, to avoid infinity problems in deseq analysis
@@ -477,7 +454,6 @@ otu_table(expt.deseq) <- otu_table(expt.deseq)+1
 arc.rel <- transform_sample_counts(arc, function(x) 100*x/(sum(x)))
 bac.rel <- transform_sample_counts(bac, function(x) 100*x/(sum(x)))
 ab.rel <- transform_sample_counts(ab, function(x) 100*x/(sum(x)))
-#ab.rel <- merge_phyloseq(otu_table(bac.rel),tax_table(bac.rel),otu_table(arc.rel),tax_table(arc.rel),sample_data(bac.rel))
 
 ab.rel.phylum <- tax_glom(ab.rel,taxrank = "Phylum")
 cyano.rel <- subset_taxa(bac.rel,Phylum=="Cyanobacteria")
@@ -490,33 +466,20 @@ top.cyano.genus <- top.cyano.genus[top.cyano.genus!="Unknown"]
 # keep only the top phyla, but retain all in .all object for when needed
 bac.rel.all <- bac.rel
 ab.rel.all <- ab.rel
-#bac.rel <- subset_taxa(bac.rel, Phylum%in%top.phyla)
-#ab.rel <- subset_taxa(ab.rel, Phylum%in%top.phyla)
-# commented above removal of rare phyla because similar is done below (ab.phylum.rr)
-# and these objects are used to exporting results where this trimming was not expected (e.g. otus.df)
 
 # agglomerate cyanos by genus, used later on
 cyano.rel.g <- tax_glom(cyano.rel,taxrank = "Genus")
 
-# simplify data (speed up processing). If this isn't done it causes long calculation time and problems viewing the PDF. Need to check exactly which outputs this is affecting and whether it matters:
-# - affects the otus.df output to csv
-
+# simplify data to speed up processing. If this isn't done it causes long calculation time and problems viewing the PDF. 
+# This also affects the otus.df output to csv
 bac.rel <- prune_taxa(taxa_sums(bac.rel) > prune_pc, bac.rel) 
 ab.rel <- prune_taxa(taxa_sums(ab.rel) > prune_pc, ab.rel)
-#bac.rel <- prune_taxa(taxa_sums(bac.rel) > 0.1, bac.rel) 
-#unique(tax_table(ab.rel)[,1])
 
-# To simplify plots
-# Remove phyla not seen at more than 1 % in at least 10% of the samples.
-ab.rel.phylum.rr = filter_taxa(ab.rel.phylum, function(x) sum(x > 1) > (0.1*length(x)), TRUE)
-
-# Save a .csv of all the phylum abundances
-#phylumdf.all = psmelt(tax_glom(ab.rel.phylum,taxrank = "Phylum"))
-#write.csv(phylumdf.all,"phylum_breakdown.csv")
-
+# prepare merged objects for plotting phyls
 ab.rel.phylum.merged <- merge_samples(subset_samples(ab.rel.phylum,element!="air"),"zone")
 otu_table(ab.rel.phylum.merged) <- otu_table(ab.rel.phylum.merged)/5
 
+# output phylum level results for supplementary data
 tp <- t(otu_table(ab.rel.phylum.merged))
 tp <- as.data.frame(tp)
 # correct mangled colnames
@@ -529,6 +492,8 @@ phyla.df <- phyla.df[phyla.order,]
 
 write.csv(phyla.df[ ,c(rank_names(bac)[1:2],sample_names(ab.rel.phylum.merged))],"results/Elliott_Diamantina_Microbiome_Table_S2[phyla].csv", row.names = FALSE)
 
+# Sama again for cyanobacteria - 
+# prepare an object for plotting then output a CSV table of results for supplementary data
 cyano.rel.g.merged <- merge_samples(subset_samples(cyano.rel.g,element!="air"),"zone")
 otu_table(cyano.rel.g.merged) <- otu_table(cyano.rel.g.merged)/5
 tc <- t(otu_table(cyano.rel.g.merged))
@@ -543,6 +508,7 @@ cyano.df <- cyano.df[cyano.order,]
 
 write.csv(cyano.df[ ,c(rank_names(bac)[1:6],sample_names(cyano.rel.g.merged))],"results/Elliott_Diamantina_Microbiome_Table_S3[cyanobacteria].csv", row.names = FALSE)
 
+# prepare convenience objects - subset data for later plotting etc.
 bac.earthair <- subset_samples(bac,element!="water")
 arc.earthair <- subset_samples(arc,element!="water")
 ab.earthair <- subset_samples(ab,element!="water")
@@ -556,31 +522,30 @@ colScale <- scale_colour_manual(name = "zone",values = myColors)
 @
 
 <<analyse1,echo=FALSE,message=FALSE, results='hide', warning=FALSE, cache=TRUE>>=
+# plot richness
 rich.ab <- plot_richness(ab,measures = "Chao1",color = "zone", shape="element",x="zone") + geom_point(size=5,alpha=0.7) 
-
+# modify appearance of the richness plot
 rich.ab <- plot_richness(ab,measures = "Chao1",color = "zone", shape="element",x="zone_code") + geom_point(size=5,alpha=0.7, position=position_dodge(width=1)) 
 rich.ab$layers <- rich.ab$layers[3]
 rich.ab$theme$axis.text.x$angle <- 0
 rich.ab$theme$axis.text.x$hjust <- 0.4
 
+# NMDS plot (excluding water samples, for main article figure)
 ord.ab <- ordinate(ab.earthair, "NMDS", "bray")
 NMDS.ab <- plot_ordination(ab.earthair, ord.ab, type = "sites", color = "zone", shape="element") + geom_point(size=5,alpha=0.7) + theme(aspect.ratio=1) + theme(legend.position="right")
 NMDS.ab$layers <- NMDS.ab$layers[2]
 
-# ord2.ab <- ordinate(ab.earthair, "RDA", "bray")
-# RDA.ab <- plot_ordination(ab.earthair, ord2.ab, type = "sites", color = "zone", shape="element") + geom_point(size=5,alpha=0.7) + theme(aspect.ratio=1) + theme(legend.position="right")
-# RDA.ab$layers <- RDA.ab$layers[2]
-# The RDA takes a very long time to calculate, so NMDS is preferred. Had originally used NMDS anyway but considered changing ro RDA for simplicity of using same approach as model building below, however the NMDS works much better.
-
-m_reads_total <- sum(get_variable(ab,'n_reads'))/1000000
-m_reads_bac_qc <- sum(otu_table(bac))/1000000
-m_reads_arc_qc <- sum(otu_table(arc))/1000000
-
-# ordinate again with all samples for supplementary data
+# NMDS plot with all samples for supplementary data
 ord.all <- ordinate(ab, "NMDS", "bray")
 NMDS.all <- plot_ordination(ab, ord.all, type = "sites", color = "zone", shape="element") + geom_point(size=5,alpha=0.7) + theme(aspect.ratio=1) + theme(legend.position="right") + colScale
 NMDS.all$layers <- NMDS.all$layers[2]
 
+# record details about the sequencing run for reporting later
+m_reads_total <- sum(get_variable(ab,'n_reads'))/1000000
+m_reads_bac_qc <- sum(otu_table(bac))/1000000
+m_reads_arc_qc <- sum(otu_table(arc))/1000000
+
+# export the supplementary NMDS figure
 pdf("results/Elliott_Diamantina_Microbiome_Figure_S1[nmds].pdf")
 print(NMDS.all)
 dev.off()
@@ -605,61 +570,6 @@ points(step.result, display = "cn", lwd=1.5,head.arrow = 0.15 )
 text(step.result, display = "cn")
 text(step.result, col=cols[as.numeric(sample_data(ab.earth.rel)$zone_code)])
 dev.off()
-
-
-@
-
-<<locations, echo=FALSE, message=FALSE, results='hide', warning=FALSE, eval=TRUE, cache=TRUE>>=
-
-# Coordinates conversion to locations on the Earth in the Universal Transverse Mercator (UTM) coordinate system using the sp (spatial points) package. 
-
-# Calculate spatial points based on the lat/lon information
-# based on http://grokbase.com/t/r/r-sig-geo/136h9k8e9y/lat-long-utm-again
-
-samples_latlon <- sample_data(bac)[,c("lat","lon")]
-samples_latlon <- data.frame(samples_latlon)
-#convert to sp object:
-coordinates(samples_latlon) <- ~ lon + lat #longitude first
-
-#adding a coordinate reference system:
-proj4string(samples_latlon) <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84")
-
-#project using sp transform:
-UTM <- spTransform(samples_latlon, CRS=CRS("+proj=utm +zone=53 +ellps=WGS84 +datum=WGS84 +units=m +no_defs +towgs84=0,0,0"))
-
-# Now get the spatial points back into the main dataframe:
-UTM.df <- as.data.frame(UTM)
-UTM.df$easting <- UTM.df$lon
-UTM.df$northing <- UTM.df$lat
-
-sample_data(bac) <- cbind(sample_data(bac),UTM.df[,c("easting","northing")])
-@
-
-<<map2,echo=FALSE, message=FALSE, results='hide', warning=FALSE,eval=TRUE, cache=TRUE>>=
-
-# plot using ggmap. This just uses lat/lon, not the spatial points.
-
-# loc <- c(lon = mean(get_variable(bac,"lon")), lat = mean(get_variable(bac,"lat")))
-locZoom <- c(lon = mean(get_variable(bac,"lon")[get_variable(bac,"zone")!="channel"]), lat = mean(get_variable(bac,"lat")[get_variable(bac,"zone")!="channel"]))
-# locZoom2 <- c(lon = mean(get_variable(bac,"lon")[1:2]), lat = mean(get_variable(bac,"lat")[1:2] ))
-
-# locZoom2 <- c(lon = mean(samples_latlon$lon["dune4"]), lat = mean(samples_latlon$lat["nebkha4"] ))
-
-# dMap <- get_map(location=loc, source="google", maptype = "satellite", zoom = 11)
-dMapZoom <- get_map(location=locZoom, source="google", maptype = "satellite", zoom = 14, )
-# dMapZoom2 <- get_map(location=locZoom2, source="google", maptype = "satellite", zoom = 17)
-
-# basemap <- ggmap(dMap)
-basemapZoom <- ggmap(dMapZoom)
-# basemapZoom2 <- ggmap(dMapZoom2)
-
-# map1 <- basemap + geom_point(aes(x = lon, y = lat, colour=zone,shape=element),alpha=0.5, data = sample_data(bac), size = 4) + colScale
-
-bac.zoommap <- sample_data(subset_samples(physeq = bac,zone!="channel"))
-map2 <- basemapZoom + geom_point(aes(x = lon, y = lat, colour=zone,shape=element),alpha=0.5, data = bac.zoommap, size = 4) + geom_text(aes(label=transect),size=2.5, data = bac.zoommap) + colScale
-
-# higher zoom map for Lyell meeting
-# map3 <- basemapZoom2 + geom_point(aes(x = lon, y = lat, colour=zone,shape=element),alpha=0.5, data = bac.zoommap, size = 8) + geom_text(aes(label=transect),size=4, data = bac.zoommap) + colScale
 
 @
 
