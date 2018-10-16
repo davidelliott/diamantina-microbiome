@@ -553,9 +553,11 @@ NMDS.all <- plot_ordination(ab, ord.all, type = "sites", color = "zone", shape="
 NMDS.all$layers <- NMDS.all$layers[2]
 
 # record details about the sequencing run for reporting later
-m_reads_total <- sum(get_variable(ab,'n_reads'))/1000000
-m_reads_bac_qc <- sum(otu_table(bac))/1000000
-m_reads_arc_qc <- sum(otu_table(arc))/1000000
+m_reads_total <- sum(get_variable(ab,'n_reads'))/1000000 # total number of reads, expressed in millions
+t_reads_1pc <- round(sum(get_variable(ab,'n_reads'))/100000) # 1 percent of the total reads, expressed in thousands
+m_reads_bac_qc <- sum(otu_table(bac))/1000000 # total number of bacterial reads, expressed in millions, after QC
+m_reads_arc_qc <- sum(otu_table(arc))/1000000 # total number of archaeal reads, expressed in millions, after QC
+t_reads_1pc_qc <- round((sum(otu_table(bac))+sum(otu_table(arc)))/100000) # 1 percent of the total reads after QC, expressed in thousands
 
 # export the supplementary NMDS figure
 pdf("results/Elliott_Diamantina_Microbiome_Figure_S1[nmds].pdf")
@@ -771,10 +773,14 @@ sane <- sign(sigtab.subset$log2FoldChange)==(sign(sigtab.subset$diff))
 sigtab.subset <- sigtab.subset[order(sigtab.subset$diff,decreasing = T),] 
 
 outcols <- c("Phylum",		"Family",	"Genus","padj","air",	"earth") #"Class",	"Order",
-outtab <- sigtab.subset[1:10,outcols]
-outtab2 <- sigtab.subset[nrow(sigtab.subset):(nrow(sigtab.subset)-10),outcols]
-# there are some NAs in outtab2 
-# This is just because some OTUs are present in bac used for deseq analysis, but not in the subset object.
+# prepare tables of the top and bottom 10 significant results from sigtab where the genus is known
+outtab.master <- sigtab.subset[sigtab.subset$Genus!="Unknown",outcols]
+colnames(outtab.master) <- gsub(pattern = "air", replacement = "air \\%", x=colnames(outtab.master))
+colnames(outtab.master) <- gsub(pattern = "earth", replacement = "earth \\%", x=colnames(outtab.master))
+
+outtab <- outtab.master[1:10,]
+outtab2 <- outtab.master[nrow(outtab.master):(nrow(outtab.master)-10),]
+outtab2$Genus <- gsub(pattern = "Ambiguous_taxa", replacement = "ambig.",x = outtab2$Genus)
 
 otus_earth <- row.names(sigtab.subset[sigtab.subset$diff>0,])
 otus_air <- row.names(sigtab.subset[sigtab.subset$diff<0,])
@@ -1042,7 +1048,7 @@ pushViewport(viewport(layout=g0))
 print(water_otus_plot,vp=vp.01)
 print(wind_otus_plot,vp=vp.02)
 @
-\caption{ Relative abundance of identified bacterial phyla. Colouring indicates whether individual OTUs (97 \% similarity) contributing to the phylum abundance were found in the water channels (top), and whether they were significantly more abundant in soil or wind tunnel collectors at the dune flank sites (bottom). Only the 10 most abundant phyla are shown for clarity (full data provided in Table S2). Source designation is not indicative of the ultimate origin of OTUs.}\label{fig:waterp}
+\caption{ Relative abundance of identified bacterial phyla. Colouring indicates whether individual OTUs (97 \% similarity) contributing to the phylum abundance were found in the water channels (top), and whether they were significantly more abundant in soil or wind tunnel collectors at the dune flank sites (bottom). Taxonomy of contributing OTUs and statistical results are provided in Table \ref{tab:deseq1}. Only phyla exceeding 1 \% of total reads after QC are shown for clarity (full data provided in Table S2). Source designation is not indicative of the ultimate origin of OTUs.}\label{fig:waterp}
 \end{center}
 \end{figure}
 
@@ -1060,7 +1066,7 @@ pushViewport(viewport(layout=g0))
 print(water_otus_plot.c,vp=vp.01)
 print(wind_otus_plot.c,vp=vp.02)
 @
-\caption{ Relative abundance of identified cyanobacterial genera. Colouring indicates whether individual OTUs (97 \% similarity) contributing to the genus abundance were found in the water channels (top), and whether they were significantly more abundant in soil or wind tunnel collectors at the dune flank sites (bottom). Only the 5 most abundant identified cyanobacterial genera are shown for clarity (full data provided in Table S3). Source designation is not indicative of the ultimate origin of OTUs.}\label{fig:waterc}
+\caption{ Relative abundance of identified cyanobacterial genera. Colouring indicates whether individual OTUs (97 \% similarity) contributing to the genus abundance were found in the water channels (top), and whether they were significantly more abundant in soil or wind tunnel collectors at the dune flank sites (bottom). Only cyanobacterial genera exceeding 1 \% of total reads after QC are shown for clarity (full data provided in Table S3). Source designation is not indicative of the ultimate origin of OTUs.}\label{fig:waterc}
 \end{center}
 \end{figure}
 
@@ -1074,12 +1080,12 @@ OTU differential abundance analysis indicated that \Sexpr{deseq_n_diff_air} OTUs
 
 
 <<deseq_out1, echo=FALSE, cache=FALSE>>=
-kable(outtab,digits=2,row.names=F, caption = "OTUs which are significantly more abundant in soil compared to dust blown from the soil. This is a subset of the differential abundance analysis output, sorted by magnitude of difference in abundance. The padj column indicates the probability of the observed distribution including adjustment for multiple testing. OTU IDs and extended results are provided in Table S4. \\label{tab:deseq1}")
+kable(outtab,digits=2,row.names=F, caption = "Relative abundance of OTUs which are significantly more abundant in soil compared to dust blown from the soil. This is a subset of the differential abundance analysis output, sorted by magnitude of difference in abundance and excluding OTUs lacking genus level taxonomy information. The padj column indicates the probability of the observed distribution including adjustment for multiple testing. Multiple entries of the same genus means that multiple OTUs (approcximately species level) within the genus met criteria for inclusion in the table. OTU IDs and extended results are provided in Table S4. \\label{tab:deseq1}")
 @
 
 
 <<deseq_out2, echo=FALSE, cache=FALSE>>=
-kable(outtab2,row.names=F, digits=2,caption = "OTUs which are significantly more abundant in dust blown from the soil compared to the whole soil. This is a subset of the differential abundance analysis output, sorted by magnitude of difference in abundance. OTU IDs and extended results are provided in Table S4. \\label{tab:deseq2}")
+kable(outtab2,row.names=F, digits=2,caption = "Relative abundance of OTUs which are significantly more abundant in dust blown from the soil compared to the whole soil. This is a subset of the differential abundance analysis output, sorted by magnitude of difference in abundance and excluding OTUs lacking genus level taxonomy information. Multiple entries of the same genus means that multiple OTUs (approcximately species level) within the genus met criteria for inclusion in the table. OTU IDs and extended results are provided in Table S4. \\label{tab:deseq2}")
 @
 
 
