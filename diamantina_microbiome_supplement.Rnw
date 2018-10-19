@@ -1,0 +1,113 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Supporting Information
+%% (Optional)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OVERVIEW
+%
+% Please note that all supporting information will be peer reviewed with your manuscript.
+% In general, the purpose of the supporting information is to enable
+% authors to provide and archive auxiliary information such as data
+% tables, method information, figures, video, or computer software,
+% in digital formats so that other scientists can use it.
+
+% The key criteria are that the data:
+% 1. supplement the main scientific conclusions of the paper but are not essential to the conclusions (with the exception of
+%    including data so the experiment can be reproducible);
+% 2. are likely to be usable or used by other scientists working in the field;
+% 3. are described with sufficient precision that other scientists can understand them, and
+% 4. are not exe files.
+%
+
+% All Supporting text and figures should be included in this document.
+
+% Data sets, large tables, movie files,
+% and audio files should be uploaded separately, following AGU naming
+% conventions. Include their captions in this document and list the
+% file name with the caption. You will be prompted to upload these
+% files on the Upload Files tab during the submission process, using
+% file type “Supporting Information (SI)”
+
+\documentclass[draft]{agujournal}
+
+% Please type in the journal name: \journalname{<Journal Name>}
+% ie,
+\journalname{JGR-Biogeosciences}
+
+
+\begin{document}
+
+%% This command needs article title as argument to \supportinginfo{}:
+\supportinginfo{Landscape Stability in Drylands Influenced by Dispersal Strategy of Soil Bacteria}
+
+
+ \authors{David R. Elliott\affil{1},
+ Andrew D. Thomas\affil{2}, Craig L. Strong\affil{3},
+ Helene A. Aubault\affil{4}, Grant H. McTainsh\affil{5}, and Joanna Bullard\affil{6}}
+
+\affiliation{1}{Environmental Sustainability Research Centre, University of Derby, Derby, UK.}
+\affiliation{2}{Department of Geography and Earth Sciences, Aberystwyth University, Aberystwyth, UK.}
+\affiliation{3}{The Fenner School of Environment \& Society, ANU College of Sciences, The Australian National University, Canberra   ACT 2601,  Australia.}
+\affiliation{4}{TBC.}
+\affiliation{5}{Griffith School of the Environment, Griffith University, Nathan, Queensland, Australia.}
+\affiliation{6}{Department of Geography, School of Social, Political and Geographical Sciences, Loughborough University, Leicestershire, UK.}
+
+%% Corresponding Author
+%(include name and email addresses of the corresponding author.  More
+%than one corresponding author is allowed in this Word file and for
+%publication; but only one corresponding author is allowed in our
+%editorial system.)
+
+\correspondingauthor{D. R. Elliott}{d.r.elliott@derby.ac.uk}
+
+%% ------------------------------------------------------------------------ %%
+%
+%  TEXT
+%
+%% ------------------------------------------------------------------------ %%
+
+\section*{Contents}
+%%%Remove or add items as needed%%%
+\begin{enumerate}
+\item Figure S1
+\end{enumerate}
+
+\section*{Additional Supporting Information (Files uploaded separately)}
+
+\begin{enumerate}
+\item Caption for Data Set S1
+\item Captions for large Tables S1 and S2 (if larger than 1 page, upload as separate excel file)
+\end{enumerate}
+
+\section*{Figure S1}
+...
+%Delete all unused file types below. 
+%Copy/paste for multiples of each file type as needed.
+
+
+%%Enter Data Set, Movie, and Audio captions here
+%%EXAMPLE CAPTIONS
+\section*{Data Set S1.} %data/Elliott_Diamantina_Microbiome_Data_S1[otu-tax].biom
+% this data file is otu_table_mc2_w_tax.biom from the analysis pipeline
+Table of OTU reads per sample and assigned taxonomy. This is the raw OTU table in biom format output from the QIIME pipeline, and starting point of analyses in R.
+
+
+\section*{Large Table S1.} %data/Elliott_Diamantina_Microbiome_Table_S1[sample-metadata].txt
+Sample metadata include GPS locations and soil properties. This is a tab separated text file as used in the QIIME pipeline and other downstream analyses. 
+
+\section*{Large Table S2.} %Elliott_Diamantina_Microbiome_Table_S2[phyla].csv
+
+relative abundance of all prokaryotic phyla. 
+
+
+\section*{Large Table S3.} %Elliott_Diamantina_Microbiome_Table_S3[cyanobacteria].csv
+
+relative abundance of cyanobacteria
+
+\section*{Large Table S4.} %Elliott_Diamantina_Microbiome_Table_S4[otus].csv
+OTU taxonomy and relative abundance in each sampling zone (pc). This is an extended version of excerpt tables XX and XX presentd in the main manuscript manuscript. Sig column indicates if the OTU was significantly more abundant in soil or wind tunnel filter after running the wind tunnel on dune flanks. Columns to the right of this show the statistical results from DESEQ2 analysis which are the basis for the interpretation of differential mobilisation of OTUs by wind tunnel treatment. OTUs with an overall relative abundance less than 0.2 perecnt are excluded.
+
+
+\end{document}
+
+
+

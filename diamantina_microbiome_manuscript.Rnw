@@ -1,0 +1,1303 @@
+%% 11/23/2015
+%
+% the word count can be found using the toolbar at top. Currently it is 7,806
+% AGU publication element is 500 words or 1 figure/table 
+% - see https://publications.agu.org/author-resource-center/text-requirements/
+% We therefore have 16 + 8 + 5 = 29 publication elements
+% limit is meant to be 25 so some content needs to be reduced
+% please consider this and give suggestions
+%
+% my suggestion is to
+% - eliminate the map (figure 2), replace with supplementary gpx or kmz 
+% * <j.e.bullard@lboro.ac.uk> 2018-07-31T11:33:17.042Z:
+% 
+% I think the map is useful - particularly the second panel as it shows the sampling strategy and geomorphic units.  Not convinced we need panel (a).  We can find a Landsat image of the area which would not have any copyright problems and would be sufficient resolution.
+% I'm not 100% convinced we need figure 1 - I think we could explain what it shows in fewer than 500 words, and also we deal with this better in Table 5.  We could combine Fig 1 with Fig 2 - so just take the 3 photographs from Fig 1 (and possibly the nebkha photo from Fig 3) and arrange them in a row, add on the cycling arrows.  Put that row of 4 + arrows below panel b from Figure 2.  Loose the text from Fig 1.
+% I think we can do without Figure 3 and also Figure 4.   If we did that, then we've straightaway lost 3 figures (or 3 PUs).
+% 
+% ^.
+% (if keeping the map I think there are copyright issues that need to be overcome)
+% - combine particle size table 1 into Figure 5 (convert to plot panels)
+% * <j.e.bullard@lboro.ac.uk> 2018-07-31T11:40:27.410Z:
+% 
+% Yes, obvious move.  We could just add 3 columns to the particle size table, one for N +/- std error, one for C and one for pH.
+% That loses us another PU.
+% 
+% ^.
+% - eliminate figure 4 (sampling photos) or one of the latter tables
+%
+% please let me know your thoughts.
+% * <j.e.bullard@lboro.ac.uk> 2018-07-31T11:42:27.019Z:
+% 
+% Another possibility is to combine Figure 7 and Figure 8. I know one is bacterial phyla and one is cyanobacteria genera, but the formats, legend and figure captions are virtually the same.  Have 4 panels a-d where a, b are bacterial phyla and cyanobacteria genera by source, and then c and d are the same but by behaviour.  It would make a full page but make a coherent figure.
+% 
+% ^.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% AGUJournalTemplate.tex: this template file is for articles formatted with LaTeX
+%
+% This file includes commands and instructions
+% given in the order necessary to produce a final output that will
+% satisfy AGU requirements. 
+%
+% You may copy this file and give it your
+% article name, and enter your text.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PLEASE DO NOT USE YOUR OWN MACROS
+% DO NOT USE \newcommand, \renewcommand, or \def, etc.
+%
+% FOR FIGURES, DO NOT USE \psfrag or \subfigure.
+% DO NOT USE \psfrag or \subfigure commands.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% All questions should be e-mailed to latex@agu.org.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Step 1: Set the \documentclass
+%
+% There are two options for article format:
+%
+% 1) PLEASE USE THE DRAFT OPTION TO SUBMIT YOUR PAPERS.
+% The draft option produces double spaced output.
+% 
+% 2) numberline will give you line numbers.
+
+%% To submit your paper:
+%% \documentclass[linenumbers,draft]{agujournal}
+\documentclass[linenumbers,draft]{agujournal}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\usepackage{alltt}
+
+%% For final version.
+% \documentclass{agujournal}
+
+% Now, type in the journal name: \journalname{<Journal Name>}
+
+% ie, \journalname{Journal of Geophysical Research}
+%% Choose from this list of Journals:
+%
+% JGR-Atmospheres
+% JGR-Biogeosciences
+% JGR-Earth Surface
+% JGR-Oceans
+% JGR-Planets
+% JGR-Solid Earth
+% JGR-Space Physics
+% Global Biochemical Cycles
+% Geophysical Research Letters
+% Paleoceanography
+% Radio Science
+% Reviews of Geophysics
+% Tectonics
+% Space Weather
+% Water Resource Research
+% Geochemistry, Geophysics, Geosystems
+% Journal of Advances in Modeling Earth Systems (JAMES)
+% Earth's Future
+% Earth and Space Science
+%
+%
+
+%% remove this usepackage before submission.
+%% \usepackage{url,hyperref}
+
+\journalname{JGR-Biogeosciences}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+% this file is set up to use knitr not sweave.
+
+
+<<include=FALSE>>=
+library(knitr)
+@
+
+
+
+%% ------------------------------------------------------------------------ %%
+%  Title
+% 
+% (A title should be specific, informative, and brief. Use
+% abbreviations only if they are defined in the abstract. Titles that
+% start with general keywords then specific terms are optimized in
+% searches)
+%
+%% ------------------------------------------------------------------------ %%
+
+% Example: \title{This is a test title}
+
+\title{Surface Stability in Drylands is Influenced by Dispersal Strategy of Soil Bacteria}
+
+
+%% ------------------------------------------------------------------------ %%
+%
+%  AUTHORS AND AFFILIATIONS
+%
+%% ------------------------------------------------------------------------ %%
+
+% Authors are individuals who have significantly contributed to the
+% research and preparation of the article. Group authors are allowed, if
+% each author in the group is separately identified in an appendix.)
+
+% List authors by first name or initial followed by last name and
+% separated by commas. Use \affil{} to number affiliations, and
+% \thanks{} for author notes.  
+% Additional author notes should be indicated with \thanks{} (for
+% example, for current addresses). 
+
+% Example: \authors{A. B. Author\affil{1}\thanks{Current address, Antarctica}, B. C. Author\affil{2,3}, and D. E.
+% Author\affil{3,4}\thanks{Also funded by Monsanto.}}
+
+\authors{David R. Elliott\affil{1},
+Andrew D. Thomas\affil{2}, Craig L. Strong\affil{3},
+and Joanna Bullard\affil{4}}
+
+\affiliation{1}{Environmental Sustainability Research Centre, University of Derby, Derby, UK.}
+\affiliation{2}{Department of Geography and Earth Sciences, Aberystwyth University, Aberystwyth, UK.}
+\affiliation{3}{The Fenner School of Environment \& Society, ANU College of Sciences, The Australian National University, Canberra   ACT 2601,  Australia.}
+\affiliation{4}{Department of Geography, School of Social, Political and Geographical Sciences, Loughborough University, Leicestershire, UK.}
+
+%% Corresponding Author
+%(include name and email addresses of the corresponding author.  More
+%than one corresponding author is allowed in this Word file and for
+%publication; but only one corresponding author is allowed in our
+%editorial system.)
+
+\correspondingauthor{D. R. Elliott}{d.r.elliott@derby.ac.uk}
+
+%% Keypoints, final entry on title page.
+
+% Example: 
+% \begin{keypoints}
+% \item	List up to three key points (at least one is required)
+% \item	Key Points summarize the main points and conclusions of the article
+% \item	Each must be 100 characters or less with no special characters or punctuation 
+% \end{keypoints}
+
+%  List up to three key points (at least one is required)
+%  Key Points summarize the main points and conclusions of the article
+%  Each must be 100 characters or less with no special characters or punctuation 
+
+\begin{keypoints}
+\item Microbial community of dryland ephemeral lake bed, dunes, and river channels are characterised
+\item Wind preferentially mobilises specific microbes from soil biocrusts
+\item Microbial dispersal adaptations may influence soil stability by promoting or inhibiting adhesion
+\end{keypoints}
+
+%% ------------------------------------------------------------------------ %%
+%
+%  ABSTRACT
+%
+% A good abstract will begin with a short description of the problem
+% being addressed, briefly describe the new data or analyses, then
+% briefly states the main conclusion(s) and how they are supported and
+% uncertainties. 
+%% ------------------------------------------------------------------------ %%
+
+%% \begin{abstract} starts the second page 
+
+\begin{abstract}
+The abstract (1) states the nature of the investigation and (2) summarizes the important conclusions. The abstract should be suitable for indexing. Your abstract should:
+
+be set as a single paragraph.
+
+be less than 250 words for all journals except GRL, for which the limit is 150 words.
+
+not include table or figure mentions.
+
+not include reference citations.
+
+define all abbreviations.
+% * <j.e.bullard@lboro.ac.uk> 2018-07-31T11:50:26.840Z:
+% 
+% Need to make sure we mention dust - because not in title or key points (which is fine) but we do need it in the abstract when it gets written
+% 
+% ^.
+
+\end{abstract}
+
+%% ------------------------------------------------------------------------ %%
+%
+%  TEXT
+%
+%% ------------------------------------------------------------------------ %%
+
+%%% Suggested section heads:
+% \section{Introduction}
+% 
+% The main text should start with an introduction. Except for short
+% manuscripts (such as comments and replies), the text should be divided
+% into sections, each with its own heading. 
+
+% Headings should be sentence fragments and do not begin with a
+% lowercase letter or number. Examples of good headings are:
+
+% \section{Materials and Methods}
+% Here is text on Materials and Methods.
+%
+% \subsection{A descriptive heading about methods}
+% More about Methods.
+% 
+% \section{Data} (Or section title might be a descriptive heading about data)
+% 
+% \section{Results} (Or section title might be a descriptive heading about the
+% results)
+% 
+% \section{Conclusions}
+
+%Text here ===>>>
+
+%%
+
+%  Numbered lines in equations:
+%  To add line numbers to lines in equations,
+%  \begin{linenomath*}
+%  \begin{equation}
+%  \end{equation}
+%  \end{linenomath*}
+
+
+
+%% Enter Figures and Tables near as possible to where they are first mentioned:
+%
+% DO NOT USE \psfrag or \subfigure commands.
+%
+% Figure captions go below the figure.
+% Table titles go above tables;  other caption information
+%  should be placed in last line of the table, using
+% \multicolumn2l{$^a$ This is a table note.}
+%
+%----------------
+% EXAMPLE FIGURE
+%
+% \begin{figure}[h]
+% \centering
+% when using pdflatex, use pdf file:
+% \includegraphics[width=20pc]{figsamp.pdf}
+%
+% when using dvips, use .eps file:
+% \includegraphics[width=20pc]{figsamp.eps}
+%
+% \caption{Short caption}
+% \label{figone}
+%  \end{figure}
+%
+% ---------------
+% EXAMPLE TABLE
+%
+% \begin{table}
+% \caption{Time of the Transition Between Phase 1 and Phase 2$^{a}$}
+% \centering
+% \begin{tabular}{l c}
+% \hline
+%  Run  & Time (min)  \\
+% \hline
+%   $l1$  & 260   \\
+%   $l2$  & 300   \\
+%   $l3$  & 340   \\
+%   $h1$  & 270   \\
+%   $h2$  & 250   \\
+%   $h3$  & 380   \\
+%   $r1$  & 370   \\
+%   $r2$  & 390   \\
+% \hline
+% \multicolumn{2}{l}{$^{a}$Footnote text here.}
+% \end{tabular}
+% \end{table}
+
+%% SIDEWAYS FIGURE and TABLE 
+% AGU prefers the use of {sidewaystable} over {landscapetable} as it causes fewer problems.
+%
+% \begin{sidewaysfigure}
+% \includegraphics[width=20pc]{figsamp}
+% \caption{caption here}
+% \label{newfig}
+% \end{sidewaysfigure}
+% 
+%  \begin{sidewaystable}
+%  \caption{Caption here}
+% \label{tab:signif_gap_clos}
+%  \begin{tabular}{ccc}
+% one&two&three\\
+% four&five&six
+%  \end{tabular}
+%  \end{sidewaystable}
+
+%% If using numbered lines, please surround equations with \begin{linenomath*}...\end{linenomath*}
+%\begin{linenomath*}
+%\begin{equation}
+%y|{f} \sim g(m, \sigma),
+%\end{equation}
+%\end{linenomath*}
+
+\section{Introduction}
+\label{sec:intro}
+
+<<setup, include=FALSE, cache=FALSE>>=
+options(width = 120)
+library(phyloseq)
+library("ggplot2")
+library(plyr)
+library(vegan)
+library(grid)
+library(reshape2)
+library(scales)   # needed for formatting y-axis labels to non-scientific type
+library(RColorBrewer)
+library("DESeq2")
+library(knitr)
+library(stringr)
+library(readr)
+
+# set global chunk options
+opts_chunk$set(fig.path='figure/minimal-', fig.align='center', fig.show='hold', message=FALSE)
+options(formatR.arrow=TRUE,width=90)
+set.seed(42)
+
+theme_set(theme_bw())
+
+# setup grid
+g0 <- grid.layout(nrow=2, ncol=1)
+vp.01 <- viewport(layout.pos.col=1, layout.pos.row=1) 
+vp.02 <- viewport(layout.pos.col=1, layout.pos.row=2)
+
+gl <- grid.layout(nrow=1, ncol=2)
+vp.1 <- viewport(layout.pos.col=1, layout.pos.row=1) 
+vp.2 <- viewport(layout.pos.col=2, layout.pos.row=1)
+@
+
+<<load,echo=FALSE,message=FALSE, warning=FALSE, cache=TRUE>>=
+
+# set the relative % abundance below which we will discard otus for some
+# processing (.rel objects). This affects the otus.df object which outputs to csv
+# it does not affect richness, NMDS, deseq2 which use full data
+prune_pc <- 0.2
+
+# import the biom from the bioinformatics pipeline shell script "diamantina-vsearch-pipeline-silva.sh"
+biomin <- import_biom(BIOMfilename = "data/all.otutab.biom")
+
+# import SILVA taxonomy results (was assigned using uclust)
+taxin <- read_delim("data/uclust-silva-assigned-tax-99/all.otus_tax_assignments.txt", trim_ws = TRUE, delim = "\t", escape_double = FALSE, col_names = FALSE)
+
+# pre-process the taxonomy for consistency of naming etc.
+taxin <- as.data.frame(taxin)
+row.names(taxin) <- gsub(pattern = ";.*",replacement = "",x = taxin$X1)
+
+tax <- str_split_fixed(string = taxin$X2, pattern = ";D_",n = 7)
+row.names(tax) <- gsub(pattern = ";.*",replacement = "",x = taxin$X1)
+colnames(tax) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+tax <- gsub(pattern=" ?[0-9]__",replacement="",x = tax)
+tax <- gsub(pattern="D_",replacement="",x = tax)
+tax <- gsub(pattern="uncultured.*",replacement="Unknown",x = tax)
+tax <- gsub(pattern="metagenome",replacement="Unknown",x = tax)
+tax <- gsub(pattern="Unclassified.*",replacement="Unknown",x = tax)
+tax <- gsub(pattern="unclassified.*",replacement="Unknown",x = tax)
+
+## for some genera there are more than one listed. Combining the cyanobacterial ones (we only work at genus level with cyanobacteria, it doesn't matter for the others):
+duplicated_genus <- c("Anabaena", "Calothrix", "Crinalium", "Cuspidothrix", "Cyanobium",  "Cylindrospermum", "Leptolyngbya", "Microcystis", "Microcoleus", "Nodularia", "Nostoc", "Phormidium", "Pseudanabaena", "Symplocastrum", "Tolypothrix", "Trichocoleus", "Tychonema", "Wilmottia")
+# the last one "Wilmottia" was not actually duplicated but is included here to shorten the name which had a code at the end of it.
+for(genus in duplicated_genus) {
+  my_pattern <- paste(genus,".*",sep="")
+  tax <- gsub(pattern=my_pattern,replacement=genus,x = tax)
+}
+
+# create phyloseq taxonomy table from the pre-processed taxonomy results
+taxtab <- tax_table(as.matrix(tax))
+
+# import sample metadata
+map <- import_qiime(mapfilename = "data/Elliott_Diamantina_Microbiome_Table_S1[sample-metadata].txt",verbose = FALSE)
+
+# create the top level phyloseq object which will be the main basis for downstream analyses
+bac <- phyloseq(biomin,map)
+
+# add taxonomy to phyloseq object
+tax_table(bac) <- taxtab
+
+# fix incorrect spelling of nebkha carried over from the biom file.
+levels(sample_data(bac)$zone)[levels(sample_data(bac)$zone)=="nebka"] <- "nebkha"
+sample_names(bac) <- gsub(pattern = "nebka" , x = sample_names(bac), replacement = "nebkha")
+
+# remove chloroplast
+  bac <- subset_taxa(bac,Class!="Chloroplast")
+  bac <- subset_taxa(bac,Order!="Chloroplast")
+
+# fill in any NA in the tax table with "Unknown"
+tax_table(bac)[is.na(tax_table(bac))] <- "Unknown"
+tax_table(bac)[tax_table(bac)==""] <- "Unknown"
+
+# keep combined kingdom objects (bac objecct at this stage still contains archaea)
+ab <- bac
+
+# separate archaea and bacteria into different objects
+arc <- subset_taxa(bac,Kingdom=="Archaea")
+bac <- subset_taxa(bac,Kingdom=="Bacteria" )
+
+# for differential analyses of wind tunnel we only want the dune flank samples because that is where the wind tunnel was run.
+expt.deseq <- subset_samples(ab,zone=="dune flank")
+expt.deseq = prune_taxa(taxa_sums(expt.deseq) > 0, expt.deseq)
+# add 1 to the whole OTU table, to avoid infinity problems in deseq analysis
+# this will reduce the fold changes
+otu_table(expt.deseq) <- otu_table(expt.deseq)+1
+
+# convert OTU observations into relative abundance per sample
+arc.rel <- transform_sample_counts(arc, function(x) 100*x/(sum(x)))
+bac.rel <- transform_sample_counts(bac, function(x) 100*x/(sum(x)))
+ab.rel <- transform_sample_counts(ab, function(x) 100*x/(sum(x)))
+
+ab.rel.phylum <- tax_glom(ab.rel,taxrank = "Phylum")
+cyano.rel <- subset_taxa(bac.rel,Phylum=="Cyanobacteria")
+
+# Identify top phyla and cyano genera - so they can be selectively plotted/analysed
+top.phyla = names(sort(tapply(taxa_sums(ab.rel), tax_table(ab.rel)[, "Phylum"], sum), TRUE))
+top.phyla <- top.phyla[top.phyla!="Unknown"][1:10]
+top.cyano.genus = names(sort(tapply(taxa_sums(cyano.rel), tax_table(cyano.rel)[, "Genus"], sum), TRUE))
+top.cyano.genus <- top.cyano.genus[top.cyano.genus!="Unknown"][1:5]
+
+# keep only the top phyla, but retain all in .all object for when needed
+bac.rel.all <- bac.rel
+ab.rel.all <- ab.rel
+
+# agglomerate cyanos by genus, used later on
+cyano.rel.g <- tax_glom(cyano.rel,taxrank = "Genus")
+
+# simplify data to speed up processing. If this isn't done it causes long calculation time and problems viewing the PDF. 
+# This also affects the otus.df output to csv
+bac.rel <- prune_taxa(taxa_sums(bac.rel) > prune_pc, bac.rel) 
+ab.rel <- prune_taxa(taxa_sums(ab.rel) > prune_pc, ab.rel)
+
+# prepare merged objects for plotting phyls
+ab.rel.phylum.merged <- merge_samples(subset_samples(ab.rel.phylum,element!="air"),"zone")
+otu_table(ab.rel.phylum.merged) <- otu_table(ab.rel.phylum.merged)/5
+
+# output phylum level results for supplementary data
+tp <- t(otu_table(ab.rel.phylum.merged))
+tp <- as.data.frame(tp)
+# correct mangled colnames
+colnames(tp) <- gsub(pattern = "value.",replacement = "",x = colnames(tp))
+colnames(tp) <- gsub(pattern = '.',replacement = " ",x = colnames(tp),fixed = T)
+
+phyla.df <- as.data.frame(cbind(as.matrix(tax_table(ab.rel.phylum.merged)),as.matrix(tp)))
+phyla.order <- taxa_names(ab.rel.phylum.merged)[order(taxa_sums(ab.rel.phylum.merged),decreasing = T)]
+phyla.df <- phyla.df[phyla.order,]
+
+write.csv(phyla.df[ ,c(rank_names(bac)[1:2],sample_names(ab.rel.phylum.merged))],"results/Elliott_Diamantina_Microbiome_Table_S2[phyla].csv", row.names = FALSE)
+
+# Sama again for cyanobacteria - 
+# prepare an object for plotting then output a CSV table of results for supplementary data
+
+# merge by sample type, not including the air filter
+cyano.rel.g.merged <- merge_samples(subset_samples(cyano.rel.g,element!="air"),"zone")
+# as there is a replication level of 5, the OTU table is divided by 5 because the merge function adds these observations together
+otu_table(cyano.rel.g.merged) <- otu_table(cyano.rel.g.merged)/5
+tc <- t(otu_table(cyano.rel.g.merged))
+tc <- as.data.frame(tc)
+
+# calculations for manuscript text.
+# there are 5 sample types in cyano.rel.g.merged, so to arrive at an overall percent of cyanobacteria in the samples, these observations are divided by 5
+cyano.pc.in.samples.excluding.filter <- sum(taxa_sums(cyano.rel.g.merged )) / 5
+# and to get just the percent of cyanobacteria in dunes, a subsetted object is made
+sample_data(cyano.rel.g.merged)$zone <- sample_names(cyano.rel.g.merged)
+cyano.pc.in.dune.samples <- sum(taxa_sums(subset_samples(cyano.rel.g.merged,zone=="dune")))
+
+# correct mangled colnames
+colnames(tc) <- gsub(pattern = "value.",replacement = "",x = colnames(tc))
+colnames(tc) <- gsub(pattern = '.',replacement = " ",x = colnames(tc),fixed = T)
+
+cyano.df <- as.data.frame(cbind(as.matrix(tax_table(cyano.rel.g.merged)),as.matrix(tc)))
+cyano.order <- taxa_names(cyano.rel.g.merged)[order(taxa_sums(cyano.rel.g.merged),decreasing = T)]
+cyano.df <- cyano.df[cyano.order,]
+
+write.csv(cyano.df[ ,c(rank_names(bac)[1:6],sample_names(cyano.rel.g.merged))],"results/Elliott_Diamantina_Microbiome_Table_S3[cyanobacteria].csv", row.names = FALSE)
+
+# prepare convenience objects - subset data for later plotting etc.
+bac.earthair <- subset_samples(bac,element!="water")
+arc.earthair <- subset_samples(arc,element!="water")
+ab.earthair <- subset_samples(ab,element!="water")
+ab.earth.rel <- subset_samples(ab.rel,element=="earth")
+
+#Create a custom color scale
+myColors <- brewer.pal(7,"Set1")[c(2,1,7,5,3)]
+names(myColors) <- levels(get_variable(bac,"zone"))
+colScale <- scale_colour_manual(name = "zone",values = myColors)
+
+@
+
+<<analyse1,echo=FALSE,message=FALSE, results='hide', warning=FALSE, cache=TRUE>>=
+# plot richness
+rich.ab <- plot_richness(ab,measures = "Chao1",color = "zone", shape="element",x="zone") + geom_point(size=5,alpha=0.7) 
+# modify appearance of the richness plot
+rich.ab <- plot_richness(ab,measures = "Chao1",color = "zone", shape="element",x="zone_code") + geom_point(size=5,alpha=0.7, position=position_dodge(width=1)) 
+rich.ab$layers <- rich.ab$layers[3]
+rich.ab$theme$axis.text.x$angle <- 0
+rich.ab$theme$axis.text.x$hjust <- 0.4
+
+# NMDS plot (excluding water samples, for main article figure)
+ord.ab <- ordinate(ab.earthair, "NMDS", "bray")
+NMDS.ab <- plot_ordination(ab.earthair, ord.ab, type = "sites", color = "zone", shape="element") + geom_point(size=5,alpha=0.7) + theme(aspect.ratio=1) + theme(legend.position="right")
+NMDS.ab$layers <- NMDS.ab$layers[2]
+
+# NMDS plot with all samples for supplementary data
+ord.all <- ordinate(ab, "NMDS", "bray")
+NMDS.all <- plot_ordination(ab, ord.all, type = "sites", color = "zone", shape="element") + geom_point(size=5,alpha=0.7) + theme(aspect.ratio=1) + theme(legend.position="right") + colScale
+NMDS.all$layers <- NMDS.all$layers[2]
+
+# record details about the sequencing run for reporting later
+m_reads_total <- sum(get_variable(ab,'n_reads'))/1000000 # total number of reads, expressed in millions
+t_reads_1pc <- round(sum(get_variable(ab,'n_reads'))/100000) # 1 percent of the total reads, expressed in thousands
+m_reads_bac_qc <- sum(otu_table(bac))/1000000 # total number of bacterial reads, expressed in millions, after QC
+m_reads_arc_qc <- sum(otu_table(arc))/1000000 # total number of archaeal reads, expressed in millions, after QC
+t_reads_1pc_qc <- round((sum(otu_table(bac))+sum(otu_table(arc)))/100000) # 1 percent of the total reads after QC, expressed in thousands
+
+# export the supplementary NMDS figure
+pdf("results/Elliott_Diamantina_Microbiome_Figure_S1[nmds].pdf")
+print(NMDS.all)
+dev.off()
+
+# ordinate using phyloseq then stepwise model fitting
+# define some limit models for automatic model building
+mod0 <- ordinate(ab.earth.rel, "RDA", formula = ~ 1) # Model with intercept only
+mod1 <- ordinate(ab.earth.rel, "RDA", formula = ~ N_pc + C_pc + pH + ps_d10 + ps_d50 + ps_d90 + ps_sp.surf.area + ps_lt4 + ps_4to16 + ps_16to63 + ps_63to250 + ps_gt250 ) # Model with all explanatory variables
+
+# Use ordistep to select constraints for RDA
+step.result <- ordistep(object=mod0,scope=formula(mod1),direction="both")
+#step.result$call
+#step.result$anova
+
+# Plot the automatically selected model (for supplementary info)
+
+pdf("results/Elliott_Diamantina_Microbiome_Figure_S2[RDA].pdf")
+cols <- myColors[c("dune","dune flank", "nebkha","pan")]
+plot(step.result,type = "none")
+points(step.result,pch=as.numeric(sample_data(ab.earth.rel)$zone_code), col=cols[as.numeric(sample_data(ab.earth.rel)$zone_code)])
+points(step.result, display = "cn", lwd=1.5,head.arrow = 0.15 )
+text(step.result, display = "cn")
+text(step.result, col=cols[as.numeric(sample_data(ab.earth.rel)$zone_code)])
+dev.off()
+
+@
+
+<<hyp_analysis,echo=FALSE, results='hide', cache=FALSE>>=
+# no output from this block but kept for now as it calculates some useful results/objects 
+# which may help answering potential reviewer questions
+
+bac.deinococcus <- subset_taxa(bac,Phylum=="Deinococcus-Thermus")
+deinococcus.obs <- sum(otu_table(bac.deinococcus))
+deinococcus.obs.txt <- formatC(deinococcus.obs, format="d", big.mark=",")
+
+channel.rel <- subset_samples(ab.rel,zone=="channel")
+dune.rel <- subset_samples(ab.rel,zone=="dune")
+pan.rel <- subset_samples(ab.rel,zone=="pan")
+
+channel <- subset_samples(ab,zone=="channel")
+dune <- subset_samples(ab,element=="air")
+pan <- subset_samples(ab,zone=="pan")
+
+channel.rel <- prune_taxa(taxa_sums(channel.rel)>0,channel.rel)
+dune.rel <- prune_taxa(taxa_sums(dune.rel)>0,dune.rel)
+pan.rel <- prune_taxa(taxa_sums(pan.rel)>0,pan.rel)
+
+channel <- prune_taxa(taxa_sums(channel)>0,channel)
+dune <- prune_taxa(taxa_sums(dune)>0,dune)
+pan <- prune_taxa(taxa_sums(pan)>0,pan)
+
+channel.ntaxa <- ntaxa(channel)
+dune.ntaxa <- ntaxa(dune)
+pan.ntaxa <- ntaxa(pan)
+
+channel_dune.intersection <- intersect(taxa_names(channel),taxa_names(dune))
+channel_dune.intersection.n <- length(channel_dune.intersection)  
+
+channel_pan.intersection <- intersect(taxa_names(channel),taxa_names(pan))
+channel_pan.intersection.n <- length(channel_pan.intersection)  
+
+dune_pan.intersection <- intersect(taxa_names(dune),taxa_names(pan))
+dune_pan.intersection.n <- length(dune_pan.intersection)  
+
+all.intersection <- intersect(channel_dune.intersection, channel_pan.intersection)
+all.intersection <- length(all.intersection)
+
+# Now we have the intersections
+# make objects for the pairs and subset to just the intersecting taxa
+channel_pan <- subset_samples(ab.rel,zone%in%c("channel","pan"))
+channel_pan <- prune_taxa(channel_pan.intersection, channel_pan)
+otu_table(channel_pan) <- otu_table(channel_pan)/5
+
+channel_dune <- subset_samples(ab.rel,zone%in%c("channel","dune"))
+channel_dune <- prune_taxa(channel_dune.intersection, channel_dune)
+otu_table(channel_dune) <- otu_table(channel_dune)/5
+
+# create a common colour palette for plotting
+# not used now but might be useful later
+#allphyla <- unique(c(tax_table(channel_dune)[,"Phylum"],tax_table(channel_pan)[,"Phylum"]))
+#allphyla.col <- as.vector(colorRampPalette(brewer.pal(12,"Set3"))(length(allphyla)))
+#names(allphyla.col)  <- allphyla
+
+# plot
+#channel_pan.shared <- plot_bar(channel_pan,x = "zone",fill = "Phylum") + geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack") + scale_y_continuous(name="relative abundance (%)") + scale_fill_manual("Phylum", values = allphyla.col) + scale_colour_manual("Phylum", values = allphyla.col)
+
+# work out OTU abundance for those only in soil
+ab.rel.earth <- subset_samples(ab.rel,element=="earth")
+ab.rel.earth.merged <- merge_samples(ab.rel.earth,rep(T,nsamples(ab.rel.earth)))
+otu_table(ab.rel.earth.merged) <- otu_table(ab.rel.earth.merged)/nsamples(ab.rel.earth)
+inoc_source_otus <- unique(c(taxa_names(channel.rel),taxa_names(dune.rel)))
+
+soil_only_otus.sum <- round(sum(otu_table(ab.rel.earth.merged)) -  sum(otu_table(ab.rel.earth.merged)[,inoc_source_otus]),1)
+
+@
+
+<<hyp_analysis2,echo=FALSE, results='hide', cache=TRUE>>=
+# working with merged objects to reduce processing time
+# air samples merged separately because of shared zone name
+ab.rel.merged <- merge_samples(subset_samples(ab.rel,element!="air"),"zone")
+ab.rel.merged.air <- merge_samples(subset_samples(ab.rel,element=="air"),"zone")
+sample_names(ab.rel.merged.air) <- "dune flank air"
+ab.rel.merged <- merge_phyloseq(ab.rel.merged,ab.rel.merged.air)
+
+otu_table(ab.rel.merged) <- otu_table(ab.rel.merged)/5
+ab.rel.merged.phylum <- tax_glom(ab.rel.merged,"Phylum")
+
+# make dataframes for output later
+t <- t(otu_table(ab.rel.merged))
+t <- as.data.frame(t)
+otus.df <- as.data.frame(cbind(tax_table(ab.rel.merged),t))
+otus.df$OTU <- row.names(otus.df)
+otus.order <- taxa_names(ab.rel.merged)[order(taxa_sums(ab.rel.merged),decreasing = T)]
+otus.df <- otus.df[otus.order,]
+# more info will be added to this DF after DESEQ analysis, then it will be output
+
+# Keep only phyla that are > 1% overall:
+# to simplify plot and protect against unequal sampling bias
+
+keep_phyla <- (taxa_sums(ab.rel.merged.phylum)/5)>1
+keep_phyla <- as.character(tax_table(ab.rel.merged.phylum)[keep_phyla,"Phylum"])
+keep_phyla_index <- tax_table(ab.rel.merged)[,"Phylum"]%in%keep_phyla
+
+ab.rel.merged <- subset_taxa(ab.rel.merged, keep_phyla_index)
+sample_data(ab.rel.merged)$zone <- as.factor(sample_names(ab.rel.merged))
+
+airborne <- subset_samples(ab.rel,element=="air")
+airborne <- prune_taxa(taxa_sums(airborne)>0,airborne)
+waterborne <- subset_samples(ab.rel.merged,zone=="channel")
+waterborne <- prune_taxa(taxa_sums(waterborne)>0,waterborne)
+
+airborne_otus <- taxa_names(airborne)[taxa_sums(airborne)>0]
+waterborne_otus <- taxa_names(waterborne)[taxa_sums(waterborne)>0]
+both_otus <- intersect(airborne_otus,waterborne_otus)
+
+# make an object to be modified for plots
+ab.rel.ea <- subset_samples(ab.rel,element!="air")
+otu_table(ab.rel.ea) <- otu_table(ab.rel.ea)/5
+bac.rel.ea <- subset_samples(bac.rel,element!="air")
+otu_table(bac.rel.ea) <- otu_table(bac.rel.ea)/5
+
+# and subset for cyanobacteria plots
+bac.rel.ea.cyano <- subset_taxa(bac.rel.ea, Phylum == "Cyanobacteria")
+# select only the more abundant cyanobacterial genera
+bac.rel.ea.cyano <- subset_taxa(bac.rel.ea.cyano, Genus%in%top.cyano.genus)
+
+airborne_otus <- airborne_otus[airborne_otus%in%taxa_names(ab.rel.ea)]
+waterborne_otus <- waterborne_otus[waterborne_otus%in%taxa_names(ab.rel.ea)]
+both_otus <- both_otus[both_otus%in%taxa_names(ab.rel.ea)]
+
+@
+
+<<deseq_analysis1, echo=FALSE, message=FALSE, results='hide', cache=TRUE>>=
+  # differential abundance analysis using deseq2
+  # does the wind tunnel preferentially lift certain otus?
+  typedds = phyloseq_to_deseq2(expt.deseq, ~ element)
+  typedds = DESeq(typedds, test="Wald",fitType="parametric")
+  # DESeq docs:
+  #On p-values:
+  # By default, independent filtering is performed to select a set of genes for multiple test correction which will optimize the number of adjusted p-values less than a given critical value alpha (by default 0.1). The adjusted p-values for the genes which do not pass the filter threshold are set to NA. 
+  
+# When using local regression fit, the user should examine plotDispEsts(dds)
+# to make sure the fitted line is not sharply curving up or down based on
+# the position of individual points.
+
+  #  plotDispEsts(typedds,main="model check")
+
+  res = results(typedds, cooksCutoff = FALSE, alpha = 0.05)
+  alpha = 0.05
+  sigtab = res
+
+  rel.abundance <- apply(otu_table(ab)[rownames(sigtab), ],FUN = max,MARGIN = 1)
+  sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(expt.deseq)[rownames(sigtab), ], "matrix"))
+  sigtab$max <- rel.abundance
+  
+  # record the OTU name
+  sigtab$otu <- row.names(sigtab)
+  
+  ind <- sigtab$padj<0.05&!is.na(sigtab$padj)
+  sigtab$otu.orig <- sigtab$otu
+  sigtab[ind,"otu2"] <- gsub(pattern = "OTU_",replacement = "",x = sigtab[ind,"otu"])
+  sigtab[ind,"otu"] <- paste("*",sigtab[ind,"otu"],"*",sep="")
+
+  sigtab$sig <- ""
+  sigtab[ind,"sig"] <- "*"
+  
+  sd <- as.data.frame(sample_data(expt.deseq))
+
+# manipulations to the sigtab table - for later output as graphics and tables
+
+wanted_cols <- c("Phylum",  "Class",  "Order",	"Family",	"Genus",	"Species","padj","log2FoldChange")
+wanted_rows <- (sigtab$padj<0.05) & (!is.na(sigtab$padj))
+wanted_otus <- sigtab[wanted_rows,"otu.orig"]
+
+expt.rel.df <- subset_samples(ab.rel.all, zone=="dune flank")
+expt.rel.df.merged <- merge_samples(expt.rel.df,group = "element")
+otus.rel.df.by.type <- otu_table(expt.rel.df.merged)/5
+
+orbt <- as.data.frame(t(otus.rel.df.by.type))
+sigtab.subset <- sigtab[wanted_rows,wanted_cols]
+sigtab.subset <- cbind(sigtab.subset[wanted_otus,],orbt[wanted_otus,])
+# add a difference column
+sigtab.subset$diff <- sigtab.subset$earth - sigtab.subset$air
+
+# Sanity check on the significant OTUs
+sane <- sign(sigtab.subset$log2FoldChange)==(sign(sigtab.subset$diff))
+
+# identify the removed OTUs (none)
+# sigtab.subset.removed <- sigtab.subset[!sane,]
+
+# remove the OTUs not passing sanity check (none)
+# sigtab.subset <- sigtab.subset[sane,]
+
+# order by diff
+sigtab.subset <- sigtab.subset[order(sigtab.subset$diff,decreasing = T),] 
+
+outcols <- c("Phylum",		"Family",	"Genus","padj","air",	"earth") #"Class",	"Order",
+# prepare tables of the top and bottom 10 significant results from sigtab where the genus is known
+outtab.master <- sigtab.subset[sigtab.subset$Genus!="Unknown",outcols]
+colnames(outtab.master) <- gsub(pattern = "air", replacement = "air \\%", x=colnames(outtab.master))
+colnames(outtab.master) <- gsub(pattern = "earth", replacement = "earth \\%", x=colnames(outtab.master))
+
+outtab <- outtab.master[1:10,]
+outtab2 <- outtab.master[nrow(outtab.master):(nrow(outtab.master)-10),]
+outtab2$Genus <- gsub(pattern = "Ambiguous_taxa", replacement = "ambig.",x = outtab2$Genus)
+
+otus_earth <- row.names(sigtab.subset[sigtab.subset$diff>0,])
+otus_air <- row.names(sigtab.subset[sigtab.subset$diff<0,])
+
+n_otu_earth <- length(otus_earth)
+n_otu_air <- length(otus_air)
+
+# record significant OTUs in otus.df for output file / table
+otus.df$sig <- "-"
+otus.df[row.names(otus.df)%in%otus_earth,"sig"] <- "soil"
+otus.df[row.names(otus.df)%in%otus_air,"sig"] <- "air"
+@
+
+
+<<source_analysis1, echo=FALSE, message=FALSE, cache=TRUE>>=
+# which otus were found in the river?
+
+# find out presence in river by phylum
+colnames(tax_table(ab.rel.ea))[1] <- "source"
+tax_table(ab.rel.ea)[,"source"] <- "not found in river"
+tax_table(ab.rel.ea)[taxa_names(ab.rel.ea)%in%waterborne_otus,"source"] <- "found in river"
+
+# showing only the most abundant phyla.
+# as determined by
+# being in the top 10 overall abundance
+# and being >1% overall abundance
+ab.rel.ea.top <- subset_taxa(ab.rel.ea, Phylum%in%intersect(top.phyla,keep_phyla))
+
+water_otus_plot <- plot_bar(ab.rel.ea.top,x = "zone",fill = "source")
+water_otus_plot <- water_otus_plot + geom_bar(aes(color=source, fill=source), stat="identity", position="stack") 
+water_otus_plot <- water_otus_plot + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Set1",direction = -1) + scale_color_brewer(palette = "Set1",direction = -1)
+water_otus_plot <- water_otus_plot + facet_wrap(~Phylum, nrow=2) + theme(legend.position="bottom")
+
+# this line is to fix a plotting error (keep only data where abundance is not zero, see explanation in a block below):
+water_otus_plot$data <- water_otus_plot$data[water_otus_plot$data$Abundance!=0,]
+
+# find out presence in river with focus on cyanobacteria
+colnames(tax_table(bac.rel.ea.cyano))[1] <- "source"
+tax_table(bac.rel.ea.cyano)[,"source"] <- "not found in river"
+tax_table(bac.rel.ea.cyano)[taxa_names(bac.rel.ea.cyano)%in%waterborne_otus,"source"] <- "found in river"
+
+water_otus_plot.c <- plot_bar(bac.rel.ea.cyano,x = "zone",fill = "source")
+water_otus_plot.c <- water_otus_plot.c + geom_bar(aes(color=source, fill=source), stat="identity", position="stack") 
+water_otus_plot.c <- water_otus_plot.c + scale_y_continuous(name="relative abundance (%)") + scale_fill_brewer(palette = "Set1",direction = -1) + scale_color_brewer(palette = "Set1",direction = -1)
+water_otus_plot.c <- water_otus_plot.c + facet_wrap(~Genus, nrow=1) + theme(legend.position="bottom") # , scales = "free"
+
+@
+
+<<deseq_analysis_continued, echo=FALSE, message=FALSE, cache=TRUE>>=
+# interrogating the deseq2 analysis above
+# see whether OTU is easy or not to become airborne by wind tunnel treatment
+# this is used later to make the wind_otus_plot
+# using object ab.rel.ea - which has only the more abundant phyla
+
+colnames(tax_table(ab.rel.ea))[1] <- "behaviour"
+tax_table(ab.rel.ea)[,"behaviour"] <- "intermediate"
+tax_table(ab.rel.ea)[row.names(tax_table(ab.rel.ea))%in%otus_air,"behaviour"] <- "easily becomes airborne"
+tax_table(ab.rel.ea)[row.names(tax_table(ab.rel.ea))%in%otus_earth,"behaviour"] <- "resists becoming airborne"
+
+colnames(tax_table(bac.rel.ea.cyano))[1] <- "behaviour"
+tax_table(bac.rel.ea.cyano)[,"behaviour"] <- "intermediate"
+tax_table(bac.rel.ea.cyano)[row.names(tax_table(bac.rel.ea.cyano))%in%otus_air,"behaviour"] <- "easily becomes airborne"
+tax_table(bac.rel.ea.cyano)[row.names(tax_table(bac.rel.ea.cyano))%in%otus_earth,"behaviour"] <- "resists becoming airborne"
+
+deseq_n_test <- nrow(sigtab)
+
+deseq_sum_diff_air <- sum(sigtab.subset[sigtab.subset$diff<0,"diff"] )
+deseq_sum_diff_earth <- sum(sigtab.subset[sigtab.subset$diff>0,"diff"] )
+deseq_n_diff_air <- length(sigtab.subset[sigtab.subset$diff<0,"diff"] )
+deseq_n_diff_earth <- length(sigtab.subset[sigtab.subset$diff>0,"diff"] )
+
+# work out fraction of nebkha taxa that easily become airborne
+ab.rel.ea.nebkha <- subset_samples(ab.rel.ea,zone=="nebkha")
+ab.rel.ea.nebkha.airborne <- prune_taxa(as.logical(tax_table(ab.rel.ea.nebkha)[,1]=="easily becomes airborne") , ab.rel.ea.nebkha)
+pc_nebkha_easily_airborne <- 100*(sum(taxa_sums(ab.rel.ea.nebkha.airborne)) / sum(taxa_sums(ab.rel.ea.nebkha)) )
+
+@
+
+<<source_analysis_continued, echo=FALSE, message=FALSE, cache=TRUE>>=
+# plot taxa with colouring to indicate "behaviour" in relation to wind dunnel treatment
+
+# showing only the most abundant phyla.
+# as determined by
+# being in the top 10 overall abundance
+# and being >1% overall abundance
+ab.rel.ea.top <- subset_taxa(ab.rel.ea, Phylum%in%intersect(top.phyla,keep_phyla))
+
+##  first create a custom palette
+# this ensures consistency among plots when some factors are not present
+behaviour.col <- brewer.pal(3,"Accent")
+names(behaviour.col) <- c("easily becomes airborne", "intermediate", "resists becoming airborne")
+
+## by phylum
+
+wind_otus_plot <- plot_bar(ab.rel.ea.top,x = "zone",fill = "behaviour")
+wind_otus_plot <- wind_otus_plot + geom_bar(aes(color=behaviour, fill=behaviour), stat="identity", position="stack") 
+wind_otus_plot <- wind_otus_plot + scale_y_continuous(name="relative abundance (%)") + scale_fill_manual(values=behaviour.col, drop="FALSE") + scale_color_manual(values=behaviour.col, drop="FALSE")
+wind_otus_plot <- wind_otus_plot + facet_wrap(~Phylum, nrow=2) + theme(legend.position="bottom")
+
+# there is something strange with the above plot.
+# some taxa "not found in river" are plotted in the "channel" bars
+# An example is deinococcus.
+# The below shows that this is a plotting error in ggplot:
+
+wotudata <- wind_otus_plot$data
+wotudata <- wotudata[wotudata$Genus=="Deinococcus",]
+wotudata <- wotudata[wotudata$zone=="channel",]
+plot_check <- sum(wotudata$Abundance) ## this comes out as zero: so Deinococcus really is absent from channels and is not in the plotting dataframe, but it is shown present in the plot
+
+# this line is to fix that plotting error (keep only data where abundance is not zero):
+wind_otus_plot$data <- wind_otus_plot$data[wind_otus_plot$data$Abundance!=0,]
+
+### same again with focus on cyanobacteria
+wind_otus_plot.c <- plot_bar(bac.rel.ea.cyano,x = "zone",fill = "behaviour")
+wind_otus_plot.c <- wind_otus_plot.c + geom_bar(aes(color=behaviour, fill=behaviour), stat="identity", position="stack") 
+wind_otus_plot.c <- wind_otus_plot.c + scale_y_continuous(name="relative abundance (%)") + scale_fill_manual(values=behaviour.col, drop="FALSE") + scale_color_manual(values=behaviour.col, drop="FALSE")
+wind_otus_plot.c <- wind_otus_plot.c + facet_wrap(~Genus, nrow=1) + theme(legend.position="bottom") # , scales = "free"
+@
+
+
+In drylands where vegetation is sparse, soil microbes provide some ecosystem functions that are normally delivered by plants in temperate vegetated systems \citep[e.g.][]{lange1992taxonomic, ferrenberg2017biological}. Microbes in the soil surface of drylands form biological soil crusts (biocrusts) which reduce erodibility by wind and water \citep{eldridge2003exploring, liu2017quantifying}, fix carbon and nitrogen \citep{li2012carbon,budel2018annual}, alter the surface albedo and increase water holding capacity \citep{adessi2018microbial,singh2016cyanobacteria}. Biocrusts were among the first organisms to colonise land \citep{beraldi2013early}, therefore it is to be expected that they are well adapted to both exploit soil surface conditions, and modify their environment for their own advantage. By identifying and understanding the adaptations of biocrust organisms, we can gain insights into the biotic forces that influence geomorphic processes. In this paper we investigate how individual microbial taxa contribute to soil stability in western Queensland, Australia and relate this to their hypothesised ecological strategies for survival.
+
+
+The interactions between fluvial and aeolian processes in drylands have been demonstrated as important over timescales ranging from seasons to glacial-interglacial cycles \citep{mctainsh1987desert,bullard2003aeolian,field2009toward,langford1989fluvial}. Fluvial systems can deliver large quantities of sediment to downstream within catchments that, once deposited and desiccated, are susceptible to wind erosion.   The combination of water flow and wind direction can result in sediment cycling at a range of different spatial scales from catchments exceeding 1 million km$^{2}$ \citep{bullard2003aeolian} to within smaller dune-pan systems (Thomas et al. 1993\footnote{Jo please could you advise what paper you meant?}). By linking river systems and wind erosion, \citet{mctainsh1987desert} viewed dryland geomorphology as a system of sediment recycling operating on a massive scale. Microbiota have not generally been considered as a component of this fluvial - aeolian system, however it has been acknowledged that biocrust organisms can act as ecosystem engineers \citet{viles2008understanding}.
+
+In this paper we report on the microbial ecology of a dynamic ecosystem in central Australia comprising a 25 km$^{2}$ claypan in the Lake Eyre basin bounded by sand dunes and ephemeral river channels, where fluvial-aeolian interactions are thought to have been occurring at least since the last glacial maximum about 10 kBp \citep{bullard2003aeolian}. To provide insights into how biocrust microbial ecology affects soil stability we determined the microbial composition of different dryland soils and sediments, and then identified possible ecological strategies (especially dispersal mechanisms) of the microbes present. As microbes were expected to be dispersed by both air and water, we also analysed the microbial composition of nearby river channels and airborne dust liberated by \textit{in-situ} wind tunnel treatment on sand dunes. By developing hypotheses about the ecology of communities and their constituent individual taxa, it should be possible to predict responses for various scenarios and devise interventions to manipulate the biotic component of geomorphic processes. Such an achievement would have a wide range of potential applications in land management, for example to enhance carbon storage, suppress dust emissions, and make predictions of future geomorphic activity under a changing climate. By comparing the microbial composition of different system parts we evaluated possible dispersal strategies of individual taxa and interpreted these findings in relation to soil stability and dust emissions. 
+
+\begin{figure}[tbp]
+  \centering
+      \includegraphics[width=1\textwidth]{figure/sites-fig}
+  \caption{Aerial view of sampling locations with identification sample types and illustrating the position of transects in the landscape. Inset shows general area of claypan including surrounding water channels, main image shows a closer view of dune and pan area. Lower panels show photographs of the main system compartments, with markers keyed to match with aerial imagery. Arrows illustrate expected linkages between system components by aeolian and hydrological transfer of sediment and inoculum. }
+  \label{fig:sites}
+\end{figure}
+
+There are a limited number of studies on the microbial content of airborne sediments \citet{acosta2015microbiology} most of which focus on long-distance transport of pathogens relevant to human health. Studies with a more environmental focus which have looked at the microbiota found naturally within major dust sources or in the air near to known dust sources in Australia include \citet{de2008geochemical,lim2011microbiological,abed2012microbial,munday2016characterizing}. These studies have characterised microbial communities in aerosols and dust sources, highlighting the possibility of nutrient transportation along with microbiota, and demonstrating potential applications of microbiome science for tracing dust to its source. The authors of all of these papers were careful to point out that due to mixing in the air, it was not possible from their data to relate the airborne microbiome directly to any specific source. Due to our methodology employing a wind tunnel we were able in this work to unequivocally collect and analyse dust microbiota from a specific known source. The only previous study utilising a wind tunnel to collect airborne particles and microbes is \citet{gardner2012pyrosequencing}, which used a pyrosequencing approach to determine the association of particular microbes and diversity metrics with organic matter and particle size fractions. Prior to wind-tunnel treatments the soils in \citet{gardner2012pyrosequencing} were tilled, raked, and flattened using a lawn roller, in contrast to the present study which used soils in their natural condition.
+
+Our main hypothesis is that different compartments in fluvial-aeolian systems harbour distinctive microbial communities, and that wind erosion selectively mobilises certain taxa from biocrusts. We expect this because it is known that biocrusts stabilise dryland soils and this stability is clearly linked to their survival prospects because shifting soils will prevent the establishment and succession of biocrusts \citep[e.g.][]{felde2018ongoing}. So whilst we expect a strong selective pressure in biocrust organisms for promotion of soil stability, it should be recognised that this is a benefit to the community not just the individual taxa investing considerable resource to stabilise the soil. If some biocrust organisms are exploiting community resources rather than contributing to biocrust survival, then it can be hypothesised that such taxa may reduce soil stability and contribute to dust emissions. If this is the case then one might expect these organisms to be adapted for aerial dispersal via liberated dust so that they can rapidly find new crusted surfaces to exploit after depleting resources in a particular location.
+
+\section{Methods}
+\label{sec:meth}
+
+\subsection{Field site and sampling}
+Work was carried out at Diamantina National Park in western Queensland, Australia (23$^{\circ}$36'44.8" S; 143$^{\circ}$17'46.9" E). Climate in the region is semi-arid and characterised by a summer-dominant rainfall pattern with a mean annual precipitation of 270 mm a$^{-1}$ and high inter-annual variation. Central to the study site is 25 Km$^{2}$ of claypan, bordered by sand dunes and multiple channels of the Diamantina river. Aeolian activity moves sediment from the dunes and claypan, whilst periodic flooding (interval approx. 3 years) brings fresh river sediment to the claypan (Figure \ref{fig:sites}). A linear dune runs approximately north-south on the west side of the claypan, and this was the location from which sampling transects were established (Figure \ref{fig:sites}). Soil was sampled from five transects perpendicular to the dune, and water/sediment was sampled from water channels in the surrounding area. Transects were approximately 500 m apart along the dune extending into the claypan. Some zones to the south were impacted by unauthorised cattle trampling and these areas were avoided. The transects are numbered 1-5 starting at the south end. 
+
+Biocrusts on the claypan typically have a blue-green appearance due to the presence of photosynthetic organisms, and have a platelet formation caused by physical weathering. They appear to have once been widespread but had been largely eroded away at the time of sampling in July 2015. Underneath claypan platelet crusts was a brown coloured crust, and this was not sampled in the present study. In many places on the claypan there were small nebkha dunes and the crust platelets encroached up the nebkha flanks. 
+
+The following locations were targeted for soil sampling (See Figure \ref{fig:sites} for photographs; Table S1 for coordinates):
+
+\begin{enumerate}
+\item [D.] Dune. Dune biocrust
+\item [DF.] Dune flank. Dune flank biocrust. These sites were also used for wind tunnel experiments.
+\item [N.] Nebkha. Biocrust situated on nebkha in the claypan to the east of the dune
+\item [P.] Pan. Biocrust platelets in vegetation interspaces on the claypan
+\item [C.] River channel. Sediment and water from the banks of water channels surrounding the dune/claypan complex
+\end{enumerate}
+
+Sampled areas were 10x10 cm and were selected to represent the diversity of biocrust in the area. The sampled depth of approximately 5 mm was dictated by natural coherence of the biocrust. The area was cut out with a sterile scalpel and the crust was lifted off the unconsolidated soil beneath. In areas where differing crust types were noticeable the sampled areas were selected to have both types where applicable.
+
+Water channels were sampled by dragging a 5 ml sterile bijoux along the bank where it meets the water. Approximately 2.5 ml bank sediment and 2.5 ml standing water were collected in each bottle from the same location. 
+
+\subsection{Wind tunnel}
+A wind tunnel was run on dune flanks within 3 m of where the soil crust was sampled for the dune flank samples. The wind tunnel was a duct-type design equipped with a sediment collection trap in which sterile filter papers were fitted. Further details of design and operation have previously been described by \citet{strong2016development}. The wind tunnel was run on dune flanks because they are relatively flat, and being naturally eroded by saltation impact from the dune sand above during windy conditions they likely act as an inoculum source to surrounding areas more so than the higher dune areas. At each site the wind tunnel was run three times on adjacent areas for 5 minutes at 10 m/s for 5 minutes. This is a moderate treatment intended to be realistic and to collect only the easily mobilised particles / organisms. 
+
+\subsection{Soil properties}
+Total carbon and nitrogen content of soils were determined using a CN element analyser (Leco TruSpec). Particle size distribution was determined using a Beckman-Coulter LS280 laser-sizer in the range 0.375-2000 $\mu$m with 93 class intervals. 
+Soil pH was determined using a Sartorius PY-P10 probe after mixing soil in water according to the method of \citet{rowell1994soil}, scaled down for small samples. 
+
+\subsection{DNA sequencing}
+DNA was extracted in the field within 24 hours of sample collection using a Mobio Powersoil DNA extraction kit according to the manufacturers instructions except for increasing the soil amount slightly to 0.4 g per sample as described previously \citet{elliott2014niche}. DNA sequencing targeted the prokaryotic 16S rRNA gene v4 region and was performed by the Centre for Genomic Research (CGR) NERC Facility at the University of Liverpool, using an Illumina MiSeq in a Paired end approach (2x250 using v2 reagents). The primer design, PCR, and barcoding approach followed the method of \citet{caporaso2010global} using primers 515F and 806R (15 cycles) for amplification of v4 region, then a second nested PCR (15 cycles) to incorporate illumina adapter sequences and barcodes. Barcodes were as described in the Illumina Nextera protocol.
+
+DNA sequence data from this research has been deposited in the NCBI Sequence Read Archive and is available via project accession SRP150526.
+% We used our standard v4 primers for your previous project, as per the attached protocol, but with one change.  We performed 15 + 15 cycles for first and second round PCRs on the basis of your testing prior to sending us the samples.  Sequencing was 2x250 on the MiSeq using v2 reagents.  I’ve attached traces of the amplicons to this email for you.
+
+
+\subsection{Bioinformatics}
+FastQ files from DNA sequencing were processed using VSERARCH v2.8.4 \citep{rognes2016vsearch} for quality control and OTU clustering. Parameters included maximum expected error rate of 0.25 for stringent sequencing error rejection, de-novo chimera removal followed by reference-based chimera removal using the Gold database \citep{haas2011chimeric}, and de-novo clustering of OTUs at 97 \% similarity which typically approximates to species-level differences \citep{stackebrandt1994taxonomic}. Taxonomy was assigned using UCLUST v1.2.22 \citep{edgar2010search} as implemented in QIIME \citep{caporaso2010qiime}, using the SILVA database release 132 \citep{quast2013silva}.
+
+\subsection{Statistical analyses}
+OTU tables with assigned taxonomy from the bioinformatics pipeline were analysed using R v3.5.1 \citep{R2018} with packages phyloseq v\Sexpr{package.version("phyloseq")} \citep{mcmurdie2013phyloseq} and vegan v\Sexpr{package.version("vegan")} \citep{oksanen2017vegan}. Sequences identified as originating from chloroplasts or  mitochondria were removed. Microbial community structure was visualised with respect to sample source using nonmetric multidimensional scaling (NMDS) based on Bray-Curtis dissimilarity calculated from relative abundance of OTUs. In the resultant NMDS plots showing the first 2 dimensions of the multidimensional space, samples with similar community composition are placed closer together \citep{kruskal1964multidimensional}. Possible correlation of measured variables with microbial community structure was evaluated by stepwise model building to select explanatory variables in a redundancy analysis (RDA), and using ANOVA to test significance of selected variables to the model. All measured variables were used in this process including pH, C, N, and a range of particle size parameters (variables are available in supplementary table S1). Alpha diversity was evaluated by calculating the Chao1 richness estimate for each sample.
+
+To identify OTUs with different relative abundance in the wind tunnel collection filter compared to the source dune flank soil we used the model based DESeq2 approach \citep{love2014moderated} on non-rarefied reads as implemented in the phyloseq package. The DESeq2 method includes correction for multiple testing and is highly efficient on data preservation because it eliminates the need to perform rarefaction or normalization of count data \citep{mcmurdie2014waste}. 
+
+\section{Results}
+\label{sec:res}
+
+\subsection{Soil properties}
+Soils and sediments all contained low concentrations of carbon and nitrogen (Figure \ref{fig:chem}). Dune and dune flank sites contained approximately double the amount of carbon (approximately 0.35 \% w/w) and nitrogen (approximately 0.06 \% w/w) compared to nebkha and pan sites (approximately 0.20 \% and 0.35 \% respectively). The pH of dune and dune flank sites were similar at pH 6.5 whereas pan and nebkha sites were around pH 7.0.
+
+
+<<chem_out, echo=FALSE,fig.height=2,fig.cap='Soil properties in and around Lake Constance claypan at Diamantina National Park, Australia. a. Mean total carbon and nitrogen (percent w/w), pH, and particle mass median diameter ($\\mu$m); b. particle size distribution. Error bars represent the standard error of the mean for each soil type (n = 5). Sample coding for soil types: D sand dune, DF dune flank, N nebkha, P pan surface. \\label{fig:chem}', warning=FALSE, cache=TRUE>>=
+# plot sample data
+
+# melt for plotting (chemistry and d50)
+chemistry.melt <- melt(sample_data(bac.earthair),measure.vars=c("N_pc","C_pc","pH","ps_d50"))
+chemistry.melt$variable <- revalue(chemistry.melt$variable, c("N_pc"="nitrogen", "C_pc"="carbon", "ps_d50"=expression("d50")))
+
+# make the plot 
+print(ggplot(chemistry.melt, aes(x=zone_code, y=value, shape=element, colour=zone)) + stat_summary(fun.data = "mean_se", size=1) + facet_wrap(~variable,scales = "free_y",nrow=1,labeller = label_parsed) + labs(x = "zone") + theme(aspect.ratio=1,legend.position="none") + colScale )
+
+# melt for plotting (particle size)
+ps.melt <- melt(sample_data(bac.earthair),measure.vars=c("ps_lt4","ps_4to16","ps_16to63","ps_63to250","ps_gt250"))
+ps.melt$variable <- revalue(ps.melt$variable, c("ps_lt4"=expression("< 4 "*mu*"m"),"ps_4to16"=expression("4 - 16 "*mu*"m"),"ps_16to63"=expression("16 - 63 "*mu*"m"),"ps_63to250"=expression("63 - 250 "*mu*"m"), "ps_gt250"=expression("> 250 "*mu*"m")))
+
+# make the plot 
+print(ggplot(ps.melt, aes(x=zone_code, y=value, shape=element, colour=zone)) + stat_summary(fun.data = "mean_se", size=1) + facet_wrap(~variable,scales = "fixed",nrow=1,labeller = label_parsed) + labs(x = "zone", y = "%") + theme(aspect.ratio=1,legend.position="none") + colScale )
+
+@
+
+
+Dune and dune flank sediments had similar particle-size distribution, dominated by very fine to fine sands (46-48 \%) with the modal particle-size in the range 185-270 $\mu$m.  The dune sediments were slightly coarser overall containing a higher percentage of medium and coarse sands and lower percentages of silt and clay than the dune flank (Figure \ref{fig:chem}).  Nebkha sediments were also dominated by very fine to fine sands (60 \%; mode 169-185 $\mu$m) and were well sorted.  Pan sediments were less well sorted than any of the sites dominated by wind-blown material.  The pan sites included the highest proportion of clay (c. 10 \%) and silts (55 \% total) and lowest percentage of sand-sized material ($<$35 \%).
+
+\subsection{DNA sequencing and general microbial community composition}
+DNA was successfully extracted and sequenced from \Sexpr{nsamples(bac)} samples, yielding \Sexpr{round(m_reads_total,1)} million reads. After pairing reads and quality control \Sexpr{round(m_reads_bac_qc,1)} million bacterial reads and \Sexpr{round(1000*m_reads_arc_qc,0)} thousand archaeal reads remained. 
+
+There were \Sexpr{formatC(ntaxa(bac), format="d", big.mark=",")} bacterial OTUs and \Sexpr{ntaxa(arc)} archael OTUs detected (OTUs defined by 97 \% similarity). This analysis was designed to target bacteria, and as archaea make up only \Sexpr{round(100*m_reads_arc_qc / m_reads_bac_qc,1)} \% of sequences bacteria are the main focus of this paper, however archaeal reads were retained for the analyses. The Chao1 richness estimation (Figure \ref{fig:community}) indicated in excess of 1,000 OTUs present in each sample, without striking differences with respect to sample type. 
+
+Initial visualisation of microbial community structure by NMDS (Figure S1) showed that the water samples differed extremely compared to all other samples, and this dominated all other inter-sample differences. The water samples were therefore excluded from the NMDS to reveal the community stucutre relationships between the soil and airborne dust samples as shown in Figure \ref{fig:community}. Microbial composition of the dune, pan, and nebkha sites differed markedly. The airborne dust community derived from wind tunnel treatment on the dune flank differs from both the dune and dune flank communities, notably having a community structure approximately intermediate between the dune and nebkha communities.
+
+<<community_out, echo=FALSE,fig.height=3.8, warning=FALSE, cache=TRUE,fig.cap='Prokaryotic microbial community diversity of soil (sand dunes, claypan, and nebkha), water channels, and airborne dust (from sand dunes). a. Chao1 richness estimate (alpha diversity); b. NMDS visualisation of community structure (beta diversity). Water channel data are not shown on the NMDS plot because of extreme dissimilarity to other samples.\\label{fig:community}'>>=
+
+#Extract Legend 
+g_legend<-function(a.gplot){ 
+  tmp <- ggplot_gtable(ggplot_build(a.gplot)) 
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box") 
+  legend <- tmp$grobs[[leg]] 
+  return(legend)} 
+
+communitylegend <- rich.ab + colScale + theme(legend.position="bottom")
+legend <- g_legend(communitylegend) 
+
+
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(6, 2)))
+vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
+print(rich.ab + colScale + labs(y="number of OTUs", x="zone") + theme(legend.position="none",strip.background = element_blank(),
+  strip.text.x = element_blank()), vp = vplayout(1:5, 1))  # key is to define vplayout
+print(NMDS.ab + colScale + theme(legend.position="none"), vp = vplayout(1:5, 2))
+legend$vp = viewport(layout.pos.row = 6, layout.pos.col = 1:2)
+grid.draw(legend)
+
+@
+
+High abundance OTUs are likely to be important contributors to the overall community differences (Figure \ref{fig:community}), and many of the abundant OTUs were related to each other (Table S4), meaning that community differences may be evident and easier to understand at higher taxonomic ranks as shown in Figures \ref{fig:waterp} and \ref{fig:waterc}. A total of \Sexpr{length(unique(tax_table(bac)[,"Phylum"]))} bacterial phyla and \Sexpr{length(unique(tax_table(arc)[,"Phylum"]))} archael phyla were identified. Frequencies of the most abundant phyla are shown in Figure \ref{fig:waterp} and are provided in full in Table S2. It can be seen that water channel samples are dissimilar to the soil-based samples at the phylum level although all abundant phyla ($>$ 1 \% overall) are represented in both soil and water, except \textit{Deinococcus-Thermus} which was not found in water channels. \textit{Cyanobacteria} numerically dominated at the soil sites and were also common in river channels but much less abundant (overall \textit{Cyanobacteria} accounted for \Sexpr{round(cyano.pc.in.samples.excluding.filter)} \% of prokaryotic sequences). The numerically dominant cyanobacterial genus was \textit{Microcoleus} which accounted for over 8 \% of sequences detected in all soil types (Figure \ref{fig:waterc}). Several of the common cyanobacterial genera exhibited different abundance in relation to sample type, notably \textit{Microcoleus} and \textit{Trichocoleus} more common in dunes, and \textit{Tychonema} more common in nebkha. In the river channels \textit{Proteobacteria} and \textit{Verrucomicrobia} were numerically dominant but only by a small margin and with several other phyla also common.
+
+\begin{figure}[tbp]
+\begin{center}
+<<OTU_source_out, echo=FALSE,fig.height=8.5, cache=FALSE>>=
+# adjust names to fit in the panel
+water_otus_plot$data$Phylum <- gsub(pattern = "Deinococcus-Thermus",replacement="Deinococcus-T.",x=water_otus_plot$data$Phylum)
+wind_otus_plot$data$Phylum <- gsub(pattern = "Deinococcus-Thermus",replacement="Deinococcus-T.",x=wind_otus_plot$data$Phylum)
+
+grid.newpage()
+pushViewport(viewport(layout=g0))
+print(water_otus_plot,vp=vp.01)
+print(wind_otus_plot,vp=vp.02)
+@
+\caption{ Relative abundance of identified bacterial phyla. Colouring indicates whether individual OTUs (97 \% similarity) contributing to the phylum abundance were found in the water channels (top), and whether they were significantly more abundant in soil or wind tunnel collectors at the dune flank sites (bottom). Taxonomy of contributing OTUs and statistical results are provided in Table \ref{tab:deseq1}. Only phyla exceeding 1 \% of total reads after QC are shown for clarity (full data provided in Table S2). Source designation is not indicative of the ultimate origin of OTUs.}\label{fig:waterp}
+\end{center}
+\end{figure}
+
+\begin{figure}[tbp]
+\begin{center}
+<<OTU_source_out2, echo=FALSE,fig.height=6.5, cache=FALSE>>=
+# adjust names to fit in the panel
+water_otus_plot.c$data$Genus <- gsub(pattern = " ",replacement="\n",x=water_otus_plot.c$data$Genus)
+water_otus_plot.c$data$Genus <- gsub(pattern = "Ambiguous_taxa",replacement="Ambig.",x=water_otus_plot.c$data$Genus)
+wind_otus_plot.c$data$Genus <- gsub(pattern = " ", replacement ="\n",x=wind_otus_plot.c$data$Genus)
+wind_otus_plot.c$data$Genus <- gsub(pattern = "Ambiguous_taxa", replacement ="Ambig.",x=wind_otus_plot.c$data$Genus)
+
+grid.newpage()
+pushViewport(viewport(layout=g0))
+print(water_otus_plot.c,vp=vp.01)
+print(wind_otus_plot.c,vp=vp.02)
+@
+\caption{ Relative abundance of identified cyanobacterial genera. Colouring indicates whether individual OTUs (97 \% similarity) contributing to the genus abundance were found in the water channels (top), and whether they were significantly more abundant in soil or wind tunnel collectors at the dune flank sites (bottom). Only cyanobacterial genera exceeding 1 \% of total reads after QC are shown for clarity (full data provided in Table S3). Source designation is not indicative of the ultimate origin of OTUs.}\label{fig:waterc}
+\end{center}
+\end{figure}
+
+\subsection{Correlation between measured variables and microbial community structure}
+A stepwise model building approach was used to identify measured variables which may explain microbial community structure. Only the particle size d50 (mass median diameter) had a significant correlation with microbial community structure (p=0.005). The mass median diameter was negatively correlated with axis RDA1 in the resultant model (Supplementary Figure S2), which indicates the smallest particle diameters were associated with pan samples but other sample types did not clearly partition in relation to d50 / RDA1. 
+
+\subsection{Dispersal of microbes by fluvial and aeolian processes}
+Of the \Sexpr{formatC(pan.ntaxa, format="d", big.mark=",")} OTUs found in the claypan, \Sexpr{channel_pan.intersection.n} were also found in water channels, \Sexpr{formatC(dune_pan.intersection.n, format="d", big.mark=",")} were found in airborne dust from the dune flank, and \Sexpr{all.intersection} were found in both. The dune and channel samples had \Sexpr{channel_dune.intersection.n} OTUs in common. Whilst many soil OTUs were not detected in the air or water samples, most of the OTUs found exclusively in soil were rare, collectively accounting for only \Sexpr{soil_only_otus.sum} \% of reads in the soil samples. 
+
+OTU differential abundance analysis indicated that \Sexpr{deseq_n_diff_air} OTUs (\Sexpr{round(deseq_sum_diff_air*-1)} \% of reads) were  more abundant in air samples and \Sexpr{deseq_n_diff_earth} OTUs (\Sexpr{round(deseq_sum_diff_earth)} \% of reads) were more abundant in soil samples (adjusted p \textless 0.05). Details for a subset of these OTUs are shown in Tables \ref{tab:deseq1} and \ref{tab:deseq2} (extended results provided in Table S4). Results from these analyses were used to colour code Figures \ref{fig:waterp} and \ref{fig:waterc} to indicate whether taxa easily become airborne under moderate windy conditions or not. It can be seen from these figures that some phyla and particular cyanobacterial genera differed in abundance between the dune flank soil and airborne dust liberated from the same soil by wind tunnel treatment. For example phylum \textit{Cyanobacteria} was more abundant in soil (resist becoming airborne) and phylum \textit{Deinococcus-Thermus} was more abundant in airborne dust (easily become airborne). Further detail of cyanobacterial distribution given in Figure \ref{fig:waterc} shows that the most common cyanobacteria in the biocrust are from the genus \textit{Microcoleus} and that most of these resist becoming airborne. Other cyanobacterial genera exhibited similar patterns except for \textit{Tychonema} OTUs which were not significantly more abundant in either soil or airborne dust (thus classified as intermediate behaviour). Figures \ref{fig:waterp} and \ref{fig:waterc} also show the relative proportions of phyla and cyanobacterial genera which were detected in the water channels situated approximately xx km from the dune sites. Whilst non-detection does not signify that OTUs are certainly absent from water channels, it does show that they are exceedingly rare. OTUs belonging to phylum \textit{Deinococcus-Thermus} were notably absent from river channels (zero observations) whilst comprising approximately 1 \% of all reads (\Sexpr{deinococcus.obs.txt} observations) at other sites. Cyanobacterial OTUs were also under-represented in river channels compared to other phyla, especially those belonging to the genus \textit{Microcoleus}.
+
+<<deseq_out1, echo=FALSE, cache=FALSE>>=
+kable(outtab,digits=2,row.names=F, caption = "Relative abundance of OTUs which are significantly more abundant in soil compared to dust blown from the soil. This is a subset of the differential abundance analysis output, sorted by magnitude of difference in abundance and excluding OTUs lacking genus level taxonomy information. The padj column indicates the probability of the observed distribution including adjustment for multiple testing. Multiple entries of the same genus means that multiple OTUs (approximately species level) within the genus met criteria for inclusion in the table. OTU IDs and extended results are provided in Table S4. \\label{tab:deseq1}")
+@
+
+
+<<deseq_out2, echo=FALSE, cache=FALSE>>=
+kable(outtab2,row.names=F, digits=2,caption = "Relative abundance of OTUs which are significantly more abundant in dust blown from the soil compared to the whole soil. This is a subset of the differential abundance analysis output, sorted by magnitude of difference in abundance and excluding OTUs lacking genus level taxonomy information. Multiple entries of the same genus means that multiple OTUs (approximately species level) within the genus met criteria for inclusion in the table. OTU IDs and extended results are provided in Table S4. \\label{tab:deseq2}")
+@
+
+
+<<deseq_out4, echo=FALSE, cache=FALSE>>=
+# merge otu differential abundance results from sigtab into otus.df for supplementary data
+wanted_cols <- colnames((sigtab))[1:6]
+otus.df <- merge(otus.df,sigtab[,wanted_cols],by="row.names",all.x=TRUE)
+#colnames(otus.df)[1] <- "OTU"
+
+# to make output clearer, properly identify which samples the deseq2 analysis was not done on:
+otus.df$sig[is.na(otus.df$baseMean)] <- NA
+
+write.csv(otus.df[,c("OTU",rank_names(ab)[1:7],sample_names(ab.rel.merged),"sig",wanted_cols)],"results/Elliott_Diamantina_Microbiome_Table_S4[otus].csv",row.names=FALSE)
+@
+
+
+\section{Discussion}
+\label{sec:disc}
+We have performed the first detailed characterisation of the prokaryotic community in a landscape-scale dryland system comprising terrestrial, fluvial, and aeolian components. This is also one of only a few studies to identify the microbes present in the central Australian drylands which cover over xx\footnote{can anyone provide figure and ref?} KM$^{2}$. Whilst determining the microbial composition of soils was not our primary objective, community data in addition to those presented are made available in the NCBI Sequence Read Archive (project SRP150526) and supplementary tables S2, S3, S4. This is an important contribution as such data on drylands are lacking in the global literature \citep{ferrenberg2017biological}. Our novel approach used landscape sampling combined with model based differential abundance analysis, enabling us to test and develop hypotheses about the ecology of biocrust organisms in drylands, particularly focusing on the implications of dispersal strategies for landscape stability and dust production.
+
+\subsection{Microbial community of biocrusts in a dryland ephemeral lake bed and surrounding dunes}
+Previous research on biocrust microbial communities in drylands is still rare in the literature \citep{ferrenberg2017biological} and has focused mainly on dune environments. We found that the dunes at our study site harboured typical biocrust communities with \Sexpr{round(cyano.pc.in.dune.samples)} \% of sequences being of cyanobacterial origin, along with much of the remainder belonging to the phyla \textit{Actinobacteria}, \textit{Acidobacteria}, \textit{Chloroflexi}, and \textit{Proteobacteria} (Figure \ref{fig:waterp}). The same phyla in similar proportions have previously been found in biocrusts of the Kalahari in Botswana \citep{elliott2014niche}.
+
+Dune and dune flank locations had very similar community structure, but were clearly distinct from the pan and the nebkha locations (Figure \ref{fig:waterp}). It is normal to find different microbial communities in different situations so this result is as expected, however the question lies in the nature and reason for the differences observed. Edaphic factors like grain size and soil chemistry are commonly linked to such observations, therefore we interrogated the data for identification of links between measured variables and microbial community structure. The only link found was with the mass median diameter, and the correlation appeared to be driven by smaller particle size in pan sediments compared to the other areas sampled. It is therefore not clear whether particle size is driving some aspect of community selection, or if particle size is co-variant with some other driving factor. The latter seems slightly more likely because we also included size fractions (Figure \ref{fig:chem}) in the model selection process and no specific size fraction was found to be significantly related to microbial community structure. If particle size was driving (or influenced by) community structure then it would be expected that certain size classes would be better indicators than d50 for specific taxa in the community and therefore be selected in the model. Particle size distribution is likely to be related to a wide range of edaphic factors which were not directly measured, including water availability and sediment chemistry, and these relations may explain why d50 was selected as a model constraint.
+
+We suggest that different communities in linked compartments of this sedimentary system indicate the outcome of different selective pressures leading to establishment of organisms with different adaptations. Adaptations relating to soil adhesion are of particular relevance to landscape modification because they provide a potential mechanism for biotic control over a range of processes governing the properties and movement of sediments. It is certain that biocrusts exert biotic control on landscape stability and state transitions \citep[e.g.][]{bowker2007biological,ferrenberg2017biological}, but details are scarce especially regarding the relative roles of different taxa. Knowledge of which organisms contribute to structural properties of the soil, as presented in this paper, can help fill this knowledge gap and has wide ranging potential for applications in land management.
+
+\subsection{Wind preferentially lifts certain taxa from biocrusts}
+We have found strong evidence that microbes are differentially liberated from the dryland soil surface by moderate wind (e.g. Figures \ref{fig:community} and \ref{fig:waterp}; Tables \ref{tab:deseq1} and \ref{tab:deseq2}). These results show that the adhesive properties of biocrust organisms vary and importantly they identify taxa which may contribute to particular geomorphic processes as a result of their biological adaptations. It is not possible to say at this stage whether such adaptations were selected because of their geomorphic influence, or whether geomorphic influence is incidental to some other selective pressure. Both mechanisms of selection seem likely and we expect that both occur.
+
+\citet{abed2012microbial} have previously reported low levels of cyanobacteria in dust thought to be derived from biocrusts and saline lake sediments, proposing that their filamentous structure and EPS production may prevent their dispersal during deflation. Our data which explicitly links source soil with derived aerosols support this interpretation and extend it to other taxa. Many OTUs were found to resist entrainment (Table S4), including most \textit{Cyanobacteria} which have long been recognised for their stabilising role in biocrusts \citep{belnap1998vulnerability}. We found that sand dunes have a high proportion of taxa that resist wind erosion (Figure \ref{fig:waterp}), thus sand dune surface communities are adapted in a way that promotes stability in the dune. This stabilising effect of the microbiota can be regarded as ecosystem engineering, because it modifies the environment to provide the stable soil surface required for long-term biocrust survival. This kind of adaptation may also inhibit dispersal by the wind, limiting the ability of biocrusts to colonise new areas or regenerate after elimination for example as a result of over-grazing, because the regenerating inoculum must come from a local source (e.g. vegetative growth or transport by an animal). Possible difficulties for biocrusts to regenerate after extreme sustained disturbance is something we suggested in previous research as a risk \citet{elliott2014niche}, and is supported by the present results which demonstrate the resistance of many biocrust taxa to becoming airborne. 
+
+The nebkha sites within the claypan were the only place where a high proportion of the microbiota was identified as being easily mobilised by wind (\Sexpr{round(pc_nebkha_easily_airborne,0)} \%; Figure \ref{fig:waterp}). This was not a direct measurement, but based upon taxa from the dune flank that were easily mobilised and measuring their abundance in the nebkha. We anticipate that a direct measurement on the nebkha sites would yield a higher proportion but this would be extremely difficult to do because the nebkha morphology is incompatible with wind tunnel apparatus. It should also be noted that our techniques do not establish direction of transport in this system, therefore a proportion (possibly the majority) of the taxa mobilised from the dune flank by wind treatment are likely to have originated from the pan and nebkha sites. Indeed, some organisms may be adapted to exploit the whole system rather than a particular geographical compartment. The reason for a high proportion of wind-mobile biota on the nebkha may be partly related to physico-chemical properties, however our RDA model identified no variables that could explain the nebkha microbial community structure (Figure S2). A biological explanation may be that nebkha are inhabited by biocrust organisms that rely principally on aerial disperal, because they are adapted as primary colonisers of newly exposed niches. Such organisms would need to have the capacity for adhesion to establish a colony in the new niche, but also an ability to disperse from the colony. This could be achieved by phenotypic switching which is a well known phenomenon in biofilms with a variety of mechanisms available \citep[e.g.][]{drenkard2002pseudomonas}. Furthermore, biocrust organisms adapted for aerial dispersal would also need adaptations for survival in the air, such as small size and resistance to dessication and radiation. Alternatively, it is possible that the main niche of these microbes is in fact the atmosphere, and their presence in biocrusts is transitory, for instance to acquire nutrients before moving on.
+
+\subsection{Microbial dispersal and landscape stability}
+
+Biological adaptations for survival in fluvial-aeolian systems are likely to include mechanisms for modulating attachment to surfaces which may have profound geomorphic consequences. Attachment to the soil will result in binding of particles, reducing the potential for dust emission both by increasing effective particle sizes and by physical entrapment of particles. Whilst this is clearly advantageous to soil-surface dwelling biocrust communities, it is also a potential hazard to be physically constrained in this way, because soils may be buried by dust or submerged under flood waters. Some organisms will overcome such hazards with adaptations for aquatic life or vegetative migration in the soil, and these properties are well known among cyanobacteria \citep[e.g.][]{makhalanyane2015ecology,felde2018ongoing}. Another likely adaptation is to promote destabilisation of the biocrust to enable dispersal by the wind, which would lead to dust production and the transport of nutrients out of the soil. Once dispersed on the wind, microbes would have the opportunity to colonise new areas, thus ensuring survival even if the source area became inhospitable. A parallel situation is well documented in the biofilms literature which deals mainly with microbial cells living as attached communities in various aqueous environments such as rivers and catheters. Even single-species biofilms exhibit both attachment and detachment phenotypes, triggered by genetic switches that respond to changing conditions \citep[e.g.][]{drenkard2002pseudomonas}. Macroscopic organisms also exhibit this behaviour, for instance scallops are normally regarded as sessile creatures but they will swim away in response to environmental triggers \citep{caddy1968underwater}. 
+
+We propose that biocrust microbes in common with other organisms also have a variety of dispersal mechanisms, and that their dispersal adaptations have geomorphic consequences such as influencing the particle size distribution and dust availability (e.g. by selectively trapping particles and producing aggregates). At least three distinct dispersal strategies are proposed which may be employed by biocrust organisms, each strategy having particular phenotypic features and related geomorphic potential (Table \ref{tab:concept}). Whilst we suggest a typical niche associated with each dispersal strategy, we do not expect this to be exclusive. Rather, we suggest that these strategies co-exist in each biocrust community, and the relative abundance of organisms exhibiting each phenotype will vary depending on the life history of each particular biocrust.
+
+
+\begin{sidewaystable}
+  \centering
+    \caption{Summary of hypothesised dispersal strategies for biocrust genera (phylum in parentheses) and their possible geomorphic effects. Example taxa for each mode of dispersal are given based on results from this study. Further candidate taxa can be identified from supplementary data Table S4}%
+    \begin{tabular}{p{3.5cm}p{4cm}p{4cm}p{4.5cm}}
+    \textbf{Dispersal strategy} & \textbf{Niche} & \textbf{Likely phenotype} & \textbf{Geomorphic effect} \\
+    \hline
+    Vegetative growth\newline{}e.g. \textit{Microcoleus} spp. and \textit{Wilmottia} spp. (Cyanobacteria); \textit{Blastocatella} spp. (Acidobacteria) & Long-term stable soils\newline{}e.g. stabilised sand dune & oligotrophic\newline{}mutualistic\newline{}EPS production\newline{}Can recover from localised disturbance\newline{}Low water requirement & Strongly stabilise soil\newline{}Suppress dust production\newline{}Trapping dust\newline{}Enhance soil fertility \\
+    \hline
+    Aerial\newline{}e.g. \textit{Deinococcus} spp. (Deinococcus-Thermus); \textit{Massilia} spp. (Proteobacteria); \textit{Modestobacter} spp. (Actinobacteria) & Recently exposed soil and transient landscape features. Possibly active whilst airborne.\newline{}e.g. nebkha & copiotrophic\newline{}exploitative\newline{}Limited recovery from localised disturbance\newline{}Medium water requirement & Partially stabilise soil\newline{}Promote moderate dust production including removal of soil nutrients \\
+    \hline
+    Fluvial\newline{}e.g. \textit{Tychonema} spp. (Cyanobacteria) & Water bodies, flood plains and pans\newline{}e.g. claypan & Copiotrophic\newline{}Excludes aerial invaders\newline{}Poor ability to recover from localised disturbance\newline{}High water requirement & Partially stabilise soil\newline{}Suppress dust production\newline{}Neutral soil fertility influence \\
+    \end{tabular}%
+    \label{tab:concept}%
+\end{sidewaystable}%
+
+\subsubsection{Fluvial dispersal strategy}
+Periodic cycles of wetting and drying are a common feature of the dryland soil surface which all biocrust organisms must adapt to in order to exploit occasional rainfall and dew. On pan surfaces there is a further requirement to survive or even thrive during floods as well as long periods of desiccation. When flood waters on pans subside the sediment is rich in resources, and the aquatic microbiota deposited in large numbers have a numerical advantage that may hinder establishment of vegetatively or aerially dispersed microbes. 
+
+This is likely to have happened in the claypan, where the pioneer biocrust organisms may be mostly deposited aquatic species such as \textit{Tychonema} spp. cyanobacteria that are ill-adapted for long-term survival out of water, but nevertheless condition the fresh sediment making it more hospitable for better adapted secondary colonisers. If these primary colonisers are adapted for fluvial dispersal via ephemeral lakes then their main task between flood events is to survive and exclude competitors until further floodwaters arrive, therefore they are likely to lie dormant unless activated by prolonged exposure to water. In terms of landscape stability they are expected to be an immediate benefit as floods subside due to the extensive production of biomass protecting and nourishing the fresh pan sediment, however during dry times they may suffer erosion and are unlikely to have the capacity for repair. 
+
+\subsubsection{Vegetative dispersal strategy}
+The vegetative dispersal strategy is implicitly assumed in the majority of biocrust literature which holds that biocrusts are slow to establish and they gradually succeed to stronger forms \citep[e.g][]{belnap1998vulnerability}. In the present work the sand dune biocrusts are a classic example of this standard view of biocrust development. Organisms relying on vegetative growth for dispersal are expected to be highly invested in maintaining a stable soil surface which facilitates the establishment of long-term extensive colonies that are highly resilient to harsh environmental conditions. This investment would likely include the production of EPS which stabilises the soil, and production of protective pigments in upper layers. Another expected feature is high resource efficiency and ability to maintain activity including primary production at very low water potential, thus providing the capacity for diverting resources to soil stabilisation. Our data suggest that cyanobacteria belonging to the genus \textit{Microcoleus} (among others) are likely candidates for vegetative dispersal (see Table \ref{tab:deseq_out1} and Table S4 for more). Less commonly recognised in the biocrust literature is that non-cyanobacterial taxa may be part of the biocrust and contribute to it's ecology and stability. Our results identify a wide range of such organisms which include \textit{Blastocatella} species which belong to subgoup 4 of the \textit{Acidobacteria}\footnote{I could say more about this if I could access this paper: https://www.ncbi.nlm.nih.gov/pubmed/23266188 - can anyone provide it?)}. 
+
+Unlike pan surfaces, stabilised sand dunes do not experience wholesale disruption via flooding, therefore succession can take place over long time-scales and un-crusted sites exposed by localised disturbances can likely be re-colonised by vegetative growth from nearby areas or from beneath when crusts become buried \citep{felde2018ongoing,elliott2014niche}. It is known that biocrust biota can move vertically in the soil, enhancing their survival prospects by responding to environmental stimuli including water and light \citep{garcia2001microbiology}. Whilst burial depths exceeding 1 cm severely threaten survival of the biocrust organisms, shallower burial can be tolerated \citet{rao2012effects}. Repeated biocrust burial followed by re-establishment of surface biocrusts results in the production of stratified fossil crust micro-horizons in dryland sand soils, contributing to soil stability as a direct result of biocrust vegetative growth \citep{felde2018ongoing}. In this work we have identified taxa which are likely to be contributing to that process, and therefore could be used as indicators of soil stability or as inoculants in interventions designed to enhance soil stability.
+
+\subsubsection{Aeolian dispersal strategy}
+Biocrusts may also be established from airborne inocula, and the nebkha biocrusts are most likely an example of this. Because strongly adhesive biocrust taxa are less likely to become airborne, biocrusts established from airborne sediments may lack the strength of vegetatively established biocrusts at least initially until more stabilising vegetative taxa move in (and possibly ultimately out-compete them). They must therefore rely on other stabilising landscape features such as stones and plants, enabling them to settle without investing strongly in promoting landscape stability, although they probably do this incidentally. Taxa adapted for aerial dispersal must achieve high numbers in the atmosphere to be successful, thus they are likely to be R-strategists or copiotrophs that exploit islands of fertility to produce more airborne inocula. This means that although they have some capacity to stabilise soil, they may also contribute to dust production and export of nutrients from the soil. 
+
+Our data suggest that \textit{Deinococcus}, \textit{Massilia}, and \textit{Modestobacter} species (among others) may be adapted for aeolian dispersal as part of their life cycle (Table \ref{tab:deseq2}), and these taxa have properties consistent with our hypothesised ecological strategies for airborne dispersed biocrust organisms (Table \ref{tab:concept}). \textit{Deinococcus} species are well known for their remarkable ability to withstand dessication and intense radiation \citep{makarova2001genome}. This genus has been found in desert soils before \citep[e.g][]{rainey2005extensive}, and \citet[][]{li2012carbon} detected \textit{Deinococcus} species at low abundance in aerosols thought to be derived from biocrusts or saline lake sediments in Australia. According to Bergey's manual \citep{whitman2015bergey} the natural habitat of \textit{Deinococcus} species remains unknown. We suggest then that the habitat of this ancient lineage is in fact the biocrust top surface, and it is adapted for wind dispersal. \textit{Modestobacter versicolor} may have a similar ecology. Isolated from topsoil dryland biocrusts, it is a moderately oligotrophic aerobic chemo-heterotroph with radiation tolerance and capacity for nitrogen fixation \citep{reddy2007modestobacter}. Interestingly \citet{reddy2007modestobacter} report that this species produces pigments (which are presumed to confer protection from UV light) only when under oligotrophy, which could be an adaptation for dispersal by air - since air is a more oligotrophic environment than the biocrust surface, and exposure would be greater during transit through the air. \textit{Massilia} species have commonly been found in biocrusts, recognised for resilience and fast growth they have recently been shown to respond rapidly to hydration in dryland soils \citep{aslam2016soil}. With such ecologies \textit{Deinococcus} species and other wind dispersed biocrust species may serve a protective function to the biocrust, and can also ensure that they quickly colonise any newly suitable soils and sediments arising from events such as land slips and animal disturbance. Airborne inocula may therefore play an important role in the stabilisation of landscapes by initially protecting disturbed soils and preparing the way for secondary vegetative colonisers such as cyanobacteria. This idea could be tested by disturbance experiments and monitoring the succession of microbes, which we predict would begin with taxa such as \textit{Deinococcus}, \textit{Massilia}, and \textit{Modestobacter}.
+
+\section{Conclusions}
+\label{sec:conc}
+In conclusion, we have shown that biocrust taxa vary in their capacity to be mobilised by the wind and we have suggested that this is driven in part by ecological dispersal strategies which in turn determine the taxon potential to promote or degrade landscape stability. We have shown that biocrust microbes are found in watercourses, and proposed that some biocrust taxa are principally dispersed by fluvial deposition. These results provide new evidence supporting the microbial role in landscape stability and suppression of dust production in drylands. By interpreting results from an ecological perspective, we provide a theoretical basis for predicting how microbes will influence landscape stability under different scenarios. Such predictions can be tested in future work, for instance by monitoring establishment and succession in biocrusts over time, in tandem with physical assessments. An ecological approach informed by microbiology can then be developed to help predict landscape responses to climate change and land use change, and also to plan mitigation strategies for maximising soil stability. 
+
+%%% End of body of article
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Optional Appendix goes here
+%
+% The \appendix command resets counters and redefines section heads
+%
+% After typing \appendix
+%
+%\section{Here Is Appendix Title}
+% will show
+% A: Here Is Appendix Title
+%
+%\appendix
+%\section{Here is a sample appendix}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Optional Glossary, Notation or Acronym section goes here:
+%
+%%%%%%%%%%%%%%  
+% Glossary is only allowed in Reviews of Geophysics
+%  \begin{glossary}
+%  \term{Term}
+%   Term Definition here
+%  \term{Term}
+%   Term Definition here
+%  \term{Term}
+%   Term Definition here
+%  \end{glossary}
+
+%
+%%%%%%%%%%%%%%
+% Acronyms
+%   \begin{acronyms}
+%   \acro{Acronym}
+%   Definition here
+%   \acro{EMOS}
+%   Ensemble model output statistics 
+%   \acro{ECMWF}
+%   Centre for Medium-Range Weather Forecasts
+%   \end{acronyms}
+
+%
+%%%%%%%%%%%%%%
+% Notation 
+%   \begin{notation}
+%   \notation{$a+b$} Notation Definition here
+%   \notation{$e=mc^2$} 
+%   Equation in German-born physicist Albert Einstein's theory of special
+%  relativity that showed that the increased relativistic mass ($m$) of a
+%  body comes from the energy of motion of the body—that is, its kinetic
+%  energy ($E$)—divided by the speed of light squared ($c^2$).
+%   \end{notation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ACKNOWLEDGMENTS
+%
+% The acknowledgments must list:
+%
+% •	All funding sources related to this work from all authors
+%
+% •	Any real or perceived financial conflicts of interests for any
+%	author
+%
+% •	Other affiliations for any author that may be perceived as
+% 	having a conflict of interest with respect to the results of this
+% 	paper.
+%
+% •	A statement that indicates to the reader where the data
+% 	supporting the conclusions can be obtained (for example, in the
+% 	references, tables, supporting information, and other databases).
+%
+% It is also the appropriate place to thank colleagues and other contributors. 
+% AGU does not normally allow dedications.
+
+
+\acknowledgments
+This project was funded by NERC grant ref NE/K011464/1. We thank Grant McTainsh and Helene Aubault for assistance in the field.
+ 
+
+\bibliography{references}
+%%  REFERENCE LIST AND TEXT CITATIONS
+%
+% Either type in your references using
+%
+% \begin{thebibliography}{}
+% \bibitem[{\textit{Kobayashi et~al.}}(2003)]{R2013} Kobayashi, T.,
+% Tran, A.~H., Nishijo, H., Ono, T., and Matsumoto, G.  (2003).
+% Contribution of hippocampal place cell activity to learning and
+% formation of goal-directed navigation in rats. \textit{Neuroscience}
+% 117, 1025--1035.
+%
+% \bibitem{}
+% Text
+% \end{thebibliography}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Or, to use BibTeX:
+%
+% Follow these steps
+%
+% 1. Type in \bibliography{<name of your .bib file>} 
+%    Run LaTeX on your LaTeX file.
+%
+% 2. Run BiBTeX on your LaTeX file.
+%
+% 3. Open the new .bbl file containing the reference list and
+%   copy all the contents into your LaTeX file here.
+%
+% 4. Run LaTeX on your new file which will produce the citations.
+%
+% AGU does not want a .bib or a .bbl file. Please copy in the contents of your .bbl file here.
+
+
+%% After you run BibTeX, Copy in the contents of the .bbl file here:
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Track Changes:
+% To add words, \added{<word added>}
+% To delete words, \deleted{<word deleted>}
+% To replace words, \replace{<word to be replaced>}{<replacement word>}
+% To explain why change was made: \explain{<explanation>} This will put
+% a comment into the right margin.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% At the end of the document, use \listofchanges, which will list the
+% changes and the page and line number where the change was made.
+
+% When final version, \listofchanges will not produce anything,
+% \added{<word or words>} word will be printed, \deleted{<word or words} will take away the word,
+% \replaced{<delete this word>}{<replace with this word>} will print only the replacement word.
+%  In the final version, \explain will not print anything.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%
+\listofchanges
+%%%
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Supporting Information
+%% (Optional) See AGUSuppInfoSamp.tex/pdf for requirements
+%% for Supporting Information.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
