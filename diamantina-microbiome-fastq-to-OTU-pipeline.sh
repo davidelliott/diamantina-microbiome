@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # these commands are not designed to be run at once as a script, although that might work it will depend on file paths etc.
 # the guide from https://github.com/torognes/vsearch/wiki/VSEARCH-pipeline was used heavily to start with - accessed 2018-09-07    
 # The perl script map.pl was also provided there
@@ -10,28 +12,28 @@ fasterqdump=/home/david/bin/sratoolkit.2.9.2-ubuntu64/bin/fasterq-dump
 THREADS=3
 PERL=$(which perl)
 VSEARCH=/home/david/bin/vsearch-2.8.4-linux-x86_64/bin/vsearch
-DATA=/home/david/git/diamantina-microbiome/data3
-SCRIPTS=/home/david/git/diamantina-microbiome/scripts
-REF=$DATA/gold.fasta
+DATA=/home/david/git/diamantina-microbiome/data
+SCRIPTS=/home/david/git/diamantina-microbiome
+RESULTS=/home/david/git/diamantina-microbiome/results
+REF=$SCRIPTS/gold.fasta
 
 date
 
-cd $DATA
+echo
+echo Obtaining Gold reference database for chimera detection
+if [ ! -e gold.fasta ]; then
 
-# echo
-# echo Obtaining Gold reference database for chimera detection
-#
-# if [ ! -e gold.fasta ]; then
-# 
-#     if [ ! -e Silva.gold.bacteria.zip ]; then
-#         wget https://www.mothur.org/w/images/f/f1/Silva.gold.bacteria.zip
-#     fi
-# 
-#     echo Decompressing and reformatting...
-#     unzip -p Silva.gold.bacteria.zip silva.gold.align | \
-#         sed -e "s/[.-]//g" > gold.fasta
-# 
-# fi
+   if [ ! -e Silva.gold.bacteria.zip ]; then
+       wget https://www.mothur.org/w/images/f/f1/Silva.gold.bacteria.zip
+   fi
+
+   echo Decompressing and reformatting...
+   unzip -p Silva.gold.bacteria.zip silva.gold.align | \
+       sed -e "s/[.-]//g" > gold.fasta
+
+fi
+
+cd $DATA
 
 # download fastq files from SRA
 # all the files will be in the $DATA folder together 
@@ -80,7 +82,7 @@ cd Trimmed
 gzip -d -r ./
 cd ..
 
-# the files end up in a folder called "trimmed" and in individual folders per sample
+# the files end up in a folder called "Trimmed" and in individual folders per sample
 
 # remove unpaired reads
 rm Trimmed/*/*_R0_*.fastq
@@ -255,12 +257,12 @@ $VSEARCH --threads $THREADS \
     --fasta_width 0 \
     --uc all.clustered.uc \
     --relabel_sha1 \
-    --centroids all.otus.fasta \
-    --otutabout all.otutab.txt \
-    --biomout all.otutab.biom
+    --centroids $RESULTS/all.otus.fasta \
+    --otutabout $RESULTS/all.otutab.txt \
+    --biomout $RESULTS/all.otutab.biom
 
 echo
-echo Number of OTUs: $(grep -c "^>" all.otus.fasta)
+echo Number of OTUs: $(grep -c "^>" $RESULTS/all.otus.fasta)
 # Number of OTUs: 19729
 
 echo
@@ -270,7 +272,7 @@ echo
 source activate qiime1
 
 ## assign taxonomy with SILVA/uclust
-assign_taxonomy.py -m uclust -r /home/david/silva132/rep_set/rep_set_16S_only/99/silva_132_99_16S.fna -t /home/david/silva132/taxonomy/16S_only/99/majority_taxonomy_7_levels.txt -i $DATA/all.otus.fasta -o $DATA/uclust-silva-assigned-tax/
+assign_taxonomy.py -m uclust -r /home/david/silva132/rep_set/rep_set_16S_only/99/silva_132_99_16S.fna -t /home/david/silva132/taxonomy/16S_only/99/majority_taxonomy_7_levels.txt -i $RESULTS/all.otus.fasta -o $RESULTS/
 
 source deactivate
 
@@ -281,9 +283,10 @@ date
 # the next steps are done in R
 
 # the following files produced by this script will be used in R:
-# - $DATA/all.otutab.biom
-# - $DATA/uclust-silva-assigned-tax/all.otus_tax_assignments.txt
+# - $RESULTS/all.otutab.biom
+# - $RESULTS/all.otus_tax_assignments.txt
 
 # In addition:
-# - $DATA/all.otus.fasta should be retained as it contains all the OTU sequences
+# - $RESULTS/all.otus.fasta should be retained as it contains all the OTU sequences
+
 

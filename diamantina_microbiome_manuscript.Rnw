@@ -1,38 +1,5 @@
 %% 11/23/2015
 %
-% the word count can be found using the toolbar at top. Currently it is 7,806
-% AGU publication element is 500 words or 1 figure/table 
-% - see https://publications.agu.org/author-resource-center/text-requirements/
-% We therefore have 16 + 8 + 5 = 29 publication elements
-% limit is meant to be 25 so some content needs to be reduced
-% please consider this and give suggestions
-%
-% my suggestion is to
-% - eliminate the map (figure 2), replace with supplementary gpx or kmz 
-% * <j.e.bullard@lboro.ac.uk> 2018-07-31T11:33:17.042Z:
-% 
-% I think the map is useful - particularly the second panel as it shows the sampling strategy and geomorphic units.  Not convinced we need panel (a).  We can find a Landsat image of the area which would not have any copyright problems and would be sufficient resolution.
-% I'm not 100% convinced we need figure 1 - I think we could explain what it shows in fewer than 500 words, and also we deal with this better in Table 5.  We could combine Fig 1 with Fig 2 - so just take the 3 photographs from Fig 1 (and possibly the nebkha photo from Fig 3) and arrange them in a row, add on the cycling arrows.  Put that row of 4 + arrows below panel b from Figure 2.  Loose the text from Fig 1.
-% I think we can do without Figure 3 and also Figure 4.   If we did that, then we've straightaway lost 3 figures (or 3 PUs).
-% 
-% ^.
-% (if keeping the map I think there are copyright issues that need to be overcome)
-% - combine particle size table 1 into Figure 5 (convert to plot panels)
-% * <j.e.bullard@lboro.ac.uk> 2018-07-31T11:40:27.410Z:
-% 
-% Yes, obvious move.  We could just add 3 columns to the particle size table, one for N +/- std error, one for C and one for pH.
-% That loses us another PU.
-% 
-% ^.
-% - eliminate figure 4 (sampling photos) or one of the latter tables
-%
-% please let me know your thoughts.
-% * <j.e.bullard@lboro.ac.uk> 2018-07-31T11:42:27.019Z:
-% 
-% Another possibility is to combine Figure 7 and Figure 8. I know one is bacterial phyla and one is cyanobacteria genera, but the formats, legend and figure captions are virtually the same.  Have 4 panels a-d where a, b are bacterial phyla and cyanobacteria genera by source, and then c and d are the same but by behaviour.  It would make a full page but make a coherent figure.
-% 
-% ^.
-%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % AGUJournalTemplate.tex: this template file is for articles formatted with LaTeX
 %
@@ -385,10 +352,10 @@ vp.2 <- viewport(layout.pos.col=2, layout.pos.row=1)
 prune_pc <- 0.2
 
 # import the biom from the bioinformatics pipeline shell script "diamantina-vsearch-pipeline-silva.sh"
-biomin <- import_biom(BIOMfilename = "data/all.otutab.biom")
+biomin <- import_biom(BIOMfilename = "results/all.otutab.biom")
 
 # import SILVA taxonomy results (was assigned using uclust)
-taxin <- read_delim("data/uclust-silva-assigned-tax-99/all.otus_tax_assignments.txt", trim_ws = TRUE, delim = "\t", escape_double = FALSE, col_names = FALSE)
+taxin <- read_delim("results/all.otus_tax_assignments.txt", trim_ws = TRUE, delim = "\t", escape_double = FALSE, col_names = FALSE)
 
 # pre-process the taxonomy for consistency of naming etc.
 taxin <- as.data.frame(taxin)
@@ -914,7 +881,7 @@ In this paper we report on the microbial ecology of a dynamic ecosystem in centr
 
 \begin{figure}[tbp]
   \centering
-      \includegraphics[width=1\textwidth]{figure/sites-fig}
+      \includegraphics[width=1\textwidth]{sites-fig}
   \caption{Aerial view of sampling locations with identification sample types and illustrating the position of transects in the landscape. Inset shows general area of claypan including surrounding water channels, main image shows a closer view of dune and pan area. Lower panels show photographs of the main system compartments, with markers keyed to match with aerial imagery. Arrows illustrate expected linkages between system components by aeolian and hydrological transfer of sediment and inoculum. }
   \label{fig:sites}
 \end{figure}
