@@ -326,6 +326,7 @@ library("DESeq2")
 library(knitr)
 library(stringr)
 library(readr)
+library(cowplot)
 
 # set global chunk options
 opts_chunk$set(fig.path='figure/minimal-', fig.align='center', fig.show='hold', message=FALSE)
@@ -342,6 +343,12 @@ vp.02 <- viewport(layout.pos.col=1, layout.pos.row=2)
 gl <- grid.layout(nrow=1, ncol=2)
 vp.1 <- viewport(layout.pos.col=1, layout.pos.row=1) 
 vp.2 <- viewport(layout.pos.col=2, layout.pos.row=1)
+
+gl2 <- grid.layout(nrow=6, ncol=2)
+vp.a <- viewport(layout.pos.col=1, layout.pos.row=1:5) 
+vp.b <- viewport(layout.pos.col=2, layout.pos.row=1:5)
+vp.ab <- viewport(layout.pos.col=1:2, layout.pos.row=1:5)
+vp.leg <- viewport(layout.pos.col=1:2, layout.pos.row=6)
 @
 
 <<load,echo=FALSE,message=FALSE, warning=FALSE, cache=TRUE>>=
@@ -984,13 +991,14 @@ g_legend<-function(a.gplot){
 communitylegend <- rich.ab + colScale + theme(legend.position="bottom")
 legend <- g_legend(communitylegend) 
 
+rich.ab.mod <- rich.ab + colScale + labs(y="number of OTUs", x="zone") + theme(legend.position="none",strip.background = element_blank(),
+  strip.text.x = element_blank())
+NMDS.ab.mod <- NMDS.ab + colScale + theme(legend.position="none")
+composite <- plot_grid(rich.ab.mod, NMDS.ab.mod, labels = "AUTO", nrow=1, ncol = 2,align = "hv",axis = "b",rel_widths = c(1,1)) # aligning vertically along the left axis
 
 grid.newpage()
-pushViewport(viewport(layout = grid.layout(6, 2)))
-vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
-print(rich.ab + colScale + labs(y="number of OTUs", x="zone") + theme(legend.position="none",strip.background = element_blank(),
-  strip.text.x = element_blank()), vp = vplayout(1:5, 1))  # key is to define vplayout
-print(NMDS.ab + colScale + theme(legend.position="none"), vp = vplayout(1:5, 2))
+pushViewport(viewport(layout=gl2))
+print(composite,vp=vp.ab)
 legend$vp = viewport(layout.pos.row = 6, layout.pos.col = 1:2)
 grid.draw(legend)
 
