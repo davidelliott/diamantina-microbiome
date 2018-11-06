@@ -163,154 +163,6 @@ and Joanna Bullard\affil{4}}
 \item Microbial dispersal adaptations may influence soil stability by promoting or inhibiting adhesion
 \end{keypoints}
 
-%% ------------------------------------------------------------------------ %%
-%
-%  ABSTRACT
-%
-% A good abstract will begin with a short description of the problem
-% being addressed, briefly describe the new data or analyses, then
-% briefly states the main conclusion(s) and how they are supported and
-% uncertainties. 
-%% ------------------------------------------------------------------------ %%
-
-%% \begin{abstract} starts the second page 
-
-\begin{abstract}
-The abstract (1) states the nature of the investigation and (2) summarizes the important conclusions. The abstract should be suitable for indexing. Your abstract should:
-
-be set as a single paragraph.
-
-be less than 250 words for all journals except GRL, for which the limit is 150 words.
-
-not include table or figure mentions.
-
-not include reference citations.
-
-define all abbreviations.
-% * <j.e.bullard@lboro.ac.uk> 2018-07-31T11:50:26.840Z:
-% 
-% Need to make sure we mention dust - because not in title or key points (which is fine) but we do need it in the abstract when it gets written
-% 
-% ^.
-
-\end{abstract}
-
-%% ------------------------------------------------------------------------ %%
-%
-%  TEXT
-%
-%% ------------------------------------------------------------------------ %%
-
-%%% Suggested section heads:
-% \section{Introduction}
-% 
-% The main text should start with an introduction. Except for short
-% manuscripts (such as comments and replies), the text should be divided
-% into sections, each with its own heading. 
-
-% Headings should be sentence fragments and do not begin with a
-% lowercase letter or number. Examples of good headings are:
-
-% \section{Materials and Methods}
-% Here is text on Materials and Methods.
-%
-% \subsection{A descriptive heading about methods}
-% More about Methods.
-% 
-% \section{Data} (Or section title might be a descriptive heading about data)
-% 
-% \section{Results} (Or section title might be a descriptive heading about the
-% results)
-% 
-% \section{Conclusions}
-
-%Text here ===>>>
-
-%%
-
-%  Numbered lines in equations:
-%  To add line numbers to lines in equations,
-%  \begin{linenomath*}
-%  \begin{equation}
-%  \end{equation}
-%  \end{linenomath*}
-
-
-
-%% Enter Figures and Tables near as possible to where they are first mentioned:
-%
-% DO NOT USE \psfrag or \subfigure commands.
-%
-% Figure captions go below the figure.
-% Table titles go above tables;  other caption information
-%  should be placed in last line of the table, using
-% \multicolumn2l{$^a$ This is a table note.}
-%
-%----------------
-% EXAMPLE FIGURE
-%
-% \begin{figure}[h]
-% \centering
-% when using pdflatex, use pdf file:
-% \includegraphics[width=20pc]{figsamp.pdf}
-%
-% when using dvips, use .eps file:
-% \includegraphics[width=20pc]{figsamp.eps}
-%
-% \caption{Short caption}
-% \label{figone}
-%  \end{figure}
-%
-% ---------------
-% EXAMPLE TABLE
-%
-% \begin{table}
-% \caption{Time of the Transition Between Phase 1 and Phase 2$^{a}$}
-% \centering
-% \begin{tabular}{l c}
-% \hline
-%  Run  & Time (min)  \\
-% \hline
-%   $l1$  & 260   \\
-%   $l2$  & 300   \\
-%   $l3$  & 340   \\
-%   $h1$  & 270   \\
-%   $h2$  & 250   \\
-%   $h3$  & 380   \\
-%   $r1$  & 370   \\
-%   $r2$  & 390   \\
-% \hline
-% \multicolumn{2}{l}{$^{a}$Footnote text here.}
-% \end{tabular}
-% \end{table}
-
-%% SIDEWAYS FIGURE and TABLE 
-% AGU prefers the use of {sidewaystable} over {landscapetable} as it causes fewer problems.
-%
-% \begin{sidewaysfigure}
-% \includegraphics[width=20pc]{figsamp}
-% \caption{caption here}
-% \label{newfig}
-% \end{sidewaysfigure}
-% 
-%  \begin{sidewaystable}
-%  \caption{Caption here}
-% \label{tab:signif_gap_clos}
-%  \begin{tabular}{ccc}
-% one&two&three\\
-% four&five&six
-%  \end{tabular}
-%  \end{sidewaystable}
-
-%% If using numbered lines, please surround equations with \begin{linenomath*}...\end{linenomath*}
-%\begin{linenomath*}
-%\begin{equation}
-%y|{f} \sim g(m, \sigma),
-%\end{equation}
-%\end{linenomath*}
-
-\section{Introduction}
-\label{sec:intro}
 
 <<setup, include=FALSE, cache=FALSE>>=
 options(width = 120)
@@ -407,7 +259,7 @@ sample_names(bac) <- gsub(pattern = "nebka" , x = sample_names(bac), replacement
   bac <- subset_taxa(bac,Order!="Chloroplast")
   bac <- subset_taxa(bac,Order!="Chloroplast;Ambiguous_taxa;Ambiguous_taxa;Ambiguous_taxa")
   bac <- subset_taxa(bac,Family!="Mitochondria")
-  
+
 # fill in any NA in the tax table with "Unknown"
 tax_table(bac)[is.na(tax_table(bac))] <- "Unknown"
 tax_table(bac)[tax_table(bac)==""] <- "Unknown"
@@ -880,11 +732,145 @@ wind_otus_plot.c <- wind_otus_plot.c + scale_y_continuous(name="relative abundan
 wind_otus_plot.c <- wind_otus_plot.c + facet_wrap(~Genus, nrow=1) + theme(legend.position="bottom") # , scales = "free"
 @
 
+%% ------------------------------------------------------------------------ %%
+%
+%  ABSTRACT
+%
+% A good abstract will begin with a short description of the problem
+% being addressed, briefly describe the new data or analyses, then
+% briefly states the main conclusion(s) and how they are supported and
+% uncertainties. 
+%% ------------------------------------------------------------------------ %%
+
+%% \begin{abstract} starts the second page 
+
+\begin{abstract}
+Microbial adaptations for survival and dispersal may directly influence landscape stability and potential for dust emission in drylands where biological soil crusts (biocrusts) protect mineral soil surfaces from wind erosion. In the Lake Eyre basin of central Australia we operated a wind tunnel on sandy soils and collected the liberated material, which was subjected to DNA sequencing to identify the microbial community composition. Microbial composition of entrained dust was compared with that of the source sand dune soil in addition to nearby claypan and nebkha soils, and water channels which together form a recycling sediment transport system. Wind was found to preferentially liberate \Sexpr{deseq_n_diff_earth} identified taxa from sand dunes whereas \Sexpr{deseq_n_diff_air} identified taxa were found to resist wind erosion. Water channel communities included many taxa in common with the soil samples. We hypothesise that the ease with which soil microbes become airborne is often linked to whether the organism is adapted for dispersal by wind or vegetative growth, and that biocrust organisms found in water channels may sometimes use a fluvial dispersal strategy which exploits rare flooding events to rapidly colonise vast pans which are common in drylands. We explain likely geomorphic implications of microbial dispersal strategies which are a consequence of organisms engineering the environment to provide their particular needs. By identifying microbes fitting expectations for these dispersal strategies based on differential abundance analyses, we provide a new perspective for understanding the role of microbiota in landscape stability.
+
+
+\end{abstract}
+
+%% ------------------------------------------------------------------------ %%
+%
+%  TEXT
+%
+%% ------------------------------------------------------------------------ %%
+
+%%% Suggested section heads:
+% \section{Introduction}
+% 
+% The main text should start with an introduction. Except for short
+% manuscripts (such as comments and replies), the text should be divided
+% into sections, each with its own heading. 
+
+% Headings should be sentence fragments and do not begin with a
+% lowercase letter or number. Examples of good headings are:
+
+% \section{Materials and Methods}
+% Here is text on Materials and Methods.
+%
+% \subsection{A descriptive heading about methods}
+% More about Methods.
+% 
+% \section{Data} (Or section title might be a descriptive heading about data)
+% 
+% \section{Results} (Or section title might be a descriptive heading about the
+% results)
+% 
+% \section{Conclusions}
+
+%Text here ===>>>
+
+%%
+
+%  Numbered lines in equations:
+%  To add line numbers to lines in equations,
+%  \begin{linenomath*}
+%  \begin{equation}
+%  \end{equation}
+%  \end{linenomath*}
+
+
+
+%% Enter Figures and Tables near as possible to where they are first mentioned:
+%
+% DO NOT USE \psfrag or \subfigure commands.
+%
+% Figure captions go below the figure.
+% Table titles go above tables;  other caption information
+%  should be placed in last line of the table, using
+% \multicolumn2l{$^a$ This is a table note.}
+%
+%----------------
+% EXAMPLE FIGURE
+%
+% \begin{figure}[h]
+% \centering
+% when using pdflatex, use pdf file:
+% \includegraphics[width=20pc]{figsamp.pdf}
+%
+% when using dvips, use .eps file:
+% \includegraphics[width=20pc]{figsamp.eps}
+%
+% \caption{Short caption}
+% \label{figone}
+%  \end{figure}
+%
+% ---------------
+% EXAMPLE TABLE
+%
+% \begin{table}
+% \caption{Time of the Transition Between Phase 1 and Phase 2$^{a}$}
+% \centering
+% \begin{tabular}{l c}
+% \hline
+%  Run  & Time (min)  \\
+% \hline
+%   $l1$  & 260   \\
+%   $l2$  & 300   \\
+%   $l3$  & 340   \\
+%   $h1$  & 270   \\
+%   $h2$  & 250   \\
+%   $h3$  & 380   \\
+%   $r1$  & 370   \\
+%   $r2$  & 390   \\
+% \hline
+% \multicolumn{2}{l}{$^{a}$Footnote text here.}
+% \end{tabular}
+% \end{table}
+
+%% SIDEWAYS FIGURE and TABLE 
+% AGU prefers the use of {sidewaystable} over {landscapetable} as it causes fewer problems.
+%
+% \begin{sidewaysfigure}
+% \includegraphics[width=20pc]{figsamp}
+% \caption{caption here}
+% \label{newfig}
+% \end{sidewaysfigure}
+% 
+%  \begin{sidewaystable}
+%  \caption{Caption here}
+% \label{tab:signif_gap_clos}
+%  \begin{tabular}{ccc}
+% one&two&three\\
+% four&five&six
+%  \end{tabular}
+%  \end{sidewaystable}
+
+%% If using numbered lines, please surround equations with \begin{linenomath*}...\end{linenomath*}
+%\begin{linenomath*}
+%\begin{equation}
+%y|{f} \sim g(m, \sigma),
+%\end{equation}
+%\end{linenomath*}
+
+\section{Introduction}
+\label{sec:intro}
 
 In drylands where vegetation is sparse, soil microbes provide some ecosystem functions that are normally delivered by plants in temperate vegetated systems \citep[e.g.][]{lange1992taxonomic, ferrenberg2017biological}. Microbes in the soil surface of drylands form biological soil crusts (biocrusts) which reduce erodibility by wind and water \citep{eldridge2003exploring, liu2017quantifying}, fix carbon and nitrogen \citep{li2012carbon,budel2018annual}, alter the surface albedo and increase water holding capacity \citep{adessi2018microbial,singh2016cyanobacteria}. Biocrusts were among the first organisms to colonise land \citep{beraldi2013early}, therefore it is to be expected that they are well adapted to both exploit soil surface conditions, and modify their environment for their own advantage. By identifying and understanding the adaptations of biocrust organisms, we can gain insights into the biotic forces that influence geomorphic processes. In this paper we investigate how individual microbial taxa contribute to soil stability in western Queensland, Australia and relate this to their hypothesised ecological strategies for survival.
 
 
-The interactions between fluvial and aeolian processes in drylands have been demonstrated as important over timescales ranging from seasons to glacial-interglacial cycles \citep{mctainsh1987desert,bullard2003aeolian,field2009toward,langford1989fluvial}. Fluvial systems can deliver large quantities of sediment to downstream within catchments that, once deposited and desiccated, are susceptible to wind erosion.   The combination of water flow and wind direction can result in sediment cycling at a range of different spatial scales from catchments exceeding 1 million km$^{2}$ \citep{bullard2003aeolian} to within smaller dune-pan systems \citep{thomas1993present}. By linking river systems and wind erosion, \citet{mctainsh1987desert} viewed dryland geomorphology as a system of sediment recycling operating on a massive scale. Microbiota have not generally been considered as a component of this fluvial - aeolian system, however it has been acknowledged that biocrust organisms can act as ecosystem engineers \citet{viles2008understanding}.
+The interactions between fluvial and aeolian processes in drylands have been demonstrated as important over timescales ranging from seasons to glacial-interglacial cycles \citep{mctainsh1987desert,bullard2003aeolian,field2009toward,langford1989fluvial}. Fluvial systems can deliver large quantities of sediment to downstream within catchments that, once deposited and desiccated, are susceptible to wind erosion.   The combination of water flow and wind direction can result in sediment cycling at a range of different spatial scales from catchments exceeding 1 million km$^{2}$ \citep{bullard2003aeolian} to within smaller dune-pan systems \citep{thomas1993present}. By linking river systems and wind erosion, \citet{mctainsh1987desert} viewed dryland geomorphology as a system of sediment recycling operating on a massive scale. Microbiota have not generally been considered as a component of this fluvial - aeolian system, however it has been recognised that biocrust organisms can act as ecosystem engineers \citep{viles2008understanding}.
 
 In this paper we report on the microbial ecology of a dynamic ecosystem in central Australia comprising a 25 km$^{2}$ claypan in the Lake Eyre basin bounded by sand dunes and ephemeral river channels, where fluvial-aeolian interactions are thought to have been occurring at least since the last glacial maximum about 10 kBp \citep{bullard2003aeolian}. To provide insights into how biocrust microbial ecology affects soil stability we determined the microbial composition of different dryland soils and sediments, and then identified possible ecological strategies (especially dispersal mechanisms) of the microbes present. As microbes were expected to be dispersed by both air and water, we also analysed the microbial composition of nearby river channels and airborne dust liberated by \textit{in-situ} wind tunnel treatment on sand dunes. By developing hypotheses about the ecology of communities and their constituent individual taxa, it should be possible to predict responses for various scenarios and devise interventions to manipulate the biotic component of geomorphic processes. Such an achievement would have a wide range of potential applications in land management, for example to enhance carbon storage, suppress dust emissions, and make predictions of future geomorphic activity under a changing climate. By comparing the microbial composition of different system parts we evaluated possible dispersal strategies of individual taxa and interpreted these findings in relation to soil stability and dust emissions. 
 
@@ -895,9 +881,9 @@ In this paper we report on the microbial ecology of a dynamic ecosystem in centr
   \label{fig:sites}
 \end{figure}
 
-There are a limited number of studies on the microbial content of airborne sediments \citet{acosta2015microbiology} most of which focus on long-distance transport of pathogens relevant to human health. Studies with a more environmental focus which have looked at the microbiota found naturally within major dust sources or in the air near to known dust sources in Australia include \citet{de2008geochemical,lim2011microbiological,abed2012microbial,munday2016characterizing}. These studies have characterised microbial communities in aerosols and dust sources, highlighting the possibility of nutrient transportation along with microbiota, and demonstrating potential applications of microbiome science for tracing dust to its source. The authors of all of these papers pointed out that due to mixing in the air, it was not possible from their data to relate the airborne microbiome directly to any specific source. Due to our methodology employing a wind tunnel we were able for the first time to unequivocally collect and analyse wind eroded microbiota from a specific known natural source. The only previous study utilising a wind tunnel to collect airborne particles and microbes is \citet{gardner2012pyrosequencing}, which used a pyrosequencing approach to determine the association of particular microbes and diversity metrics with organic matter and particle size fractions. Prior to wind-tunnel treatments the soils in \citet{gardner2012pyrosequencing} were tilled, raked, and flattened using a lawn roller, in contrast to the present study which used soils in their natural condition.
+There are a limited number of studies on the microbial content of airborne sediments \citet{acosta2015microbiology} most of which focus on long-distance transport of pathogens relevant to human health. Studies with a more environmental focus which have looked at the microbiota found naturally within major dust sources or in the air near to known dust sources in Australia include \citet{de2008geochemical,lim2011microbiological,abed2012microbial,munday2016characterizing}. These studies have characterised microbial communities in aerosols and dust sources, highlighting the possibility of nutrient transportation along with microbiota, and demonstrating potential applications of microbiome science for tracing dust to its source. The authors of all of these papers pointed out that due to mixing in the air, it was not possible from their data to relate the airborne microbiome directly to any specific source. The only previous study utilising a wind tunnel to collect airborne particles and microbes is \citet{gardner2012pyrosequencing}, which used a pyrosequencing approach to determine the association of particular microbes and diversity metrics with organic matter and particle size fractions. Prior to wind-tunnel treatments the soils in \citet{gardner2012pyrosequencing} were tilled, raked, and flattened using a lawn roller, in contrast to the present study which used soils in their natural condition. Due to our methodology employing a wind tunnel we were able for the first time to unequivocally collect and analyse wind eroded microbiota from a specific known natural source. 
 
-Our main hypothesis is that different compartments in fluvial-aeolian systems harbour distinctive microbial communities, and that wind erosion selectively mobilises certain taxa from biocrusts. We expect this because it is known that biocrusts stabilise dryland soils and this stability is clearly linked to their survival prospects because shifting soils will prevent the establishment and succession of biocrusts \citep[e.g.][]{felde2018ongoing}. So whilst we expect a strong selective pressure in biocrust organisms for promotion of soil stability, it should be recognised that this is a benefit to the community not just the individual taxa investing considerable resource to stabilise the soil. If some biocrust organisms are exploiting community resources rather than contributing to biocrust survival, then it can be hypothesised that such taxa may reduce soil stability and contribute to dust emissions. If this is the case then one might expect these organisms to be adapted for aerial dispersal via liberated dust so that they can rapidly find new crusted surfaces to exploit after depleting resources in a particular location.
+Our main hypothesis is that different compartments in fluvial-aeolian systems harbour distinctive microbial communities, and that wind erosion selectively mobilises certain taxa from biocrusts. We expect this because it is known that biocrusts stabilise dryland soils and this stability is clearly linked to their survival prospects because shifting soils will prevent the establishment and succession of biocrusts \citep[e.g.][]{felde2018ongoing}. So whilst we expect a strong selective pressure in biocrust organisms for promotion of soil stability, it should be recognised that this is a benefit to the community not just the individual taxa investing considerable resource to stabilise the soil. If some biocrust organisms are exploiting community resources rather than contributing to biocrust survival, then it can be further hypothesised that such taxa may reduce soil stability and contribute to dust emissions. If this is the case then one might expect these organisms to be adapted for aerial dispersal via liberated dust so that they can rapidly find new crusted surfaces to exploit after depleting resources in a particular location.
 
 \section{Methods}
 \label{sec:meth}
@@ -1073,7 +1059,7 @@ write.csv(otus.df[,c("OTU",rank_names(ab)[1:7],sample_names(ab.rel.merged),"sig"
 
 \section{Discussion}
 \label{sec:disc}
-We have performed the first detailed characterisation of the prokaryotic community in a landscape-scale dryland system comprising terrestrial, fluvial, and aeolian components. This is also one of only a few studies to identify the microbes present in the dryland Lake Eyre Basin of central Australia which covers 1.14 million KM$^{2}$ \citep{habeck2014environmental} \footnote{can anyone provide ref https://doi.org/10.1111/jbi.13456 which would help me check this better?}. Whilst determining the microbial composition of soils was not our primary objective, community data in addition to those presented are made available in the NCBI Sequence Read Archive (project SRP150526) and supplementary tables S2, S3, S4. This is an important contribution as such data on drylands are lacking in the global literature \citep{ferrenberg2017biological}. Our novel approach used landscape sampling combined with model based differential abundance analysis, enabling us to test and develop hypotheses about the ecology of biocrust organisms in drylands, particularly focusing on the implications of dispersal strategies for landscape stability and dust production.
+We have performed the first detailed characterisation of the prokaryotic community in a landscape-scale dryland system comprising terrestrial, fluvial, and aeolian components. This is also one of only a few studies to identify the microbes present in the dryland Lake Eyre Basin of central Australia which covers 1.14 million KM$^{2}$ \citep{habeck2014environmental}. Many Australian soil microbiology projects are indexed in the Biomes of Australian Soil Environments soil microbial diversity database \citep[BASE; ][]{bissett2016introducing}, however studies using the published protocols involving homogenisation of the top 10 cm of soil will be unsuitable for detailed evaluation of biocrust microbiota which typically inhabit only the top few mm. Studies using high throughput DNA sequencing with a focus on Australian biocrust communities specifically are rare \citep{abed2012microbial,chilton2017biocrust}. Whilst determining the microbial composition of soils was not our primary objective, community data in addition to those presented are made available in the NCBI Sequence Read Archive (project SRP150526) and supplementary tables S2, S3, S4. This is an important contribution as such data on drylands are lacking in the global literature \citep{ferrenberg2017biological}, and it has been shown that Australian soils have unique microbial communities compared with other drylands \citep{eldridgeaustralian2018}. Our novel approach used landscape sampling combined with model based differential abundance analysis, enabling us to test and develop hypotheses about the ecology of biocrust organisms in drylands, particularly focusing on the implications of dispersal strategies for landscape stability and dust production.
 
 \subsection{Microbial community of biocrusts in a dryland ephemeral lake bed and surrounding dunes}
 Previous research on biocrust microbial communities in drylands is still rare in the literature \citep{ferrenberg2017biological} and has focused mainly on dune environments. We found that the dunes at our study site harboured typical biocrust communities with \Sexpr{round(cyano.pc.in.dune.samples)} \% of sequences being of cyanobacterial origin, along with much of the remainder belonging to the phyla \textit{Actinobacteria}, \textit{Acidobacteria}, \textit{Chloroflexi}, and \textit{Proteobacteria} (Figure \ref{fig:waterp}). The same phyla in similar proportions have previously been found in biocrusts of the Kalahari in Botswana \citep{elliott2014niche}.
@@ -1124,7 +1110,7 @@ Unlike pan surfaces, stabilised sand dunes do not experience wholesale disruptio
 \subsubsection{Aeolian dispersal strategy}
 Biocrusts may also be established from airborne inocula, and the nebkha biocrusts are most likely an example of this. Because strongly adhesive biocrust taxa are less likely to become airborne, biocrusts established from airborne sediments may lack the strength of vegetatively established biocrusts at least initially until more stabilising vegetative taxa move in (and possibly ultimately out-compete them). They must therefore rely on other stabilising landscape features such as stones and plants, enabling them to settle without investing strongly in promoting landscape stability, although they probably do this incidentally. Taxa adapted for aerial dispersal must achieve high numbers in the atmosphere to be successful, thus they are likely to be R-strategists or copiotrophs that exploit islands of fertility to produce more airborne inocula. This means that although they have some capacity to stabilise soil, they may also contribute to dust production and export of nutrients from the soil. 
 
-Our data suggest that \textit{Deinococcus}, \textit{Massilia}, and \textit{Modestobacter} species (among others) may be adapted for aeolian dispersal as part of their life cycle (Table \ref{tab:deseq2}), and these taxa have properties consistent with our hypothesised ecological strategies for airborne dispersed biocrust organisms (Table \ref{tab:concept}). \textit{Deinococcus} species are well known for their remarkable ability to withstand dessication and intense radiation \citep{makarova2001genome}. This genus has been found in desert soils before \citep[e.g][]{rainey2005extensive}, and \citet[][]{li2012carbon} detected \textit{Deinococcus} species at low abundance in aerosols thought to be derived from biocrusts or saline lake sediments in Australia. According to Bergey's manual \citep{whitman2015bergey} the natural habitat of \textit{Deinococcus} species remains unknown. We suggest then that the habitat of this ancient lineage is in fact the biocrust top surface, and it is adapted for wind dispersal. \textit{Modestobacter versicolor} may have a similar ecology. Isolated from topsoil dryland biocrusts, it is a moderately oligotrophic aerobic chemo-heterotroph with radiation tolerance and capacity for nitrogen fixation \citep{reddy2007modestobacter}. Interestingly \citet{reddy2007modestobacter} report that this species produces pigments (which are presumed to confer protection from UV light) only when under oligotrophy, which could be an adaptation for dispersal by air - since air is a more oligotrophic environment than the biocrust surface, and UV exposure would be greater during transit through the air. \textit{Massilia} species have commonly been found in biocrusts, recognised for resilience and fast growth they have recently been shown to respond rapidly to hydration in dryland soils \citep{aslam2016soil}. With such ecologies \textit{Deinococcus} species and other wind dispersed biocrust species may serve a protective function to the biocrust, and can also ensure that they quickly colonise any newly suitable soils and sediments arising from events such as land slips and animal disturbance. Airborne inocula may therefore play an important role in the stabilisation of landscapes by initially protecting disturbed soils and preparing the way for secondary vegetative colonisers such as cyanobacteria. This idea could be tested by disturbance experiments and monitoring the succession of microbes, which we predict would begin with taxa such as \textit{Deinococcus}, \textit{Massilia}, and \textit{Modestobacter}.
+Our data suggest that \textit{Deinococcus}, \textit{Massilia}, and \textit{Modestobacter} species (among others) may be adapted for aeolian dispersal as part of their life cycle (Table \ref{tab:deseq2}), and these taxa have properties consistent with our hypothesised ecological strategies for airborne dispersed biocrust organisms (Table \ref{tab:concept}). \textit{Deinococcus} species are well known for their remarkable ability to withstand dessication and intense radiation \citep{makarova2001genome}. This genus has been found in desert soils before \citep[e.g][]{rainey2005extensive,chilton2017biocrust}, and \citet[][]{li2012carbon} detected \textit{Deinococcus} species at low abundance in aerosols thought to be derived from biocrusts or saline lake sediments in Australia. According to Bergey's manual \citep{whitman2015bergey} the natural habitat of \textit{Deinococcus} species remains unknown. We suggest then that the habitat of this ancient lineage is in fact the biocrust top surface, and it is adapted for wind dispersal. \textit{Modestobacter versicolor} may have a similar ecology. Isolated from topsoil dryland biocrusts, it is a moderately oligotrophic aerobic chemo-heterotroph with radiation tolerance and capacity for nitrogen fixation \citep{reddy2007modestobacter}. Interestingly \citet{reddy2007modestobacter} report that this species produces pigments (which are presumed to confer protection from UV light) only when under oligotrophy, which could be an adaptation for dispersal by air - since air is a more oligotrophic environment than the biocrust surface, and UV exposure would be greater during transit through the air. \textit{Massilia} species have commonly been found in biocrusts, recognised for resilience and fast growth they have recently been shown to respond rapidly to hydration in dryland soils \citep{aslam2016soil}. With such ecologies \textit{Deinococcus} species and other wind dispersed biocrust species may serve a protective function to the biocrust, and can also ensure that they quickly colonise any newly suitable soils and sediments arising from events such as land slips and animal disturbance. Airborne inocula may therefore play an important role in the stabilisation of landscapes by initially protecting disturbed soils and preparing the way for secondary vegetative colonisers such as cyanobacteria. This idea could be tested by disturbance experiments and monitoring the succession of microbes, which we predict would begin with taxa such as \textit{Deinococcus}, \textit{Massilia}, and \textit{Modestobacter}.
 
 \section{Conclusions}
 \label{sec:conc}
