@@ -363,10 +363,9 @@ colScale <- scale_colour_manual(name = "zone",values = myColors)
 
 <<analyse1,echo=FALSE,message=FALSE, results='hide', warning=FALSE, cache=TRUE>>=
 # plot richness
-rich.ab <- plot_richness(ab,measures = "Chao1",color = "zone", shape="element",x="zone") + geom_point(size=5,alpha=0.7) 
+rich.ab <- plot_richness(ab,measures = "Shannon",color = "zone", shape="element",x="zone_code") + geom_point(size=5,alpha=0.7, position=position_dodge(width=1)) 
 # modify appearance of the richness plot
-rich.ab <- plot_richness(ab,measures = "Chao1",color = "zone", shape="element",x="zone_code") + geom_point(size=5,alpha=0.7, position=position_dodge(width=1)) 
-rich.ab$layers <- rich.ab$layers[3]
+rich.ab$layers <- rich.ab$layers[2]
 rich.ab$theme$axis.text.x$angle <- 0
 rich.ab$theme$axis.text.x$hjust <- 0.4
 
@@ -925,7 +924,7 @@ DNA sequence data from this research has been deposited in the NCBI Sequence Rea
 FastQ files from DNA sequencing were processed using VSERARCH v2.8.4 \citep{rognes2016vsearch} for quality control and clustering of reads into operational taxonomic units (OTUs). Parameters included maximum expected error rate of 0.25 for stringent sequencing error rejection, de-novo chimera removal followed by reference-based chimera removal using the Gold database \citep{haas2011chimeric}, and de-novo clustering of OTUs at 97 \% similarity which typically approximates to species-level differences \citep{stackebrandt1994taxonomic}. Taxonomy was assigned using UCLUST v1.2.22 \citep{edgar2010search} as implemented in QIIME \citep{caporaso2010qiime}, using the SILVA database release 132 \citep{quast2013silva}.
 
 \subsection{Statistical analyses}
-OTU tables with assigned taxonomy from the bioinformatics pipeline were analysed using R v3.5.1 \citep{R2018} with packages phyloseq v\Sexpr{package.version("phyloseq")} \citep{mcmurdie2013phyloseq} and vegan v\Sexpr{package.version("vegan")} \citep{oksanen2018vegan}. Sequences identified as originating from chloroplasts or  mitochondria were removed. Microbial community structure was visualised with respect to sample source using nonmetric multidimensional scaling (NMDS) based on Bray-Curtis dissimilarity calculated from relative abundance of OTUs. In the resultant NMDS plots showing the first 2 dimensions of the multidimensional space, samples with similar community composition are placed closer together \citep{kruskal1964multidimensional}. Possible correlation of measured variables with microbial community structure was evaluated by stepwise model building to select explanatory variables in a redundancy analysis (RDA), and using ANOVA to test significance of selected variables to the model. All measured variables were used in this process including pH, C, N, and a range of particle size parameters (variables are available in supplementary table S1). Alpha diversity was evaluated by calculating the Chao1 richness estimate for each sample.
+OTU tables with assigned taxonomy from the bioinformatics pipeline were analysed using R v3.5.1 \citep{R2018} with packages phyloseq v\Sexpr{package.version("phyloseq")} \citep{mcmurdie2013phyloseq} and vegan v\Sexpr{package.version("vegan")} \citep{oksanen2018vegan}. Sequences identified as originating from chloroplasts or  mitochondria were removed. Microbial community structure was visualised with respect to sample source using nonmetric multidimensional scaling (NMDS) based on Bray-Curtis dissimilarity calculated from relative abundance of OTUs. In the resultant NMDS plots showing the first 2 dimensions of the multidimensional space, samples with similar community composition are placed closer together \citep{kruskal1964multidimensional}. Possible correlation of measured variables with microbial community structure was evaluated by stepwise model building to select explanatory variables in a redundancy analysis (RDA), and using ANOVA to test significance of selected variables to the model. All measured variables were used in this process including pH, C, N, and a range of particle size parameters (variables are available in supplementary table S1). Alpha diversity was evaluated by calculating the Shannon diversity index for each sample.
 
 To identify OTUs with different relative abundance in the wind tunnel collection filter compared to the source dune flank soil we used the model based DESeq2 approach \citep{love2014moderated} on non-rarefied reads as implemented in the phyloseq package. The DESeq2 method includes correction for multiple testing and is highly efficient on data preservation because it eliminates the need to perform rarefaction or normalization of count data \citep{mcmurdie2014waste}. 
 
@@ -961,11 +960,11 @@ Dune and dune flank sediments had similar particle-size distribution, dominated 
 \subsection{DNA sequencing and general microbial community composition}
 DNA was successfully extracted and sequenced from \Sexpr{nsamples(bac)} samples, yielding \Sexpr{round(m_reads_total,1)} million reads. After pairing reads and quality control \Sexpr{round(m_reads_bac_qc,1)} million bacterial reads and \Sexpr{round(1000*m_reads_arc_qc,0)} thousand archaeal reads remained. 
 
-There were \Sexpr{formatC(ntaxa(bac), format="d", big.mark=",")} bacterial OTUs and \Sexpr{ntaxa(arc)} archael OTUs detected (OTUs defined by 97 \% similarity). This analysis was designed to target bacteria, and as archaea make up only \Sexpr{round(100*m_reads_arc_qc / m_reads_bac_qc,1)} \% of sequences bacteria are the main focus of this paper, however archaeal reads were retained for the analyses. The Chao1 richness estimation (Figure \ref{fig:community}a) indicated in excess of 1,000 OTUs present in each sample, without striking differences with respect to sample type. 
+There were \Sexpr{formatC(ntaxa(bac), format="d", big.mark=",")} bacterial OTUs and \Sexpr{ntaxa(arc)} archael OTUs detected (OTUs defined by 97 \% similarity). This analysis was designed to target bacteria, and as archaea make up only \Sexpr{round(100*m_reads_arc_qc / m_reads_bac_qc,1)} \% of sequences bacteria are the main focus of this paper, however archaeal reads were retained for the analyses. The Shannon diversity index (Figure \ref{fig:community}a) indicated similar diversity among all soil types including the particles eroded from the dune flank by wind tunnel treatment. 
 
 Initial visualisation of microbial community structure by NMDS (Figure S1) showed that the water samples differed extremely compared to all other samples, and this dominated all other inter-sample differences. The water samples were therefore excluded from the NMDS to reveal the community stucutre relationships between the soil and airborne dust samples as shown in Figure \ref{fig:community}b. Microbial composition of the dune, pan, and nebkha sites differed markedly. The airborne dust community derived from wind tunnel treatment on the dune flank differs from both the dune and dune flank communities, notably having a community structure approximately intermediate between the dune and nebkha communities.
 
-<<community_out, echo=FALSE,fig.height=3.8, warning=FALSE, cache=TRUE,fig.cap='Prokaryotic microbial community diversity of soil (sand dunes, claypan, and nebkha), water channels, and airborne dust (from sand dunes). a. Chao1 richness estimate (alpha diversity); b. NMDS visualisation of community structure (beta diversity). Water channel data are not shown on the NMDS plot because of extreme dissimilarity to other samples.\\label{fig:community}'>>=
+<<community_out, echo=FALSE,fig.height=3.8, warning=FALSE, cache=TRUE,fig.cap='Prokaryotic microbial community diversity of soil (sand dunes, claypan, and nebkha), water channels, and airborne dust (from sand dunes). a. Shannon diversity index (alpha diversity); b. NMDS visualisation of community structure (beta diversity). Water channel data are not shown on the NMDS plot because of extreme dissimilarity to other samples.\\label{fig:community}'>>=
 
 #Extract Legend 
 g_legend<-function(a.gplot){ 
@@ -977,7 +976,7 @@ g_legend<-function(a.gplot){
 communitylegend <- rich.ab + colScale + theme(legend.position="bottom")
 legend <- g_legend(communitylegend) 
 
-rich.ab.mod <- rich.ab + colScale + labs(y="number of OTUs", x="zone") + theme(legend.position="none",strip.background = element_blank(),
+rich.ab.mod <- rich.ab + colScale + labs(y="diversity", x="zone") + theme(legend.position="none",strip.background = element_blank(),
   strip.text.x = element_blank())
 NMDS.ab.mod <- NMDS.ab + colScale + theme(legend.position="none")
 composite <- plot_grid(rich.ab.mod, NMDS.ab.mod, labels = "AUTO", nrow=1, ncol = 2,align = "hv",axis = "b",rel_widths = c(1,1)) # aligning vertically along the left axis
