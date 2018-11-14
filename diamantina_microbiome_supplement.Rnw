@@ -80,10 +80,10 @@ and Joanna Bullard\affil{4}}
 NMDS visualisation of prokaryotic microbial community structure (beta diversity) of soil (sand dunes, claypan, and nebkha), water channels, and airborne dust (from sand dunes). Due to extreme difference of the channel sample community structure compared to the soils, these samples were excluded from a similar figure shown in the main manuscript.
 
 \section*{Figure S2} % Elliott_Diamantina_Microbiome_Figure_S2[RDA].pdf
-Redundancy analysis used to identify variables explaining microbial community structure via stepwise model building approach. The only significant variable as determined by ANOVA (p<0.05) was particle mass median diameter (d50) as indicated by arrow on the plot.
+Redundancy analysis used to identify variables explaining microbial community structure via stepwise model building approach. The only significant variable as determined by ANOVA (p$<$0.05) was particle mass median diameter (d50) as indicated by arrow on the plot.
 
 \section*{Large Table S1.} % Elliott_Diamantina_Microbiome_Table_S1[sample-metadata].txt
-Sample metadata include GPS locations and soil properties. This is a tab separated text file as used in the QIIME pipeline and other downstream analyses. 
+Sample metadata including GPS locations and soil properties for all samples.
 
 \section*{Large Table S2.} % Elliott_Diamantina_Microbiome_Table_S2[phyla].csv
 Relative abundance of all prokaryotic phyla. 
