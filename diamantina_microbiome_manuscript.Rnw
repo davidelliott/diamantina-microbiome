@@ -206,7 +206,7 @@ vp.leg <- viewport(layout.pos.col=1:2, layout.pos.row=6)
 <<load,echo=FALSE,message=FALSE, warning=FALSE, cache=TRUE>>=
 
 # set the relative % abundance below which we will discard otus for some
-# processing (.rel objects). This affects the otus.df object which outputs to csv
+# processing (.rel objects). This affects the otus.df object which outputs to csv (eventually table S4)
 # it does not affect richness, NMDS, deseq2 which use full data
 prune_pc <- 0.2
 
@@ -916,10 +916,6 @@ Soil pH was determined using a Sartorius PY-P10 probe after mixing soil in water
 \subsection{DNA sequencing}
 DNA was extracted in the field within 24 hours of sample collection using a Mobio Powersoil DNA extraction kit according to the manufacturers instructions except for increasing the soil amount slightly to 0.4 g per sample as described previously \citep{elliott2014niche}. DNA sequencing targeted the prokaryotic 16S rRNA gene v4 region and was performed by the Centre for Genomic Research (CGR) NERC Facility at the University of Liverpool, using an Illumina MiSeq in a Paired end approach (2x250 using v2 reagents). The primer design, PCR, and barcoding approach followed the method of \citet{caporaso2010global} using primers 515F and 806R (15 cycles) for amplification of v4 region, then a second nested PCR (15 cycles) to incorporate illumina adapter sequences and barcodes. Barcodes were as described in the Illumina Nextera protocol.
 
-DNA sequence data from this research has been deposited in the NCBI Sequence Read Archive and is available via project accession SRP150526.
-% We used our standard v4 primers for your previous project, as per the attached protocol, but with one change.  We performed 15 + 15 cycles for first and second round PCRs on the basis of your testing prior to sending us the samples.  Sequencing was 2x250 on the MiSeq using v2 reagents.  I’ve attached traces of the amplicons to this email for you.
-
-
 \subsection{Bioinformatics}
 FastQ files from DNA sequencing were processed using VSERARCH v2.8.4 \citep{rognes2016vsearch} for quality control and clustering of reads into operational taxonomic units (OTUs). Parameters included maximum expected error rate of 0.25 for stringent sequencing error rejection, de-novo chimera removal followed by reference-based chimera removal using the Gold database \citep{haas2011chimeric}, and de-novo clustering of OTUs at 97 \% similarity which typically approximates to species-level differences \citep{stackebrandt1994taxonomic}. Taxonomy was assigned using UCLUST v1.2.22 \citep{edgar2010search} as implemented in QIIME \citep{caporaso2010qiime}, using the SILVA database release 132 \citep{quast2013silva}.
 
@@ -1194,8 +1190,7 @@ In conclusion, we have shown that biocrust taxa vary in their capacity to be mob
 
 
 \acknowledgments
-This project was funded by NERC grant ref NE/K011464/1. We thank Grant McTainsh and Helene Aubault for assistance in the field.
- 
+This project was funded by NERC grant ref NE/K011464/1. We thank Grant McTainsh and Helene Aubault for assistance in the field. DNA sequence data from this research has been deposited in the NCBI Sequence Read Archive and is available via project accession SRP150526. All other data are provided as supporting information.
 
 \bibliography{references}
 %%  REFERENCE LIST AND TEXT CITATIONS

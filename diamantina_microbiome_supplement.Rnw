@@ -37,19 +37,17 @@
 \begin{document}
 
 %% This command needs article title as argument to \supportinginfo{}:
-\supportinginfo{Landscape Stability in Drylands Influenced by Dispersal Strategy of Soil Bacteria}
+\supportinginfo{Surface Stability in Drylands is Influenced by Dispersal Strategy of Soil Bacteria}
 
 
- \authors{David R. Elliott\affil{1},
- Andrew D. Thomas\affil{2}, Craig L. Strong\affil{3},
- Helene A. Aubault\affil{4}, Grant H. McTainsh\affil{5}, and Joanna Bullard\affil{6}}
+\authors{David R. Elliott\affil{1},
+Andrew D. Thomas\affil{2}, Craig L. Strong\affil{3},
+and Joanna Bullard\affil{4}}
 
 \affiliation{1}{Environmental Sustainability Research Centre, University of Derby, Derby, UK.}
 \affiliation{2}{Department of Geography and Earth Sciences, Aberystwyth University, Aberystwyth, UK.}
 \affiliation{3}{The Fenner School of Environment \& Society, ANU College of Sciences, The Australian National University, Canberra   ACT 2601,  Australia.}
-\affiliation{4}{TBC.}
-\affiliation{5}{Griffith School of the Environment, Griffith University, Nathan, Queensland, Australia.}
-\affiliation{6}{Department of Geography, School of Social, Political and Geographical Sciences, Loughborough University, Leicestershire, UK.}
+\affiliation{4}{Department of Geography, School of Social, Political and Geographical Sciences, Loughborough University, Leicestershire, UK.}
 
 %% Corresponding Author
 %(include name and email addresses of the corresponding author.  More
@@ -67,44 +65,34 @@
 
 \section*{Contents}
 %%%Remove or add items as needed%%%
-\begin{enumerate}
-\item Figure S1
-\end{enumerate}
+%\begin{enumerate}
+
+%\end{enumerate}
 
 \section*{Additional Supporting Information (Files uploaded separately)}
 
 \begin{enumerate}
-\item Caption for Data Set S1
-\item Captions for large Tables S1 and S2 (if larger than 1 page, upload as separate excel file)
+\item Caption for Figures S1 and S2
+\item Captions for large Tables S1 to S4
 \end{enumerate}
 
-\section*{Figure S1}
-...
-%Delete all unused file types below. 
-%Copy/paste for multiples of each file type as needed.
+\section*{Figure S1} % Elliott_Diamantina_Microbiome_Figure_S1[nmds].pdf
+NMDS visualisation of prokaryotic microbial community structure (beta diversity) of soil (sand dunes, claypan, and nebkha), water channels, and airborne dust (from sand dunes). Due to extreme difference of the channel sample community structure compared to the soils, these samples were excluded from a similar figure shown in the main manuscript.
 
+\section*{Figure S2} % Elliott_Diamantina_Microbiome_Figure_S2[RDA].pdf
+Redundancy analysis used to identify variables explaining microbial community structure via stepwise model building approach. The only significant variable as determined by ANOVA (p<0.05) was particle mass median diameter (d50) as indicated by arrow on the plot.
 
-%%Enter Data Set, Movie, and Audio captions here
-%%EXAMPLE CAPTIONS
-\section*{Data Set S1.} %data/Elliott_Diamantina_Microbiome_Data_S1[otu-tax].biom
-% this data file is otu_table_mc2_w_tax.biom from the analysis pipeline
-Table of OTU reads per sample and assigned taxonomy. This is the raw OTU table in biom format output from the QIIME pipeline, and starting point of analyses in R.
-
-
-\section*{Large Table S1.} %data/Elliott_Diamantina_Microbiome_Table_S1[sample-metadata].txt
+\section*{Large Table S1.} % Elliott_Diamantina_Microbiome_Table_S1[sample-metadata].txt
 Sample metadata include GPS locations and soil properties. This is a tab separated text file as used in the QIIME pipeline and other downstream analyses. 
 
-\section*{Large Table S2.} %Elliott_Diamantina_Microbiome_Table_S2[phyla].csv
+\section*{Large Table S2.} % Elliott_Diamantina_Microbiome_Table_S2[phyla].csv
+Relative abundance of all prokaryotic phyla. 
 
-relative abundance of all prokaryotic phyla. 
+\section*{Large Table S3.} % Elliott_Diamantina_Microbiome_Table_S3[cyanobacteria].csv
+Relative abundance of cyanobacteria
 
-
-\section*{Large Table S3.} %Elliott_Diamantina_Microbiome_Table_S3[cyanobacteria].csv
-
-relative abundance of cyanobacteria
-
-\section*{Large Table S4.} %Elliott_Diamantina_Microbiome_Table_S4[otus].csv
-OTU taxonomy and relative abundance in each sampling zone (pc). This is an extended version of excerpt tables XX and XX presentd in the main manuscript manuscript. Sig column indicates if the OTU was significantly more abundant in soil or wind tunnel filter after running the wind tunnel on dune flanks. Columns to the right of this show the statistical results from DESEQ2 analysis which are the basis for the interpretation of differential mobilisation of OTUs by wind tunnel treatment. OTUs with an overall relative abundance less than 0.2 perecnt are excluded.
+\section*{Large Table S4.} % Elliott_Diamantina_Microbiome_Table_S4[otus].csv
+OTU taxonomy and relative abundance in each sampling zone (\%). This is an extended version of tables 1 and 2 presentd in the main manuscript manuscript. Sig column indicates if the OTU was significantly more abundant in soil or wind tunnel filter after running the wind tunnel on dune flanks. Columns to the right of this show the statistical results from DESEQ2 analysis which are the basis for the interpretation of differential mobilisation of OTUs by wind tunnel treatment. OTUs with an overall relative abundance less than 0.2 \% are excluded.
 
 
 \end{document}
