@@ -92,7 +92,7 @@ Relative abundance of all prokaryotic phyla.
 Relative abundance of cyanobacteria
 
 \section*{Large Table S4.} % Elliott_Diamantina_Microbiome_Table_S4[otus].csv
-OTU taxonomy and relative abundance in each sampling zone (\%). This is an extended version of tables 1 and 2 presentd in the main manuscript manuscript. Sig column indicates if the OTU was significantly more abundant in soil or wind tunnel filter after running the wind tunnel on dune flanks. Columns to the right of this show the statistical results from DESEQ2 analysis which are the basis for the interpretation of differential mobilisation of OTUs by wind tunnel treatment. OTUs with an overall relative abundance less than 0.2 \% are excluded.
+OTU taxonomy and relative abundance in each sampling zone (\%). This is an extended version of tables 1 and 2 presented in the main manuscript manuscript. Sig column indicates if the OTU was significantly more abundant in soil or wind tunnel filter after running the wind tunnel on dune flanks. Columns to the right of this show the statistical results from DESEQ2 analysis which are the basis for the interpretation of differential mobilisation of OTUs by wind tunnel treatment. OTUs with an overall relative abundance less than 0.2 \% are excluded.
 
 
 \end{document}
