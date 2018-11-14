@@ -167,14 +167,14 @@ and Joanna Bullard\affil{4}}
 <<setup, include=FALSE, cache=FALSE>>=
 options(width = 120)
 library(phyloseq)
-library("ggplot2")
+library(ggplot2)
 library(plyr)
 library(vegan)
 library(grid)
 library(reshape2)
 library(scales)   # needed for formatting y-axis labels to non-scientific type
 library(RColorBrewer)
-library("DESeq2")
+library(DESeq2)
 library(knitr)
 library(stringr)
 library(readr)
@@ -358,6 +358,9 @@ ab.earth.rel <- subset_samples(ab.rel,element=="earth")
 myColors <- brewer.pal(7,"Set1")[c(2,1,7,5,3)]
 names(myColors) <- levels(get_variable(bac,"zone"))
 colScale <- scale_colour_manual(name = "zone",values = myColors)
+
+# save the Rnw script as an R script
+# purl("diamantina_microbiome_manuscript.Rnw",output="Elliott_Diamantina_Microbiome_Method_S1[R].R")
 
 @
 
@@ -543,7 +546,7 @@ both_otus <- both_otus[both_otus%in%taxa_names(ab.rel.ea)]
   # differential abundance analysis using deseq2
   # does the wind tunnel preferentially lift certain otus?
   typedds = phyloseq_to_deseq2(expt.deseq, ~ element)
-  typedds = DESeq(typedds, test="Wald",fitType="parametric")
+  typedds = DESeq(typedds, test="Wald",fitType="local")
   # DESeq docs:
   #On p-values:
   # By default, independent filtering is performed to select a set of genes for multiple test correction which will optimize the number of adjusted p-values less than a given critical value alpha (by default 0.1). The adjusted p-values for the genes which do not pass the filter threshold are set to NA. 
