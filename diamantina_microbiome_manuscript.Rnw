@@ -694,7 +694,7 @@ pc_nebkha_easily_airborne <- 100*(sum(taxa_sums(ab.rel.ea.nebkha.airborne)) / su
 @
 
 <<source_analysis_continued, echo=FALSE, message=FALSE, cache=TRUE>>=
-# plot taxa with colouring to indicate "behaviour" in relation to wind dunnel treatment
+# plot taxa with colouring to indicate "behaviour" in relation to wind tunnel treatment
 
 # showing only the most abundant phyla.
 # as determined by
@@ -747,7 +747,7 @@ wind_otus_plot.c <- wind_otus_plot.c + facet_wrap(~Genus, nrow=1) + theme(legend
 %% \begin{abstract} starts the second page 
 
 \begin{abstract}
-Microbial adaptations for survival and dispersal may directly influence landscape stability and potential for dust emission in drylands where biological soil crusts (biocrusts) protect mineral soil surfaces from wind erosion. In the Lake Eyre basin of central Australia we operated a wind tunnel on sandy soils and collected the liberated material, which was subjected to DNA sequencing to identify the microbial community composition. Microbial composition of entrained dust was compared with that of the source sand dune soil in addition to nearby claypan and nebkha soils, and water channels which together form a recycling sediment transport system. Wind was found to preferentially liberate \Sexpr{deseq_n_diff_earth} identified taxa from sand dunes whereas \Sexpr{deseq_n_diff_air} identified taxa were found to resist wind erosion. Water channel communities included many taxa in common with the soil samples. We hypothesise that the ease with which soil microbes become airborne is often linked to whether the organism is adapted for dispersal by wind or vegetative growth, and that biocrust organisms found in water channels may sometimes use a fluvial dispersal strategy which exploits rare flooding events to rapidly colonise vast pans which are common in drylands. We explain likely geomorphic implications of microbial dispersal strategies which are a consequence of organisms engineering the environment to provide their particular needs. By identifying microbes fitting expectations for these dispersal strategies based on differential abundance analyses, we provide a new perspective for understanding the role of microbiota in landscape stability.
+Microbial adaptations for survival and dispersal may directly influence landscape stability and potential for dust emission in drylands where biological soil crusts (biocrusts) protect mineral soil surfaces from wind erosion. In the Lake Eyre basin of central Australia we operated a wind tunnel on sandy soils and collected the liberated material, which was subjected to DNA sequencing to identify the microbial community composition. Microbial composition of entrained dust was compared with that of the source sand dune soil in addition to nearby claypan and nebkha soils, and water channels which together form a recycling sediment transport system. Wind was found to preferentially liberate \Sexpr{deseq_n_diff_air} identified taxa from sand dunes whereas \Sexpr{deseq_n_diff_earth} identified taxa were found to resist wind erosion. Water channel communities included many taxa in common with the soil samples. We hypothesise that the ease with which soil microbes become airborne is often linked to whether the organism is adapted for dispersal by wind or vegetative growth, and that biocrust organisms found in water channels may sometimes use a fluvial dispersal strategy which exploits rare flooding events to rapidly colonise vast pans which are common in drylands. We explain likely geomorphic implications of microbial dispersal strategies which are a consequence of organisms engineering the environment to provide their particular needs. By identifying microbes fitting expectations for these dispersal strategies based on differential abundance analyses, we provide a new perspective for understanding the role of microbiota in landscape stability.
 
 
 \end{abstract}
@@ -933,8 +933,9 @@ To identify OTUs with different relative abundance in the wind tunnel collection
 \subsection{Soil properties}
 Soils and sediments all contained low concentrations of carbon and nitrogen (Figure \ref{fig:chem}). Dune and dune flank sites contained approximately double the amount of carbon (approximately 0.35 \% w/w) and nitrogen (approximately 0.06 \% w/w) compared to nebkha and pan sites (approximately 0.20 \% and 0.35 \% respectively). The pH of dune and dune flank sites were similar at pH 6.5 whereas pan and nebkha sites were around pH 7.0.
 
-
-<<chem_out, echo=FALSE,fig.height=2,fig.cap='Soil properties in and around Lake Constance claypan at Diamantina National Park, Australia. a. Mean total carbon and nitrogen (percent w/w), pH, and particle mass median diameter ($\\mu$m); b. particle size distribution. Error bars represent the standard error of the mean for each soil type (n = 5). Sample coding for soil types: D sand dune, DF dune flank, N nebkha, P pan surface. \\label{fig:chem}', warning=FALSE, cache=TRUE>>=
+\begin{figure}[htb]
+\begin{center}
+<<chem_out, echo=FALSE,fig.height=4, warning=FALSE, cache=FALSE>>=
 # plot sample data
 
 # melt for plotting (chemistry and d50)
@@ -942,17 +943,23 @@ chemistry.melt <- melt(sample_data(bac.earthair),measure.vars=c("N_pc","C_pc","p
 chemistry.melt$variable <- revalue(chemistry.melt$variable, c("N_pc"="nitrogen", "C_pc"="carbon", "ps_d50"=expression("d50")))
 
 # make the plot 
-print(ggplot(chemistry.melt, aes(x=zone_code, y=value, shape=element, colour=zone)) + stat_summary(fun.data = "mean_se", size=1) + facet_wrap(~variable,scales = "free_y",nrow=1,labeller = label_parsed) + labs(x = "zone") + theme(aspect.ratio=1,legend.position="none") + colScale )
+chem1 <- (ggplot(chemistry.melt, aes(x=zone_code, y=value, shape=element, colour=zone)) + stat_summary(fun.data = "mean_se", size=1) + facet_wrap(~variable,scales = "free_y",nrow=1,labeller = label_parsed) + labs(x = "zone") + theme(aspect.ratio=1,legend.position="none") + colScale )
 
 # melt for plotting (particle size)
 ps.melt <- melt(sample_data(bac.earthair),measure.vars=c("ps_lt4","ps_4to16","ps_16to63","ps_63to250","ps_gt250"))
 ps.melt$variable <- revalue(ps.melt$variable, c("ps_lt4"=expression("< 4 "*mu*"m"),"ps_4to16"=expression("4 - 16 "*mu*"m"),"ps_16to63"=expression("16 - 63 "*mu*"m"),"ps_63to250"=expression("63 - 250 "*mu*"m"), "ps_gt250"=expression("> 250 "*mu*"m")))
 
 # make the plot 
-print(ggplot(ps.melt, aes(x=zone_code, y=value, shape=element, colour=zone)) + stat_summary(fun.data = "mean_se", size=1) + facet_wrap(~variable,scales = "fixed",nrow=1,labeller = label_parsed) + labs(x = "zone", y = "%") + theme(aspect.ratio=1,legend.position="none") + colScale )
+chem2 <- (ggplot(ps.melt, aes(x=zone_code, y=value, shape=element, colour=zone)) + stat_summary(fun.data = "mean_se", size=1) + facet_wrap(~variable,scales = "fixed",nrow=1,labeller = label_parsed) + labs(x = "zone", y = "%") + theme(aspect.ratio=1,legend.position="none") + colScale )
 
+# combine the 2 plots into a composite.
+composite_chem <- plot_grid(chem1, chem2, labels = "AUTO", nrow=2, ncol = 1, align = "v", axis = "b",rel_heights = c(1,1)) 
+
+print(composite_chem)
 @
-
+\caption{Soil properties in and around Lake Constance claypan at Diamantina National Park, Australia. a. Mean total carbon and nitrogen (\% w/w), pH, and particle mass median diameter ($\mu$m); b. particle size distribution. Error bars represent the standard error of the mean for each soil type (n = 5). Sample coding for soil types: D sand dune, DF dune flank, N nebkha, P pan surface.} \label{fig:chem}
+\end{center}
+\end{figure}
 
 Dune and dune flank sediments had similar particle-size distribution, dominated by very fine to fine sands (46-48 \%) with the modal particle-size in the range 185-270 $\mu$m.  The dune sediments were slightly coarser overall containing a higher percentage of medium and coarse sands and lower percentages of silt and clay than the dune flank (Figure \ref{fig:chem}).  Nebkha sediments were also dominated by very fine to fine sands (60 \%; mode 169-185 $\mu$m) and were well sorted.  Pan sediments were less well sorted than any of the sites dominated by wind-blown material.  The pan sites included the highest proportion of clay (c. 10 \%) and silts (55 \% total) and lowest percentage of sand-sized material ($<$35 \%).
 
@@ -997,12 +1004,11 @@ High abundance OTUs are likely to be important contributors to the overall commu
 water_otus_plot$data$Phylum <- gsub(pattern = "Deinococcus-Thermus",replacement="Deinococcus-T.",x=water_otus_plot$data$Phylum)
 wind_otus_plot$data$Phylum <- gsub(pattern = "Deinococcus-Thermus",replacement="Deinococcus-T.",x=wind_otus_plot$data$Phylum)
 
-grid.newpage()
-pushViewport(viewport(layout=g0))
-print(water_otus_plot,vp=vp.01)
-print(wind_otus_plot,vp=vp.02)
+composite_windwater <- plot_grid(water_otus_plot, wind_otus_plot, labels = "AUTO", nrow=2, ncol = 1, align = "v", axis = "b",rel_heights = c(1,1)) 
+
+print(composite_windwater)
 @
-\caption{ Relative abundance of identified bacterial phyla. Colouring indicates whether individual OTUs (97 \% similarity) contributing to the phylum abundance were found in the water channels (top), and whether they were significantly more abundant in soil or wind tunnel collectors at the dune flank sites (bottom). Taxonomy of contributing OTUs and statistical results are provided in Table \ref{tab:deseq1}. Only phyla exceeding 1 \% of total reads after QC are shown for clarity (full data provided in Table S2). Source designation is not indicative of the ultimate origin of OTUs.}\label{fig:waterp}
+\caption{ Relative abundance of identified bacterial phyla. Colouring indicates whether individual OTUs (97 \% similarity) contributing to the phylum abundance were found in the water channels (A), and whether they were significantly more abundant in soil or wind tunnel collectors at the dune flank sites (B). Taxonomy of contributing OTUs and statistical results are provided in Table \ref{tab:deseq1}. Only phyla exceeding 1 \% of total reads after QC are shown for clarity (full data provided in Table S2). Source designation is not indicative of the ultimate origin of OTUs.}\label{fig:waterp}
 \end{center}
 \end{figure}
 
@@ -1015,12 +1021,11 @@ water_otus_plot.c$data$Genus <- gsub(pattern = "Ambiguous_taxa",replacement="Amb
 wind_otus_plot.c$data$Genus <- gsub(pattern = " ", replacement ="\n",x=wind_otus_plot.c$data$Genus)
 wind_otus_plot.c$data$Genus <- gsub(pattern = "Ambiguous_taxa", replacement ="Ambig.",x=wind_otus_plot.c$data$Genus)
 
-grid.newpage()
-pushViewport(viewport(layout=g0))
-print(water_otus_plot.c,vp=vp.01)
-print(wind_otus_plot.c,vp=vp.02)
+composite_windwater.c <- plot_grid(water_otus_plot.c, wind_otus_plot.c, labels = "AUTO", nrow=2, ncol = 1, align = "v", axis = "b",rel_heights = c(1,1)) 
+
+print(composite_windwater.c)
 @
-\caption{ Relative abundance of identified cyanobacterial genera. Colouring indicates whether individual OTUs (97 \% similarity) contributing to the genus abundance were found in the water channels (top), and whether they were significantly more abundant in soil or wind tunnel collectors at the dune flank sites (bottom). Only cyanobacterial genera exceeding 1 \% of total reads after QC are shown for clarity (full data provided in Table S3). Source designation is not indicative of the ultimate origin of OTUs.}\label{fig:waterc}
+\caption{ Relative abundance of identified cyanobacterial genera. Colouring indicates whether individual OTUs (97 \% similarity) contributing to the genus abundance were found in the water channels (A), and whether they were significantly more abundant in soil or wind tunnel collectors at the dune flank sites (B). Only cyanobacterial genera exceeding 1 \% of total reads after QC are shown for clarity (full data provided in Table S3). Source designation is not indicative of the ultimate origin of OTUs.}\label{fig:waterc}
 \end{center}
 \end{figure}
 
