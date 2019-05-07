@@ -1,3 +1,4 @@
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Supporting Information
 %% (Optional)
@@ -72,14 +73,22 @@ and Joanna Bullard\affil{4}}
 \section*{Additional Supporting Information (Files uploaded separately)}
 
 \begin{enumerate}
-\item Caption for Figures S1 and S2
+\item Caption for Figures S1 to S4
 \item Captions for large Tables S1 to S4
+\item Captions for data sets S1 to S3
+\item Caption for method S1
 \end{enumerate}
 
-\section*{Figure S1} % Elliott_Diamantina_Microbiome_Figure_S1[nmds].pdf
+\section*{Figure S1} % Elliott_Diamantina_Microbiome_Figure_S1[photos1].jpg
+Photographs of the landscape including detail of dune and claypan crusts which have suffered disturbance or erosion, revealing detail of the soil beneath. For this work intact crust areas were sampled as shown in Figure S2. See also Figure 1 for other photographs of the landscape.
+
+\section*{Figure S2} % Elliott_Diamantina_Microbiome_Figure_S2[photos2].jpg
+Photographs taken during sampling of different areas, showing cuts made to remove 10 x 10 cm square crust samples prior to lifting aseptically. 
+
+\section*{Figure S3} % WAS S1 . Elliott_Diamantina_Microbiome_Figure_S3[nmds].pdf
 NMDS visualisation of prokaryotic microbial community structure (beta diversity) of soil (sand dunes, claypan, and nebkha), water channels, and airborne dust (from sand dunes). Due to extreme difference of the channel sample community structure compared to the soils, these samples were excluded from a similar figure shown in the main manuscript.
 
-\section*{Figure S2} % Elliott_Diamantina_Microbiome_Figure_S2[RDA].pdf
+\section*{Figure S4} % WAS S2 . Elliott_Diamantina_Microbiome_Figure_S4[RDA].pdf
 Redundancy analysis used to identify variables explaining microbial community structure via stepwise model building approach. The only significant variable as determined by ANOVA (p$<$0.05) was particle mass median diameter (d50) as indicated by arrow on the plot.
 
 \section*{Large Table S1.} % Elliott_Diamantina_Microbiome_Table_S1[sample-metadata].txt
