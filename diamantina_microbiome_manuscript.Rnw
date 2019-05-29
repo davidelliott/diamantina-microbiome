@@ -878,8 +878,8 @@ In this paper we report on the microbial ecology of a dynamic ecosystem in centr
 
 \begin{figure}[tbp]
   \centering
-      \includegraphics[width=1\textwidth]{sites-fig}
-  \caption{Aerial view of sampling locations with identification sample types and illustrating the position of transects in the landscape. Inset shows general area of claypan including surrounding water channels, main image shows a closer view of dune and pan area. Lower panels show photographs of the main system compartments, with markers keyed to match with aerial imagery. Arrows illustrate expected linkages between system components by aeolian and hydrological transfer of sediment and inoculum. Aerial imagery from Copernicus Sentinel 2 data (2015).}
+      \includegraphics[width=1\textwidth]{sites-figure}
+  \caption{Aerial view of sampling locations with identification sample types and illustrating the position of transects in the landscape. Insets shows site position within Australia and the general area of claypan including surrounding water channels. Main image shows a closer view of dune and pan area. Lower panels show photographs of the main system compartments, with markers keyed to match with aerial imagery. Arrows illustrate expected linkages between system components by aeolian and hydrological transfer of sediment and inoculum. Aerial imagery from Copernicus Sentinel 2 data (2015).}
   \label{fig:sites}
 \end{figure}
 

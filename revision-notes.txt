@@ -1,0 +1,3 @@
+/home/david/bin/latexdiff/latexdiff-so R0_diamantina_microbiome_manuscript.tex diamantina_microbiome_manuscript.tex > changes_manuscript.tex
+
+/home/david/bin/latexdiff/latexdiff-so R0_diamantina_microbiome_supplement.tex diamantina_microbiome_supplement.tex > changes_supplement.tex
